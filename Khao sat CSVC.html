@@ -214,7 +214,7 @@
 
 <script>
 (function(){
-  var SHEET_ENDPOINT = 'https://script.google.com/macros/s/AKfycbyG3rawtWSApE0KRc4IwaRQLB-DbGsXK3PTiy8cjn31b-OZhJ3EFc6ZLIiiE-KosAsU/exec';
+  var SHEET_ENDPOINT = 'https://script.google.com/macros/s/AKfycbxaybiqbzz81tUFc8SuBumY1M2lZFqRBN1QFeZl29xUWlkjb53Nr0OCBXk5jfV30skTqQ/exec';
   var BASE_DOC = 'https://tientuong21494-cmyk.github.io/CSVC-30SHINE/';
   var MAX_PHOTOS = 3;
 
@@ -522,6 +522,11 @@
   var MASSAGE_ITEMS = ['Ghế S90 (giường phi thuyền)','Ghế H88 (giường thương gia)','Giường paradise (màu đen)','Giường gội'];
 
   function criteriaBlocksFor(g, tenThietBi){
+    if (g.criteriaKey === 'item2-6'){
+      // Mỗi thiết bị WC chỉ hiện đúng tiêu chuẩn của riêng nó, không hiện chung cả 4 loại.
+      var hmMatch = (tenThietBi === 'Vòi xịt WC') ? 'Vòi xịt' : tenThietBi;
+      return (GROUP_CRITERIA['item2-6'] || []).filter(function(b){ return b.hangMuc === hmMatch; });
+    }
     if (g.criteriaKey === 'item2-4'){
       var full4 = GROUP_CRITERIA['item2-4'];
       // full4: [0]=Ghế sofa Thẩm mỹ, [1]=Ghế sofa Công năng, [2]=Bàn&ghế khu chờ Thẩm mỹ, [3]=Bàn&ghế khu chờ Công năng
@@ -1007,11 +1012,13 @@
       rows.push(['Tầng', tangVal]);
       rows.push(['Khu vực', khuvucVal]);
 
-      var ketQuaParts = [];
+      var thamMyParts = [];
+      var congNangParts = [];
       Array.prototype.forEach.call(unitsContainer.children[i-1].querySelectorAll('.axis-block'), function(block){
         var titleEl = block.querySelector('.axis-title');
         var hmEl = block.querySelector('.hangmuc');
-        var label = (hmEl ? hmEl.textContent + ' — ' : '') + (titleEl ? titleEl.textContent : '');
+        var axisText = titleEl ? titleEl.textContent : '';
+        var label = (hmEl ? hmEl.textContent + ' — ' : '') + axisText;
         var checkedRadio = block.querySelector('input[type="radio"]:checked');
         var val = checkedRadio ? checkedRadio.value : '';
         if (val === 'Không đạt'){
@@ -1019,8 +1026,13 @@
           val = 'Không đạt — ' + reasons.join(' | ');
         }
         rows.push([label, val]);
-        ketQuaParts.push(label + ': ' + val);
+        var entry = (hmEl ? hmEl.textContent + ': ' : '') + val;
+        // "Chức năng"/"Hạn sử dụng" (thiết bị dạng trạng thái, không phải Đạt/Không đạt) gộp chung vào cột Công năng.
+        if (axisText.indexOf('Thẩm mỹ') !== -1) thamMyParts.push(entry);
+        else congNangParts.push(entry);
       });
+      rows.unshift(['Tiêu chuẩn Công năng', congNangParts.join(' || ') || '(không áp dụng)']);
+      rows.unshift(['Tiêu chuẩn Thẩm mỹ', thamMyParts.join(' || ') || '(không áp dụng)']);
 
       var photoEl = document.getElementById('u'+i+'_anh');
       var soAnh = photoEl.files.length;
@@ -1043,7 +1055,9 @@
       summaryBody.appendChild(unitBlock);
 
       var unitPayload = {
-        index: i, tang: tangVal, khuvuc: khuvucVal, ketQua: ketQuaParts.join(' || '),
+        index: i, tang: tangVal, khuvuc: khuvucVal,
+        thamMy: thamMyParts.join(' || ') || '(không áp dụng)',
+        congNang: congNangParts.join(' || ') || '(không áp dụng)',
         soAnh: soAnh, thoiGian: thoiGianVal, moTa: moTaVal, anh: []
       };
       unitPayloads.push(unitPayload);

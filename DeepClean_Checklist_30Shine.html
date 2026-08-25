@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Checklist Deep Clean — 30Shine</title>
+<style>
+  :root{
+    --ink:#1b1b1f; --sub:#54545c; --line:#e3e3e8; --bg:#f6f6f8; --card:#ffffff;
+    --accent:#c8102e; --accent-soft:#fdecef; --ok:#1e7d4a; --ok-soft:#e9f7ef;
+    --warn:#8a5a00; --warn-soft:#fff4e0; --code-bg:#f1f1f4;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; font-family:"Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.55; font-size:15px;
+  }
+  .layout{display:flex; max-width:1400px; margin:0 auto;}
+  nav.toc{
+    width:270px; flex:0 0 270px; position:sticky; top:0; align-self:flex-start;
+    height:100vh; overflow-y:auto; padding:24px 16px 40px; border-right:1px solid var(--line);
+    background:var(--card);
+  }
+  nav.toc h2{font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:var(--sub); margin:0 0 10px 4px;}
+  nav.toc a{
+    display:block; padding:6px 8px; border-radius:6px; color:var(--ink); text-decoration:none;
+    font-size:13.5px;
+  }
+  nav.toc a.lvl2{padding-left:18px; color:var(--sub); font-size:13px;}
+  nav.toc a:hover{background:var(--accent-soft); color:var(--accent);}
+  main{flex:1; min-width:0; padding:40px clamp(20px,5vw,64px) 100px;}
+  header.doc-header{margin-bottom:28px;}
+  header.doc-header h1{font-size:26px; margin:0 0 6px; letter-spacing:.01em;}
+  header.doc-header .meta{color:var(--sub); font-size:13.5px;}
+  h2{
+    font-size:20px; margin:44px 0 6px; padding-top:8px; border-top:1px solid var(--line);
+    scroll-margin-top:20px;
+  }
+  h2 .tag{
+    display:inline-block; background:var(--accent); color:#fff; font-size:12px; font-weight:700;
+    padding:2px 9px; border-radius:20px; margin-right:8px; vertical-align:middle;
+  }
+  h3{font-size:16px; margin:30px 0 4px; color:var(--ink); scroll-margin-top:20px;}
+  h3 .zone{font-weight:400; font-style:italic; color:var(--sub); font-size:14px;}
+  p.lede{color:var(--sub); font-size:14px; background:var(--card); border:1px solid var(--line); border-radius:10px; padding:12px 16px; margin:10px 0 22px;}
+  p.conclude{
+    background:var(--ok-soft); border:1px solid #bfe3cd; color:#155c37; border-radius:10px;
+    padding:10px 14px; font-size:14px; margin:14px 0 0;
+  }
+  .warn-note{
+    background:var(--warn-soft); border:1px solid #f0dca8; color:var(--warn); border-radius:10px;
+    padding:12px 16px; font-size:13.5px; margin:14px 0 0;
+  }
+  .table-scroll{overflow-x:auto; margin:12px 0 4px; border:1px solid var(--line); border-radius:10px;}
+  table{border-collapse:collapse; width:100%; min-width:560px; background:var(--card); font-size:13.6px;}
+  th,td{padding:10px 13px; text-align:left; vertical-align:top; border-bottom:1px solid var(--line);}
+  th{
+    background:#fafafb; font-weight:700; font-size:12.5px; text-transform:uppercase;
+    letter-spacing:.03em; color:var(--sub); white-space:nowrap;
+  }
+  tr:last-child td{border-bottom:none;}
+  tr:hover td{background:#fbfbfc;}
+  td:first-child, th:first-child{font-weight:600; min-width:170px;}
+  .total-row td{background:var(--accent-soft); font-weight:700; color:var(--accent);}
+  code{background:var(--code-bg); padding:1px 5px; border-radius:4px; font-size:12.5px;}
+  .reason-id{
+    display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px;
+    border-radius:50%; background:var(--accent); color:#fff; font-weight:700; font-size:12px;
+  }
+  .section-divider{height:1px; background:var(--line); margin:8px 0 0; border:none;}
+  footer.doc-footer{margin-top:60px; padding-top:16px; border-top:1px solid var(--line); color:var(--sub); font-size:12.5px;}
+  @media (max-width: 900px){
+    nav.toc{display:none;}
+    main{padding:28px 20px 80px;}
+  }
+  @media print{
+    nav.toc{display:none;}
+    body{background:#fff;}
+    h2{break-before:page;}
+    h2:first-of-type{break-before:auto;}
+  }
+</style>
+</head>
+<body>
+<div class="layout">
+
+  <nav class="toc" aria-label="Mục lục">
+    <h2>Mục A</h2>
+    <a href="#secA">A. Nguyên tắc thử trước</a>
+    <a class="lvl2" href="#a1">A1. Bộ công cụ hiện có</a>
+    <a class="lvl2" href="#a2">A2. Dung dịch cần bổ sung</a>
+    <a class="lvl2" href="#a3">A3. 4 lý do thuê ngoài</a>
+    <h2 style="margin-top:18px;">Mục B — Checklist</h2>
+    <a href="#secB">B. Checklist theo nhóm/khu vực</a>
+    <a class="lvl2" href="#b1">B.1 Ghế Cắt</a>
+    <a class="lvl2" href="#b2">B.2 Giường Dịch Vụ &amp; Bồn gội</a>
+    <a class="lvl2" href="#b3">B.3 Gương cắt</a>
+    <a class="lvl2" href="#b4">B.4 Sofa &amp; bàn ghế chờ</a>
+    <a class="lvl2" href="#b5">B.5 Điều hòa &amp; quạt</a>
+    <a class="lvl2" href="#b6">B.6 Máy Dịch Vụ &amp; Vận Hành</a>
+    <a class="lvl2" href="#b7">B.7 Quầy, Tủ, Kệ</a>
+    <a class="lvl2" href="#b9">B.9 WC</a>
+    <a class="lvl2" href="#b10">B.10 Bảng hiệu mặt tiền</a>
+    <a class="lvl2" href="#b11">B.11 Trần / Tường / Sàn</a>
+    <a class="lvl2" href="#b12">B.12 Vật dụng khác</a>
+    <a class="lvl2" href="#b13">B.13 Xử lý mùi</a>
+  </nav>
+
+  <main>
+    <header class="doc-header">
+      <h1>CHECKLIST DEEP CLEAN TOÀN HỆ THỐNG — 30SHINE</h1>
+      <div class="meta">Tài liệu vận hành nội bộ — Cơ sở vật chất &amp; 5S</div>
+    </header>
+
+    <h2 id="secA"><span class="tag">A</span>Nguyên tắc: Salon LUÔN thử trước — chỉ thuê ngoài khi có lý do cụ thể</h2>
+
+    <h3 id="a1">A1. Bộ công cụ hiện có tại salon — làm được gì</h3>
+    <div class="table-scroll"><table>
+      <thead><tr><th>Dụng cụ sẵn có</th><th>Việc làm tốt</th><th>Giới hạn — không cố làm quá tay</th></tr></thead>
+      <tbody>
+        <tr><td>Cây lau nhà + xô vắt</td><td>Sàn, gầm bàn/tủ/giường (khu vực với tới), hành lang</td><td>Không lau được góc quá hẹp dưới 5cm, không thay thế được đánh rửa vết bám cứng</td></tr>
+        <tr><td>Khăn/giẻ lau (ưu tiên microfiber)</td><td>Bề mặt phẳng: quầy, kệ, gương, lavabo, giường da/simili, hộc tủ</td><td>Khăn cũ xơ cứng dễ gây xước bề mặt bóng (gương, inox) — thay khăn định kỳ</td></tr>
+        <tr><td>Chổi + hót rác</td><td>Quét sàn, gom bụi/tóc trước khi lau ướt</td><td>Không xử lý được vết bám dính, ố</td></tr>
+        <tr><td>Bùi nhùi sắt / miếng cọ</td><td>Cặn bám cứng trên bề mặt <strong>chịu ma sát</strong> (gạch men thô, inox mờ không đánh bóng)</td><td><strong>Tuyệt đối không dùng lên</strong>: kính, gương, inox bóng/mạ crôm, sơn tĩnh điện, da/simili, gỗ phủ melamine, màn hình tablet/POS — dùng sai sẽ để lại vết xước vĩnh viễn, biến vết bẩn tạm thời thành hư hỏng thẩm mỹ vĩnh viễn ("chữa lành thành què")</td></tr>
+      </tbody>
+    </table></div>
+    <p class="conclude"><strong>Kết luận:</strong> với đúng 4 dụng cụ này + dung dịch phù hợp (A2), salon tự làm được <strong>hầu hết checklist ở Mục B</strong> — trừ các trường hợp nêu ở A3.</p>
+
+    <h3 id="a2">A2. Dung dịch cần bổ sung — theo đúng bề mặt, tránh dùng sai gây hỏng</h3>
+    <div class="table-scroll"><table>
+      <thead><tr><th>Dung dịch</th><th>Dùng cho</th><th>Không dùng cho</th><th>Ước tính chi phí/salon/tháng</th></tr></thead>
+      <tbody>
+        <tr><td>Nước lau sàn đa năng (pha loãng)</td><td>Sàn, gầm bàn/tủ/giường, hành lang, phòng giặt</td><td>—</td><td>~40.000–60.000đ</td></tr>
+        <tr><td>Nước lau kính chuyên dụng</td><td>Gương WC, kính tầm thấp/trung, mặt kính quầy</td><td>Bề mặt da/simili (làm khô nứt)</td><td>~35.000–50.000đ</td></tr>
+        <tr><td>Dung dịch tẩy cặn vôi (sứ/inox chịu axit nhẹ)</td><td>Lavabo, vòi nước, bồn cầu</td><td>Bề mặt mạ vàng/mạ crôm bóng (ăn mòn lớp mạ)</td><td>~40.000–70.000đ</td></tr>
+        <tr><td>Xà phòng trung tính (pH trung tính, không chứa dưỡng/silicone)</td><td>Bề mặt da/simili giường dịch vụ (B.2)</td><td>Không dùng cồn/tẩy mạnh thay thế</td><td>~50.000–80.000đ (dùng được 2–3 tháng/chai)</td></tr>
+        <tr><td>Dung dịch khử khuẩn nhẹ (cồn loãng)</td><td>Tay nắm cửa, bề mặt tiếp xúc chung</td><td>Bề mặt da/simili (cồn làm khô, nứt da lâu dài)</td><td>~30.000–40.000đ</td></tr>
+        <tr><td>Bùi nhùi sắt loại an toàn (không xước kim loại thường)</td><td>Bề mặt chịu ma sát theo A1</td><td>—</td><td>~10.000–15.000đ</td></tr>
+        <tr class="total-row"><td>Tổng ước tính/salon/tháng</td><td></td><td></td><td>~200.000–300.000đ</td></tr>
+      </tbody>
+    </table></div>
+    <p class="warn-note">⚠️ Đây là <strong>ước tính sơ bộ để lên khung ngân sách</strong>, chưa khảo giá nhà cung cấp thực tế. Nhân ~60 salon → <strong>~12–18 triệu/tháng toàn hệ thống</strong> cho vật tư deep clean (chưa gồm phần thuê ngoài ở A3). Cần chốt lại sau khi báo giá 3–5 nhà cung cấp.</p>
+
+    <h3 id="a3">A3. Bốn lý do hợp lệ để đề xuất thuê ngoài (chỉ chấp nhận khi đã thử đúng quy trình)</h3>
+    <div class="table-scroll"><table>
+      <thead><tr><th>#</th><th>Lý do</th><th>Ví dụ cụ thể</th><th>Hành động tiếp theo</th></tr></thead>
+      <tbody>
+        <tr><td><span class="reason-id">1</span></td><td><strong>Không tiếp cận an toàn</strong> — vị trí quá cao, cần thang chuyên dụng/giàn giáo</td><td>Cửa kính mặt tiền cao &gt;2.5m, bảng hiệu trên cao</td><td>GĐKV xác nhận qua ảnh + chiều cao ước lượng → đề xuất thuê ngoài theo đợt</td></tr>
+        <tr><td><span class="reason-id">2</span></td><td><strong>Cố định không thể di dời để xử lý mặt khuất</strong></td><td>Gầm tủ/bàn bắt vít cố định vào tường/sàn, tháo ra có nguy cơ hỏng kết cấu</td><td>Nếu mặt khuất không ai nhìn thấy trong sinh hoạt bình thường → áp dụng như Bộ Tiêu chuẩn CSVC mục 1.6 (loại khỏi phạm vi kiểm tra); nếu vẫn cần xử lý → thuê ngoài có dụng cụ tháo lắp chuyên dụng</td></tr>
+        <tr><td><span class="reason-id">3</span></td><td><strong>Nguy hiểm kỹ thuật</strong> — rủi ro điện giật/cháy nổ nếu tự ý mở/vệ sinh</td><td>Dàn lạnh điều hoà, tủ điện, ổ cắm, thiết bị có nguồn điện hở</td><td>Không cho salon tự làm dù có dụng cụ — luôn thuê ngoài/đội kỹ thuật CSVC</td></tr>
+        <tr><td><span class="reason-id">4a</span></td><td><strong>Vượt năng lực dụng cụ</strong> — bề mặt còn tốt nhưng vết bẩn không bong dù đã đúng quy trình + đúng dung dịch phù hợp bề mặt</td><td>Vết ố cứng đầu lâu năm trên sàn/gạch, cặn bám dày trên ron gạch</td><td>Thuê ngoài có máy chuyên dụng (máy rửa hơi nước áp lực, máy đánh sàn công nghiệp) — <strong>có khả năng cứu được</strong>, đáng chi</td></tr>
+        <tr><td><span class="reason-id">4b</span></td><td><strong>Đã xuống cấp cấu trúc</strong>, không còn là vết bẩn bề mặt</td><td>Da/simili nứt lộ mút, gạch/sơn ố ăn sâu vào vật liệu, không phải bám bẩn</td><td><strong>KHÔNG chi tiền vệ sinh</strong> — đây thuộc phạm vi Bộ Tiêu chuẩn CSVC (xuống cấp/hỏng hóc), chuyển sang quy trình báo lỗi CSVC để sửa/thay, không lãng phí ngân sách thuê ngoài vệ sinh vô ích</td></tr>
+      </tbody>
+    </table></div>
+
+    <h2 id="secB"><span class="tag">B</span>Checklist chi tiết theo Nhóm thiết bị / Khu vực</h2>
+    <p class="lede">Dựa đúng theo cấu trúc <strong>Form khảo sát CSVC</strong> hiện có (8 khu vực, 11 nhóm thiết bị) để không lệch hệ thống với dữ liệu CSVC đang thu thập. Nguyên tắc hành động theo loại module: <strong>Thiết bị → lau chùi sạch sẽ</strong>, <strong>Sàn → vệ sinh sàn</strong>, <strong>Trần &amp; Tường → quét mạng nhện, lau bụi</strong> (không chà rửa bề mặt sơn/giấy dán — tránh bong tróc, đó là phạm vi CSVC chứ không phải vệ sinh). Tiêu chuẩn đạt dùng ngôn ngữ 5S đơn giản, quan sát bằng mắt thường.</p>
+
+    <h3 id="b1">B.1 Ghế Cắt <span class="zone">— Khu vực cắt (lau chùi thiết bị)</span></h3>
+    <div class="table-scroll"><table>
+      <thead><tr><th>Hạng mục</th><th>Cách làm</th><th>Tiêu chuẩn Đạt</th></tr></thead>
+      <tbody>
+        <tr><td>Ghế Maybach, Ghế cắt đen</td><td>Lau toàn bộ tay vịn, mặt ngồi, bệ gác chân; lau kỹ khe nối giữa các bộ phận</td><td>Không còn bụi/tóc bám ở khe nối, tay vịn, chân đế; bề mặt sạch, không dính tóc vụn khi sờ</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3 id="b2">B.2 Giường Dịch Vụ &amp; Bồn gội <span class="zone">— Khu vực gội/xả, Phòng paradise/LRT (lau chùi thiết bị)</span></h3>
+    <div class="table-scroll"><table>
+      <thead><tr><th>Hạng mục</th><th>Cách làm</th><th>Tiêu chuẩn Đạt</th></tr></thead>
+      <tbody>
+        <tr><td>Giường phi thuyền (S90), giường thương gia (H88), giường paradise, giường spa, giường xả, giường gội, ghế LRT — phần khung/bề mặt cứng</td><td>Lau toàn bộ khung, chân đế, khe nối</td><td>Không bụi/tóc bám ở khung, chân đế, khe nối</td></tr>
+        <tr><td>Bề mặt da/simili + đệm lót vai/lưng + gối tựa đầu</td><td><strong>Bước 1:</strong> lau bằng xà phòng trung tính pha loãng đúng tỷ lệ. <strong>Bước 2:</strong> lau lại bằng khăn ẩm nước sạch để loại hết xà phòng còn sót</td><td>Bề mặt sạch, không dính/nhớt khi sờ, không mùi</td></tr>
+        <tr><td>Bồn gội (đi kèm giường có bồn)</td><td>Cọ lòng bồn, chân vòi</td><td>Không cặn/tóc đọng lại trong lòng bồn và chân vòi</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3 id="b3">B.3 Gương cắt <span class="zone">— Khu vực cắt (lau chùi thiết bị)</span></h3>
+    <div class="table-scroll"><table>
+      <thead><tr><th>Hạng mục</th><th>Cách làm</th><th>Tiêu chuẩn Đạt</th></tr></thead>
+      <tbody>
+        <tr><td>Hệ gương cắt, gương cắt sắt đen, khoang cabin</td><td>Lau kính bằng nước lau kính + khăn microfiber; lau khung/viền</td><td>Gương không vệt loang khi soi nghiêng dưới đèn; khung/viền không bụi bám</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3 id="b4">B.4 Sofa &amp; bàn ghế chờ khách <span class="zone">— Khu Lễ tân, chờ khách (lau chùi thiết bị)</span></h3>
+    <div class="table-scroll"><table>
+      <thead><tr><th>Hạng mục</th><th>Cách làm</th><th>Tiêu chuẩn Đạt</th></tr></thead>
+      <tbody>
+        <tr><td>Bàn chờ cao/thấp, ghế chờ cao/thấp, ghế sofa</td><td>Lau toàn bộ mặt bàn, mặt ngồi, tựa lưng, chân/khung</td><td>Không bụi/vết bám nhìn thấy trên mặt bàn, mặt ngồi; chân/khung sạch</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3 id="b5">B.5 Điều hòa &amp; quạt <span class="zone">— toàn salon, chỉ phần vỏ ngoài (lau chùi thiết bị)</span></h3>
+    <div class="table-scroll"><table>
+      <thead><tr><th>Hạng mục</th><th>Cách làm</th><th>Tiêu chuẩn Đạt</th></tr></thead>
+      <tbody>
+        <tr><td>Vỏ ngoài điều hoà treo tường/âm trần, quạt cây, quạt treo tường, quạt trần</td><td>Lau vỏ ngoài, cánh quạt, lưới bảo vệ bằng khăn khô/ẩm nhẹ</td><td>Vỏ máy, cánh quạt, lưới bảo vệ không bụi bám thành lớp</td></tr>
+        <tr><td>Dàn lạnh, bo mạch, bên trong máy</td><td><strong>Không tự mở/tự vệ sinh</strong></td><td>— thuộc lý do A3.3, luôn do đội kỹ thuật/bảo trì định kỳ xử lý</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3 id="b6">B.6 Máy Dịch Vụ &amp; Vận Hành <span class="zone">— khu dịch vụ, quầy thu ngân (lau chùi thiết bị)</span></h3>
+    <div class="table-scroll"><table>
+      <thead><tr><th>Hạng mục</th><th>Cách làm</th><th>Tiêu chuẩn Đạt</th></tr></thead>
+      <tbody>
+        <tr><td>Máy dịch vụ: máy 6in1, máy xông, máy hút mụn, súng phun hoa hồng, máy tẩy da chết, máy hấp đá, máy giặt/sấy khăn, máy sấy tóc</td><td>Lau vỏ ngoài, khe tản nhiệt, dây nguồn bằng khăn khô/ẩm nhẹ; không xịt dung dịch trực tiếp lên bo mạch</td><td>Vỏ máy, khe tản nhiệt không bụi/tóc bám; dây điện gọn, không rối</td></tr>
+        <tr><td>Máy vận hành: laptop, tablet, POS, máy in bill, khay đựng tiền, điện thoại hotline, ampli, loa kéo, tivi</td><td>Lau màn hình/vỏ ngoài bằng khăn khô mềm</td><td>Màn hình/vỏ máy sạch, không bụi, không vết dấu tay loang</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3 id="b7">B.7 Quầy, Tủ, Kệ <span class="zone">— Khu bán hàng, Khu Lễ tân (lau chùi + sắp xếp)</span></h3>
+    <div class="table-scroll"><table>
+      <thead><tr><th>Hạng mục</th><th>Cách làm</th><th>Tiêu chuẩn Đạt</th></tr></thead>
+      <tbody>
+        <tr><td>Kệ vật tư</td><td>Lau kệ, sắp xếp lại vật tư theo nhóm</td><td>Không bụi đọng trên kệ; vật tư sắp xếp gọn gàng, đúng nhóm, không chồng chéo lộn xộn</td></tr>
+        <tr><td>Tủ đồ (khách + nhân viên)</td><td>Mở toàn bộ ngăn, lau trong-ngoài, dọn bỏ vật lạ</td><td>Không bụi đọng đáy ngăn; không còn vật dụng quên/rác cũ; không mùi ẩm mốc</td></tr>
+        <tr><td>Quầy mỹ phẩm</td><td>Lau kệ trưng bày, sắp lại sản phẩm</td><td>Không bụi trên kệ và sản phẩm; sản phẩm xếp ngay ngắn, quay nhãn ra ngoài</td></tr>
+        <tr><td>Quầy Lễ Tân</td><td>Lau mặt quầy, mở ngăn kéo lau trong</td><td>Mặt quầy sạch, không bụi; ngăn kéo bên trong không bụi đọng, đồ đạc sắp gọn</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3 id="b9">B.9 WC <span class="zone">— WC, kho (lau chùi thiết bị)</span></h3>
+    <div class="table-scroll"><table>
+      <thead><tr><th>Hạng mục</th><th>Cách làm</th><th>Tiêu chuẩn Đạt</th></tr></thead>
+      <tbody>
+        <tr><td>Bồn WC, vòi xịt</td><td>Cọ lòng bồn, chân vòi bằng dung dịch tẩy cặn vôi</td><td>Không cặn/ố bám ở lòng bồn, chân vòi</td></tr>
+        <tr><td>Lavabo</td><td>Cọ chân lavabo, mép vòi</td><td>Không cặn/ố bám ở chân lavabo, mép vòi</td></tr>
+        <tr><td>Gương WC</td><td>Lau bằng nước lau kính</td><td>Không vệt loang khi soi nghiêng dưới đèn</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3 id="b10">B.10 Bảng hiệu mặt tiền <span class="zone">— Khu mặt tiền, để xe (lau chùi, phần tầm với an toàn)</span></h3>
+    <div class="table-scroll"><table>
+      <thead><tr><th>Hạng mục</th><th>Cách làm</th><th>Tiêu chuẩn Đạt</th></tr></thead>
+      <tbody>
+        <tr><td>Bảng hiệu mặt tiền (phần tầm với an toàn, không cần thang cao)</td><td>Lau bụi mặt bảng, khung, chữ/logo trong tầm với</td><td>Không bụi bám trên bề mặt trong tầm với</td></tr>
+        <tr><td>Phần bảng hiệu ở trên cao</td><td>Không tự trèo cao xử lý</td><td>— thuộc lý do A3.1, đề xuất thuê ngoài nếu cần</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3 id="b11">B.11 Trần / Tường / Sàn <span class="zone">— áp dụng 8 khu vực, trừ phòng kho kín/khu khuất</span></h3>
+    <div class="table-scroll"><table>
+      <thead><tr><th>Hạng mục</th><th>Cách làm</th><th>Tiêu chuẩn Đạt</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Sàn</strong> (gạch men, giả gỗ) — mọi khu vực gồm cả khu hành lang/cầu thang/thang máy</td><td>Vệ sinh sàn: quét rồi lau, chú ý góc tường, chân đồ nội thất, gầm bàn/tủ/giường với tới được</td><td>Sàn sạch, không bụi/tóc/vệt bẩn nhìn thấy bằng mắt thường, kể cả ở góc và chân đồ nội thất</td></tr>
+        <tr><td><strong>Tường &amp; Trần</strong> (gạch sơn bả, thạch cao sơn bả, dán giấy, thạch cao liền, la-phông thả)</td><td>Quét mạng nhện ở góc trần/tường, lau bụi trên các gờ/phào chỉ, đèn, hộp kỹ thuật; <strong>không chà/rửa bề mặt sơn hoặc giấy dán</strong></td><td>Không có mạng nhện ở góc trần, góc tường, phía sau đèn; không bụi bám dày ở gờ/phào chỉ</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3 id="b12">B.12 Vật dụng khác <span class="zone">— phát sinh thực tế, ngoài danh mục form khảo sát CSVC</span></h3>
+    <div class="table-scroll"><table>
+      <thead><tr><th>Hạng mục</th><th>Cách làm</th><th>Tiêu chuẩn Đạt</th></tr></thead>
+      <tbody>
+        <tr><td>Xe đẩy hoá chất (trolley)</td><td>Đổ hết vật tư ra, lau khay và bánh xe</td><td>Không cặn hoá chất khô bám đáy khay</td></tr>
+        <tr><td>Vali dụng cụ stylist (nếu có)</td><td>Từng stylist tự vệ sinh vali của mình</td><td>Không tóc vụn/bụi trong khoang chứa</td></tr>
+        <tr><td>Khu giặt sấy (mặt ngoài máy giặt/sấy, sàn quanh máy)</td><td>Lau mặt ngoài máy, quét/lau sàn quanh chân máy</td><td>Không xơ vải/bụi vải đóng thành lớp quanh chân máy</td></tr>
+      </tbody>
+    </table></div>
+
+    <h3 id="b13">B.13 Xử lý mùi <span class="zone">— theo dõi riêng, không phải hạng mục "lau chùi" thông thường</span></h3>
+    <div class="table-scroll"><table>
+      <thead><tr><th>Hạng mục</th><th>Hành động</th><th>Ai làm</th></tr></thead>
+      <tbody>
+        <tr><td>Mùi cống khu gội (hàng ngày)</td><td>Mở cửa thông gió cuối ngày 30 phút</td><td>Salon</td></tr>
+        <tr><td>Mùi cống dai dẳng, không hết bằng biện pháp cơ bản</td><td>Kiểm tra bẫy mùi, thông cống chuyên sâu</td><td>Thuê ngoài — lý do A3.3</td></tr>
+        <tr><td>Khăn choàng</td><td>Giặt tối thiểu 2 lần/tuần, không đợi "thấy bẩn mới giặt"</td><td>Salon</td></tr>
+        <tr><td>Rèm cửa</td><td>Giặt/tẩy chuyên nghiệp định kỳ 3–6 tháng/lần</td><td>Thuê ngoài, CSVC duyệt theo ngân sách tháng</td></tr>
+      </tbody>
+    </table></div>
+
+    <footer class="doc-footer">Checklist Deep Clean 30Shine — tài liệu nội bộ, bản chuyển đổi từ DeepClean_Checklist_30Shine.md</footer>
+  </main>
+</div>
+</body>
+</html>

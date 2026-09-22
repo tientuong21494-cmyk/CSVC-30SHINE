@@ -1,0 +1,590 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Nghiệm thu Deep Clean</title>
+<style>
+  :root{
+    --ink:#17171b; --sub:#5f5960; --paper:#f6f4f3; --card:#ffffff; --line:#e6e2e1;
+    --accent:#b3122f; --accent-ink:#ffffff; --accent-soft:#fbe9ea;
+    --ok:#1f7a54; --ok-soft:#e6f4ec;
+    --warn:#9a5b12; --warn-soft:#fbeed9;
+    --bad:#b3122f; --bad-soft:#fbe9ea;
+    --shadow: 0 1px 2px rgba(23,23,27,.06), 0 8px 24px -12px rgba(23,23,27,.14);
+    --radius: 10px;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--paper); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    font-size:14.5px; line-height:1.5;
+  }
+  header{
+    position:sticky; top:0; z-index:20; background:var(--paper);
+    border-bottom:1px solid var(--line); padding:16px clamp(14px,4vw,40px) 14px;
+  }
+  .brand{font-weight:800; font-size:15px; letter-spacing:.02em;}
+  .brand span{color:var(--accent);}
+  .hub-sub{color:var(--sub); font-size:12.5px; margin-top:2px;}
+  main{max-width:1080px; margin:0 auto; padding:20px clamp(14px,4vw,40px) 80px;}
+
+  .sheet-lede{color:var(--sub); font-size:13px; background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:12px 14px; margin:0 0 16px; box-shadow:var(--shadow);}
+  .sheet-lede b{color:var(--ink);}
+
+  .nt-meta{
+    display:grid; grid-template-columns:1fr; gap:12px;
+    background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+    padding:14px 16px; box-shadow:var(--shadow); margin-bottom:14px;
+  }
+  @media (min-width:640px){ .nt-meta{grid-template-columns:1.3fr 1fr 1.3fr auto;} }
+  .nt-meta label{display:flex; flex-direction:column; gap:6px; font-size:11px; font-weight:700; color:var(--sub); text-transform:uppercase; letter-spacing:.04em;}
+  .nt-meta input, .nt-meta select{
+    font-family:inherit; font-size:14px; font-weight:500; color:var(--ink);
+    background:var(--paper); border:1px solid var(--line); border-radius:8px; padding:9px 11px;
+  }
+  .btn{
+    font-weight:800; font-size:13px; background:var(--accent); color:var(--accent-ink);
+    border:none; border-radius:8px; padding:10px 18px; cursor:pointer; white-space:nowrap; height:fit-content;
+  }
+  .btn:hover{opacity:.92;}
+  .btn.ghost{background:none; color:var(--accent); font-size:11.5px; padding:0; text-decoration:none; font-weight:700;}
+
+  .owner-chip{
+    display:inline-flex; align-items:center; gap:5px; font-size:10.5px; font-weight:700;
+    padding:3px 8px; border-radius:999px; background:var(--warn-soft); color:var(--warn);
+    white-space:nowrap; margin:2px 0 12px;
+  }
+  .status{display:block; font-size:12px; color:var(--sub); margin:2px 0 16px;}
+  .status.good{color:var(--ok);}
+  .status.warn{color:var(--warn);}
+  .status.bad{color:var(--bad);}
+
+  .progress{display:flex; align-items:center; gap:12px; margin-bottom:16px;}
+  .progress-bar{flex:1; height:8px; border-radius:4px; background:var(--line); overflow:hidden;}
+  .progress-fill{height:100%; background:var(--ok); border-radius:4px; transition:width .25s ease;}
+  .progress-text{font-size:12.5px; font-weight:700; color:var(--sub); white-space:nowrap;}
+
+  .table-wrap{overflow-x:auto; border:1px solid var(--line); border-radius:var(--radius); box-shadow:var(--shadow); background:var(--card);}
+  table.checklist{width:100%; border-collapse:collapse; min-width:920px; font-size:13px;}
+  table.checklist th{
+    background:#f0ede9; font-size:10.5px; text-transform:uppercase; letter-spacing:.04em; color:var(--sub);
+    font-weight:700; padding:9px 10px; text-align:left; white-space:nowrap; position:sticky; top:0;
+  }
+  table.checklist td{padding:9px 10px; border-bottom:1px solid var(--line); vertical-align:top;}
+  table.checklist tr.done td{background:var(--ok-soft);}
+  table.checklist tr:last-child td{border-bottom:none;}
+  .col-zone{width:110px; font-weight:700; color:var(--sub); font-size:11.5px;}
+  .col-stt{width:34px; text-align:center; color:var(--sub);}
+  .col-item{width:220px; font-weight:700;}
+  .col-std{width:220px; color:var(--ink); font-size:12px; font-weight:600;}
+  .col-result{width:70px; text-align:center;}
+  .col-photo{width:220px;}
+  .col-note{width:170px;}
+  .result-check{width:20px; height:20px; accent-color:var(--ok); cursor:pointer;}
+  .note-input{
+    width:100%; font-family:inherit; font-size:12px; color:var(--ink);
+    background:var(--paper); border:1px solid var(--line); border-radius:6px; padding:6px 8px;
+    resize:vertical; min-height:30px;
+  }
+
+  .photo-gallery{display:flex; flex-wrap:wrap; gap:6px; margin-bottom:6px;}
+  .photo-thumb-wrap{position:relative; width:52px; height:52px;}
+  .photo-thumb{width:52px; height:52px; border-radius:6px; object-fit:cover; border:1px solid var(--line); display:block;}
+  .photo-del{
+    position:absolute; top:-6px; right:-6px; width:18px; height:18px; border-radius:50%;
+    background:var(--bad); color:#fff; border:2px solid var(--card); font-size:11px; line-height:1;
+    cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0;
+  }
+  .photo-add-btn{
+    display:inline-flex; align-items:center; gap:5px; font-size:11.5px; font-weight:700; color:var(--accent);
+    border:1.5px dashed #d9a7ae; border-radius:8px; padding:6px 10px; cursor:pointer; background:var(--accent-soft);
+  }
+  .photo-add-btn input{display:none;}
+  .photo-disabled{font-size:11px; color:var(--sub); font-style:italic;}
+
+  @media (max-width:700px){
+    header{padding:14px 16px 12px;}
+    main{padding:16px 16px 70px;}
+
+    /* Điện thoại: đổi bảng thành từng thẻ xếp dọc, khỏi cuộn ngang */
+    .table-wrap{overflow-x:visible; border:none; box-shadow:none; background:none;}
+    table.checklist{min-width:0;}
+    table.checklist thead{display:none;}
+    table.checklist, table.checklist tbody, table.checklist tr{display:block; width:100%;}
+    table.checklist tr{
+      background:var(--card); border:1px solid var(--line); border-radius:var(--radius);
+      box-shadow:var(--shadow); margin-bottom:12px; padding:12px 14px;
+    }
+    table.checklist tr.done{border-color:#8fc9ac;}
+    table.checklist td{display:block; width:100% !important; padding:6px 0; border-bottom:none;}
+    table.checklist td.col-zone{
+      font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--accent);
+      font-weight:800; padding-top:0;
+    }
+    table.checklist td.col-stt{display:inline; color:var(--sub); font-size:11px; font-weight:700;}
+    table.checklist td.col-stt::before{content:"Hạng mục "; }
+    table.checklist td.col-stt::after{content:" · ";}
+    table.checklist td.col-item{display:inline; font-size:15px; font-weight:800;}
+    table.checklist td.col-std{padding-top:4px;}
+    table.checklist td.col-std::before{content:"Tiêu chuẩn đạt: "; font-weight:800; color:var(--ink);}
+    table.checklist td.col-result{
+      display:flex; align-items:center; gap:8px; text-align:left; padding-top:8px; padding-bottom:8px;
+      border-top:1px dashed var(--line); border-bottom:1px dashed var(--line);
+    }
+    table.checklist td.col-result::before{content:"Đạt hạng mục này"; font-weight:700; font-size:13px; color:var(--ink); order:2;}
+    table.checklist td.col-result input{order:1; width:22px; height:22px;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">30<span>SHINE</span> · DEEP CLEAN</div>
+  <div class="hub-sub">Phiếu nghiệm thu — không cần đăng nhập</div>
+</header>
+
+<main>
+  <div class="nt-meta">
+    <label>Salon
+      <select id="ntSalon"><option value="">— Chọn salon —</option></select>
+    </label>
+    <label>Kỳ nghiệm thu
+      <div style="display:flex; gap:6px;">
+        <select id="ntMonth" style="flex:1;"></select>
+        <select id="ntYear" style="flex:1;"></select>
+      </div>
+    </label>
+    <label>Người nghiệm thu
+      <input id="ntNguoi" type="text" placeholder="Họ tên GĐKV / quản lý">
+    </label>
+    <button class="btn" id="ntLoadBtn" type="button">Tải / Tạo phiếu</button>
+  </div>
+  <div id="ntGdkvReadout" class="owner-chip" style="display:none;"></div>
+  <span class="status" id="ntStatus">Chọn salon và kỳ, rồi bấm "Tải / Tạo phiếu" để bắt đầu.</span>
+  <div id="ntDeleteWrap" style="display:none; margin:-8px 0 14px;">
+    <button class="btn ghost" id="ntDeleteBtn" type="button">🗑 Xoá phiếu này (tạo trùng / sai salon)</button>
+  </div>
+
+  <div class="progress" id="ntProgress" style="display:none;">
+    <div class="progress-bar"><div class="progress-fill" id="ntProgressFill" style="width:0%"></div></div>
+    <span class="progress-text" id="ntProgressText">0/0 đạt</span>
+  </div>
+
+  <div class="table-wrap" id="ntTableWrap" style="display:none;">
+    <table class="checklist">
+      <thead>
+        <tr>
+          <th class="col-zone">Khu vực</th>
+          <th class="col-stt">STT</th>
+          <th class="col-item">Hạng mục vệ sinh</th>
+          <th class="col-std">Tiêu chuẩn đạt</th>
+          <th class="col-result">Đạt</th>
+          <th class="col-photo">Ảnh nghiệm thu</th>
+          <th class="col-note">Ghi chú</th>
+        </tr>
+      </thead>
+      <tbody id="ntTableBody"></tbody>
+    </table>
+  </div>
+
+  <div id="ntSubmitWrap" style="display:none; margin-top:18px; text-align:center;">
+    <button class="btn" id="ntSubmitBtn" type="button" style="width:100%; max-width:360px; font-size:14.5px; padding:13px 20px;">✅ Gửi phiếu nghiệm thu</button>
+    <div class="status" id="ntSubmitStatus" style="margin-top:8px;"></div>
+  </div>
+</main>
+
+<script>
+(function(){
+  // ====== DÁN LINK APPS SCRIPT (.../exec) VÀO ĐÂY SAU KHI TRIỂN KHAI ======
+  var API_URL = "PASTE_YOUR_APPS_SCRIPT_URL_HERE";
+  // ==========================================================================
+
+  var CHECKLIST_ITEMS = [
+    {id:'san', nhom:'Trần / Tường / Sàn', hangmuc:'Sàn nhà khu vực: Mặt tiền, Lễ tân, Khu chờ khách, Khu gội/xả, Khu cắt, Hành lang, cầu thang, WC, Phòng paradise, Kho, toàn salon', tieuChuan:'Sạch kể cả góc tường, chân nội thất, gầm bàn/tủ'},
+    {id:'tuong-tran', nhom:'Trần / Tường / Sàn', hangmuc:'Tường & trần nhà khu vực: Mặt tiền, Lễ tân, Khu chờ khách, Khu gội/xả, Khu cắt, Hành lang, cầu thang, WC, Phòng paradise, Kho, toàn salon', tieuChuan:'Không mạng nhện góc trần/tường; không bụi dày ở phào chỉ'},
+    {id:'mat-kinh', nhom:'Trần / Tường / Sàn', hangmuc:'Mặt kính, vách kính, cửa ra vào, cửa sổ các khu vực', tieuChuan:'Không vết bẩn, ố, dấu tay, mạng nhện, keo'},
+    {id:'ghe-cat', nhom:'Ghế Cắt', hangmuc:'Ghế Maybach, Ghế cắt đen', tieuChuan:'Không bụi/tóc ở khe nối, tay vịn, chân đế; quanh ghế không rác, tóc con'},
+    {id:'giuong-khung', nhom:'Giường DV & Bồn gội', hangmuc:'Khung/bề mặt cứng (S90, H88, Paradise, Spa, Xả, Gội, LRT), bề mặt da/simili, đệm lót, gối tựa, bồn gội', tieuChuan:'Không bụi/tóc ở khung, chân đế, gầm giường; bề mặt da/simili sạch, không dính/nhớt, không mùi; bồn gội không cặn/tóc/vết ố, chân vòi sạch'},
+    {id:'guong-cat', nhom:'Gương cắt', hangmuc:'Hệ gương cắt, gương sắt đen, khoang cắt', tieuChuan:'Gương không vệt loang; ngăn kéo không bụi/rác'},
+    {id:'sofa', nhom:'Sofa & bàn ghế chờ', hangmuc:'Bàn/ghế chờ, ghế sofa', tieuChuan:'Không bụi/vết bám trên mặt bàn, mặt ngồi, chân/khung'},
+    {id:'quat', nhom:'Quạt', hangmuc:'Quạt cây, treo tường, quạt trần', tieuChuan:'Vỏ, cánh, lưới bảo vệ không bụi bám thành lớp'},
+    {id:'may-dv-1', nhom:'Máy dịch vụ', hangmuc:'Máy 6in1, xông, hút mụn, súng hoa hồng, tẩy da chết, hấp đá, sấy tóc, xe đẩy hoá chất, vali dụng cụ stylist', tieuChuan:'Vỏ, khe tản nhiệt không bụi/tóc, dây điện gọn; xe đẩy không cặn hoá chất khô bám đáy khay; vali không tóc vụn/bụi trong khoang chứa'},
+    {id:'may-dv-2', nhom:'Vận hành', hangmuc:'Laptop, máy tính bảng, máy quẹt thẻ, máy in, khay tiền, điện thoại, loa, tivi, máy giặt/sấy khăn', tieuChuan:'Màn hình/vỏ sạch, không vết tay loang; máy giặt/sấy khăn không bụi/tóc bám vỏ máy'},
+    {id:'quay-ke-vattu', nhom:'Quầy, Tủ, Kệ', hangmuc:'Kệ vật tư, tủ đồ khách hàng, tủ đồ nhân viên, quầy mỹ phẩm, quầy lễ tân', tieuChuan:'Không bụi trên kệ/quầy; ngăn kéo/hộc/nóc sạch; vật tư gọn theo nhóm; không vật lạ, không mùi ẩm mốc; sản phẩm quay nhãn ra ngoài; mặt quầy sạch'},
+    {id:'wc-bon', nhom:'WC', hangmuc:'Bồn WC, lavabo, gương WC', tieuChuan:'Không cặn/ố bám lòng bồn; không cặn/ố ở chân lavabo, mép vòi; gương không vệt loang'}
+  ];
+  var CHECKLIST_BY_ID = {};
+  CHECKLIST_ITEMS.forEach(function(it){ CHECKLIST_BY_ID[it.id] = it; });
+
+  var SALON_ROSTER = [
+    {gdkv:'Nguyễn Việt Cường', salons:['1146 KVC','80 PL BD','401/1 NDT','103 TN','29 HB','1371 PVT','255 NAN','36 N1 BD']},
+    {gdkv:'Phan Thị Hồng Gấm', salons:['148 TD','346 KT','264 LLQ','363 LNQ TN','39 HBT','50BT4 NPC LD','173 TN','202 DC']},
+    {gdkv:'Nguyễn Thị Huệ', salons:['290 QT TH','80 TP TH','595 BT TH','304 NT TH','68 LN NA','58 NVC']},
+    {gdkv:'Trịnh Văn Quang', salons:['76 PVH','1180 QT','12 LDT','32 NAT','483 TN']},
+    {gdkv:'Tống Xuân Quyền', salons:['186 DTH','236 DBT','237 NTT','420 HTP','7 DTP LA','113 THD AG','25 TD']},
+    {gdkv:'Nguyễn Như Quỳnh', salons:['168 NVC','362 NGT BN','4 LQD BN','11 PKT','10 TP','186 QT']},
+    {gdkv:'Nguyễn Thanh Sang', salons:['312 LVS','145 THT','575 AC','730 TL10','708 LTT','190 HB','8 CVL','99 TSN','927 HG']},
+    {gdkv:'Đoàn Trung Đức', salons:['116 TK','109 TQH','62 LH','55A NVL','65 CD','90 NH','382 NT']}
+  ];
+  var SALON_TO_GDKV = {};
+  SALON_ROSTER.forEach(function(g){ g.salons.forEach(function(s){ SALON_TO_GDKV[s] = g.gdkv; }); });
+
+  function callApi(action, data){
+    var payload = Object.assign({ action: action }, data || {});
+    return fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload)
+    }).then(function(r){ return r.json(); });
+  }
+
+  // ---------- Salon select ----------
+  var elSalon = document.getElementById('ntSalon');
+  (function(){
+    var html = '<option value="">— Chọn salon —</option>';
+    SALON_ROSTER.forEach(function(g){
+      html += '<optgroup label="' + g.gdkv + '">';
+      g.salons.forEach(function(s){ html += '<option value="' + s + '">' + s + '</option>'; });
+      html += '</optgroup>';
+    });
+    elSalon.innerHTML = html;
+  })();
+
+  var elGdkvReadout = document.getElementById('ntGdkvReadout');
+  var elMonth = document.getElementById('ntMonth');
+  var elYear = document.getElementById('ntYear');
+  function getPeriod(){
+    var pad = function(n){ return (n<10?'0':'')+n; };
+    return elYear.value + '-' + pad(parseInt(elMonth.value, 10));
+  }
+  var elNguoi = document.getElementById('ntNguoi');
+  var elLoadBtn = document.getElementById('ntLoadBtn');
+  var elDeleteWrap = document.getElementById('ntDeleteWrap');
+  var elDeleteBtn = document.getElementById('ntDeleteBtn');
+  var elStatus = document.getElementById('ntStatus');
+  var elProgress = document.getElementById('ntProgress');
+  var elProgressFill = document.getElementById('ntProgressFill');
+  var elProgressText = document.getElementById('ntProgressText');
+  var elTableWrap = document.getElementById('ntTableWrap');
+  var elTableBody = document.getElementById('ntTableBody');
+  var elSubmitWrap = document.getElementById('ntSubmitWrap');
+  var elSubmitBtn = document.getElementById('ntSubmitBtn');
+  var elSubmitStatus = document.getElementById('ntSubmitStatus');
+
+  (function(){
+    var now = new Date();
+    var monthHtml = '';
+    for (var m = 1; m <= 12; m++){ monthHtml += '<option value="' + m + '"' + (m === now.getMonth()+1 ? ' selected' : '') + '>Tháng ' + m + '</option>'; }
+    elMonth.innerHTML = monthHtml;
+    var yearHtml = '';
+    var curYear = now.getFullYear();
+    for (var y = curYear - 1; y <= curYear + 1; y++){ yearHtml += '<option value="' + y + '"' + (y === curYear ? ' selected' : '') + '>' + y + '</option>'; }
+    elYear.innerHTML = yearHtml;
+  })();
+
+  var state = null;
+
+  function fmtTime(iso){
+    if (!iso) return '';
+    try{
+      var d = new Date(iso);
+      var pad = function(n){ return (n<10?'0':'')+n; };
+      return pad(d.getHours())+':'+pad(d.getMinutes())+' '+pad(d.getDate())+'/'+pad(d.getMonth()+1)+'/'+d.getFullYear();
+    }catch(e){ return ''; }
+  }
+  function setStatus(msg, kind){
+    elStatus.textContent = msg;
+    elStatus.className = 'status' + (kind ? ' ' + kind : '');
+  }
+  function updateGdkvReadout(salon){
+    var gdkv = SALON_TO_GDKV[salon];
+    if (gdkv){ elGdkvReadout.textContent = '🧭 GDKV: ' + gdkv; elGdkvReadout.style.display = 'inline-flex'; }
+    else { elGdkvReadout.style.display = 'none'; }
+    return gdkv || null;
+  }
+  elSalon.addEventListener('change', function(){ updateGdkvReadout(elSalon.value); });
+
+  function blankState(salon, period){
+    return { salon: salon, gdkv: SALON_TO_GDKV[salon] || null, period: period, nguoi: elNguoi.value.trim(), items: {} };
+  }
+
+  function loadRecord(){
+    var salon = elSalon.value.trim();
+    var period = getPeriod();
+    if (!salon || !period){ setStatus('Chọn salon và kỳ (tháng) trước khi tải phiếu.', 'warn'); return; }
+    updateGdkvReadout(salon);
+    elDeleteWrap.style.display = 'block';
+    setStatus('Đang tải phiếu...', '');
+    callApi('getRecord', { salon: salon, period: period }).then(function(rec){
+      if (rec && rec.ok === false){ throw new Error(rec.error || 'lỗi'); }
+      if (rec && rec.exists){
+        state = { salon: rec.salon || salon, gdkv: rec.gdkv || SALON_TO_GDKV[salon] || null, period: rec.period || period, nguoi: rec.nguoi || elNguoi.value.trim(), items: rec.items || {} };
+        elNguoi.value = state.nguoi;
+        setStatus('Đã tải phiếu đã lưu' + (rec.updatedAt ? ' · cập nhật lúc ' + fmtTime(rec.updatedAt) : ''), 'good');
+      } else {
+        state = blankState(salon, period);
+        setStatus('Phiếu mới cho ' + salon + ' — chưa có dữ liệu, bắt đầu tích nhé.', '');
+      }
+      renderTable();
+    }).catch(function(err){
+      state = blankState(salon, period);
+      setStatus('Không tải được dữ liệu đã lưu (' + (err && err.message || 'lỗi') + ') — đang dùng phiếu tạm.', 'bad');
+      renderTable();
+    });
+  }
+
+  function updateProgress(){
+    var done = 0;
+    CHECKLIST_ITEMS.forEach(function(it){ if (state.items[it.id] && state.items[it.id].dat) done++; });
+    var pct = Math.round(done / CHECKLIST_ITEMS.length * 100);
+    elProgressFill.style.width = pct + '%';
+    elProgressText.textContent = done + '/' + CHECKLIST_ITEMS.length + ' đạt (' + pct + '%)';
+  }
+
+  function photoGalleryHtml(itemId, photos){
+    if (!photos || !photos.length) return '';
+    var html = '<div class="photo-gallery">';
+    photos.forEach(function(p){
+      html +=
+        '<div class="photo-thumb-wrap">' +
+          '<img class="photo-thumb" src="' + p.photoUrl + '" alt="Ảnh nghiệm thu">' +
+          '<button type="button" class="photo-del" data-delphoto="' + itemId + '" data-photoid="' + p.photoId + '">×</button>' +
+        '</div>';
+    });
+    html += '</div>';
+    return html;
+  }
+
+  function rowHtml(it, stt){
+    var rec = state.items[it.id] || {};
+    var photos = rec.photos || [];
+    var ownerChip = it.owner ? '<div class="owner-chip" style="display:inline-flex; margin-top:4px;">🛡️ ' + it.owner + ' · ' + it.freq + '</div>' : '';
+    return (
+      '<tr class="' + (rec.dat ? 'done' : '') + '" data-item="' + it.id + '">' +
+        '<td class="col-zone">' + it.nhom + '</td>' +
+        '<td class="col-stt">' + stt + '</td>' +
+        '<td class="col-item">' + it.hangmuc + ownerChip + '</td>' +
+        '<td class="col-std">' + it.tieuChuan + '</td>' +
+        '<td class="col-result"><input type="checkbox" class="result-check" data-check="' + it.id + '"' + (rec.dat ? ' checked' : '') + '></td>' +
+        '<td class="col-photo">' +
+          photoGalleryHtml(it.id, photos) +
+          (photos.length >= 10
+            ? '<span class="photo-disabled">Đã đủ 10 ảnh</span>'
+            : '<label class="photo-add-btn">+ Ảnh (' + photos.length + '/10)<input type="file" accept="image/*" multiple data-upload="' + it.id + '"></label>') +
+        '</td>' +
+        '<td class="col-note"><textarea class="note-input" data-note="' + it.id + '" placeholder="Ghi chú">' + (rec.ghiChu || '') + '</textarea></td>' +
+      '</tr>'
+    );
+  }
+
+  function renderTable(){
+    elTableWrap.style.display = 'block';
+    elProgress.style.display = 'flex';
+    elSubmitWrap.style.display = 'block';
+    var html = '';
+    CHECKLIST_ITEMS.forEach(function(it, idx){ html += rowHtml(it, idx + 1); });
+    elTableBody.innerHTML = html;
+    updateProgress();
+    wireTableEvents();
+  }
+
+  function saveOne(itemId, extra){
+    var rec = state.items[itemId] || {};
+    var item = CHECKLIST_BY_ID[itemId];
+    var idx = CHECKLIST_ITEMS.indexOf(item) + 1;
+    var payload = {
+      salon: state.salon, gdkv: state.gdkv, period: state.period, nguoi: elNguoi.value.trim(),
+      itemId: itemId, nhom: item.nhom, stt: idx, hangmuc: item.hangmuc, tieuChuan: item.tieuChuan,
+      dat: !!rec.dat, ghiChu: rec.ghiChu || ''
+    };
+    Object.assign(payload, extra || {});
+    setStatus('Đang lưu...', '');
+    return callApi('saveItem', payload).then(function(res){
+      if (res && res.ok === false){ throw new Error(res.error || 'lỗi'); }
+      setStatus('Đã lưu lúc ' + fmtTime(res.updatedAt), 'good');
+      return res;
+    }).catch(function(err){
+      setStatus('Lưu thất bại (' + (err && err.message || 'lỗi') + ')', 'bad');
+      throw err;
+    });
+  }
+
+  function wireTableEvents(){
+    elTableBody.querySelectorAll('[data-check]').forEach(function(cb){
+      cb.addEventListener('change', function(){
+        var id = cb.getAttribute('data-check');
+        state.items[id] = Object.assign({}, state.items[id], { dat: cb.checked });
+        cb.closest('tr').classList.toggle('done', cb.checked);
+        updateProgress();
+        saveOne(id);
+      });
+    });
+    elTableBody.querySelectorAll('[data-note]').forEach(function(ta){
+      ta.addEventListener('blur', function(){
+        var id = ta.getAttribute('data-note');
+        state.items[id] = Object.assign({}, state.items[id], { ghiChu: ta.value });
+        saveOne(id);
+      });
+    });
+    elTableBody.querySelectorAll('[data-upload]').forEach(function(inp){
+      inp.addEventListener('change', function(){
+        var id = inp.getAttribute('data-upload');
+        var files = inp.files;
+        if (files && files.length) uploadPhotos(id, files);
+      });
+    });
+    elTableBody.querySelectorAll('[data-delphoto]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var id = btn.getAttribute('data-delphoto');
+        var photoId = btn.getAttribute('data-photoid');
+        if (!confirm('Xoá ảnh này?')) return;
+        setStatus('Đang xoá ảnh...', '');
+        callApi('deletePhoto', { salon: state.salon, period: state.period, itemId: id, photoId: photoId }).then(function(){
+          var rec = state.items[id] || {};
+          rec.photos = (rec.photos || []).filter(function(p){ return p.photoId !== photoId; });
+          state.items[id] = rec;
+          renderTable();
+          setStatus('Đã xoá ảnh.', 'good');
+        }).catch(function(err){ setStatus('Xoá ảnh lỗi (' + (err && err.message || 'lỗi') + ')', 'bad'); });
+      });
+    });
+  }
+
+  function fmtTimestampLine(d){
+    var pad = function(n){ return (n<10?'0':'')+n; };
+    var wd = ['CN','Th2','Th3','Th4','Th5','Th6','Th7'][d.getDay()];
+    return wd + ' ' + pad(d.getDate())+'/'+pad(d.getMonth()+1)+'/'+d.getFullYear()+' '+pad(d.getHours())+':'+pad(d.getMinutes());
+  }
+  function burnTimestamp(canvas, ctx, labelLine, timeLine){
+    var cw = canvas.width, ch = canvas.height;
+    var fontSize = Math.max(15, Math.round(cw * 0.032));
+    var pad = Math.round(fontSize * 0.65);
+    var lineH = Math.round(fontSize * 1.3);
+    var lines = [labelLine, timeLine].filter(Boolean);
+    var barH = lineH * lines.length + pad * 1.6;
+    var grad = ctx.createLinearGradient(0, ch - barH, 0, ch);
+    grad.addColorStop(0, 'rgba(0,0,0,0)');
+    grad.addColorStop(1, 'rgba(0,0,0,0.62)');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, ch - barH, cw, barH);
+    ctx.fillStyle = '#ffffff';
+    ctx.textAlign = 'left';
+    ctx.textBaseline = 'alphabetic';
+    ctx.shadowColor = 'rgba(0,0,0,0.5)';
+    ctx.shadowBlur = Math.round(fontSize * 0.15);
+    var y = ch - pad;
+    for (var i = lines.length - 1; i >= 0; i--){
+      ctx.font = (i === lines.length - 1 ? '700 ' : '500 ') + fontSize + 'px -apple-system, "Segoe UI", Arial, sans-serif';
+      ctx.fillText(lines[i], pad, y);
+      y -= lineH;
+    }
+    ctx.shadowBlur = 0;
+  }
+  function processPhoto(file, maxDim, quality, labelLine){
+    return new Promise(function(resolve){
+      if (!file.type || file.type.indexOf('image/') !== 0 || file.type === 'image/gif' || file.type === 'image/svg+xml'){
+        var fr = new FileReader();
+        fr.onload = function(){ resolve(fr.result); };
+        fr.readAsDataURL(file);
+        return;
+      }
+      var img = new Image();
+      var url = URL.createObjectURL(file);
+      img.onload = function(){
+        URL.revokeObjectURL(url);
+        var w = img.naturalWidth, h = img.naturalHeight;
+        var scale = Math.min(1, maxDim / Math.max(w, h));
+        var cw = Math.max(1, Math.round(w * scale)), ch = Math.max(1, Math.round(h * scale));
+        var canvas = document.createElement('canvas');
+        canvas.width = cw; canvas.height = ch;
+        var ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, cw, ch);
+        try{ burnTimestamp(canvas, ctx, labelLine, fmtTimestampLine(new Date())); }catch(e){}
+        resolve(canvas.toDataURL('image/jpeg', quality));
+      };
+      img.onerror = function(){
+        URL.revokeObjectURL(url);
+        var fr = new FileReader();
+        fr.onload = function(){ resolve(fr.result); };
+        fr.readAsDataURL(file);
+      };
+      img.src = url;
+    });
+  }
+
+  var MAX_PHOTOS_PER_ITEM = 10;
+
+  function uploadPhotos(itemId, fileList){
+    var row = elTableBody.querySelector('tr[data-item="' + itemId + '"] .col-photo');
+    var files = Array.prototype.slice.call(fileList);
+    var existingCount = ((state.items[itemId] || {}).photos || []).length;
+    var remaining = MAX_PHOTOS_PER_ITEM - existingCount;
+    if (remaining <= 0){
+      alert('Hạng mục này đã có đủ ' + MAX_PHOTOS_PER_ITEM + ' ảnh — xoá bớt ảnh cũ trước khi thêm ảnh mới.');
+      return;
+    }
+    if (files.length > remaining){
+      alert('Hạng mục này chỉ còn ' + remaining + ' chỗ trống (tối đa ' + MAX_PHOTOS_PER_ITEM + ' ảnh/hạng mục). Chỉ lấy ' + remaining + ' ảnh đầu trong số ' + files.length + ' ảnh vừa chọn.');
+      files = files.slice(0, remaining);
+    }
+    var item = CHECKLIST_BY_ID[itemId];
+    var label = (state.salon || '') + (item ? ' · ' + item.hangmuc : '');
+    if (label.length > 60) label = label.slice(0, 57) + '...';
+    if (row) row.insertAdjacentHTML('beforeend', '<div class="photo-disabled" data-uploading="1">Đang xử lý ' + files.length + ' ảnh...</div>');
+    Promise.all(files.map(function(f){ return processPhoto(f, 1600, 0.72, label); })).then(function(dataUrls){
+      return saveOne(itemId, { photosBase64: dataUrls });
+    }).then(function(res){
+      state.items[itemId] = Object.assign({}, state.items[itemId], { photos: res.photos });
+      renderTable();
+    }).catch(function(err){
+      var flag = row && row.querySelector('[data-uploading]');
+      if (flag) flag.textContent = 'Tải ảnh lỗi (' + (err && err.message || 'lỗi') + '), thử lại.';
+    });
+  }
+
+  elLoadBtn.addEventListener('click', loadRecord);
+  elDeleteBtn.addEventListener('click', function(){
+    if (!state) return;
+    if (!confirm('Xoá toàn bộ phiếu "' + state.salon + ' — ' + state.period + '"? Không hoàn tác được.')) return;
+    setStatus('Đang xoá phiếu...', '');
+    callApi('deleteRecord', { salon: state.salon, period: state.period }).then(function(){
+      setStatus('Đã xoá phiếu.', 'good');
+      elTableWrap.style.display = 'none'; elProgress.style.display = 'none'; elDeleteWrap.style.display = 'none'; elGdkvReadout.style.display = 'none';
+      state = null;
+    }).catch(function(err){ setStatus('Xoá thất bại (' + (err && err.message || 'lỗi') + ')', 'bad'); });
+  });
+
+  elSubmitBtn.addEventListener('click', function(){
+    if (!state){ alert('Chưa có phiếu nào đang mở — chọn salon + kỳ và bấm "Tải / Tạo phiếu" trước.'); return; }
+    elSubmitBtn.disabled = true;
+    elSubmitBtn.textContent = 'Đang gửi...';
+    elSubmitStatus.textContent = 'Đang lưu lại toàn bộ ' + CHECKLIST_ITEMS.length + ' hạng mục...';
+    elSubmitStatus.className = 'status';
+    var chain = Promise.resolve();
+    var failCount = 0;
+    CHECKLIST_ITEMS.forEach(function(it){
+      chain = chain.then(function(){ return saveOne(it.id).catch(function(){ failCount++; }); });
+    });
+    chain.then(function(){
+      elSubmitBtn.disabled = false;
+      elSubmitBtn.textContent = '✅ Gửi phiếu nghiệm thu';
+      if (failCount > 0){
+        elSubmitStatus.textContent = '⚠️ Gửi xong nhưng có ' + failCount + ' hạng mục lưu lỗi — kiểm tra lại đường truyền rồi bấm Gửi lại.';
+        elSubmitStatus.className = 'status bad';
+      } else {
+        var doneCount = 0;
+        CHECKLIST_ITEMS.forEach(function(it){ if (state.items[it.id] && state.items[it.id].dat) doneCount++; });
+        var now = new Date();
+        var pad = function(n){ return (n<10?'0':'')+n; };
+        var timeStr = pad(now.getHours())+':'+pad(now.getMinutes())+' '+pad(now.getDate())+'/'+pad(now.getMonth()+1)+'/'+now.getFullYear();
+        elSubmitStatus.textContent = '✅ Đã gửi thành công lúc ' + timeStr + ' — ' + doneCount + '/' + CHECKLIST_ITEMS.length + ' hạng mục đạt. Toàn bộ dữ liệu đã lên Google Sheet.';
+        elSubmitStatus.className = 'status good';
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>

@@ -309,7 +309,19 @@
     else { elGdkvReadout.style.display = 'none'; }
     return gdkv || null;
   }
-  elSalon.addEventListener('change', function(){ updateGdkvReadout(elSalon.value); });
+  function resetFormForNewSelection(){
+    // Đổi salon/tháng/năm mà chưa bấm "Tải / Tạo phiếu" lại thì ẩn bảng cũ đi ngay,
+    // tránh trường hợp tích/tải ảnh bị lưu nhầm sang salon vừa chọn trước đó.
+    state = null;
+    elTableWrap.style.display = 'none';
+    elProgress.style.display = 'none';
+    elSubmitWrap.style.display = 'none';
+    elDeleteWrap.style.display = 'none';
+    setStatus('Đã đổi lựa chọn — bấm "Tải / Tạo phiếu" để mở phiếu tương ứng.', 'warn');
+  }
+  elSalon.addEventListener('change', function(){ updateGdkvReadout(elSalon.value); resetFormForNewSelection(); });
+  elMonth.addEventListener('change', resetFormForNewSelection);
+  elYear.addEventListener('change', resetFormForNewSelection);
 
   function blankState(salon, period){
     return { salon: salon, gdkv: SALON_TO_GDKV[salon] || null, period: period, nguoi: elNguoi.value.trim(), items: {} };

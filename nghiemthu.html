@@ -124,14 +124,13 @@
     }
     table.checklist tr.done{border-color:#8fc9ac;}
     table.checklist td{display:block; width:100% !important; padding:6px 0; border-bottom:none;}
+    table.checklist td.col-stt{color:var(--sub); font-size:11px; font-weight:700; padding-top:0;}
+    table.checklist td.col-stt::before{content:"STT "; }
     table.checklist td.col-zone{
       font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--accent);
-      font-weight:800; padding-top:0;
+      font-weight:800;
     }
-    table.checklist td.col-stt{display:inline; color:var(--sub); font-size:11px; font-weight:700;}
-    table.checklist td.col-stt::before{content:"Hạng mục "; }
-    table.checklist td.col-stt::after{content:" · ";}
-    table.checklist td.col-item{display:inline; font-size:15px; font-weight:800;}
+    table.checklist td.col-item{font-size:15px; font-weight:800;}
     table.checklist td.col-std{padding-top:4px;}
     table.checklist td.col-std::before{content:"Tiêu chuẩn đạt: "; font-weight:800; color:var(--ink);}
     table.checklist td.col-result{
@@ -181,8 +180,8 @@
     <table class="checklist">
       <thead>
         <tr>
-          <th class="col-zone">Khu vực</th>
           <th class="col-stt">STT</th>
+          <th class="col-zone">Khu vực</th>
           <th class="col-item">Hạng mục vệ sinh</th>
           <th class="col-std">Tiêu chuẩn đạt</th>
           <th class="col-result">Đạt</th>
@@ -382,8 +381,8 @@
     var ownerChip = it.owner ? '<div class="owner-chip" style="display:inline-flex; margin-top:4px;">🛡️ ' + it.owner + ' · ' + it.freq + '</div>' : '';
     return (
       '<tr class="' + (rec.dat ? 'done' : '') + '" data-item="' + it.id + '">' +
-        '<td class="col-zone">' + it.nhom + '</td>' +
         '<td class="col-stt">' + stt + '</td>' +
+        '<td class="col-zone">' + it.nhom + '</td>' +
         '<td class="col-item">' + it.hangmuc + ownerChip + '</td>' +
         '<td class="col-std">' + it.tieuChuan + '</td>' +
         '<td class="col-result"><input type="checkbox" class="result-check" data-check="' + it.id + '"' + (rec.dat ? ' checked' : '') + '></td>' +
@@ -434,17 +433,22 @@
     elTableBody.querySelectorAll('[data-check]').forEach(function(cb){
       cb.addEventListener('change', function(){
         var id = cb.getAttribute('data-check');
+        var item = CHECKLIST_BY_ID[id];
         state.items[id] = Object.assign({}, state.items[id], { dat: cb.checked });
         cb.closest('tr').classList.toggle('done', cb.checked);
         updateProgress();
-        saveOne(id);
+        saveOne(id).catch(function(err){
+          alert('⚠️ Lưu "' + (item ? item.hangmuc : id) + '" thất bại (' + (err && err.message || 'lỗi') + ').\nVui lòng tích lại ô này hoặc thử lại sau.');
+        });
       });
     });
     elTableBody.querySelectorAll('[data-note]').forEach(function(ta){
       ta.addEventListener('blur', function(){
         var id = ta.getAttribute('data-note');
         state.items[id] = Object.assign({}, state.items[id], { ghiChu: ta.value });
-        saveOne(id);
+        saveOne(id).catch(function(err){
+          alert('⚠️ Lưu ghi chú thất bại (' + (err && err.message || 'lỗi') + ').\nVui lòng thử lại.');
+        });
       });
     });
     elTableBody.querySelectorAll('[data-upload]').forEach(function(inp){
@@ -609,6 +613,7 @@
         elSubmitBtn.textContent = '✅ Gửi phiếu nghiệm thu';
         elSubmitStatus.textContent = '⚠️ Gửi lỗi (' + (err && err.message || 'lỗi') + ') — kiểm tra lại đường truyền rồi bấm Gửi lại.';
         elSubmitStatus.className = 'status bad';
+        alert('⚠️ GỬI PHIẾU THẤT BẠI (' + (err && err.message || 'lỗi') + ')\nDữ liệu CHƯA lên Google Sheet — vui lòng bấm "Gửi phiếu nghiệm thu" lại.');
       });
   });
 })();

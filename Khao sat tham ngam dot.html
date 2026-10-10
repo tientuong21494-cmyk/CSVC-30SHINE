@@ -1,0 +1,584 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1D3557">
+<title>Khảo sát thấm dột</title>
+<style>
+  :root{
+    --bg:#F3F5F7; --surface:#FFFFFF; --surface-alt:#EEF1F5;
+    --ink:#1B222C; --ink-muted:#5B6472; --ink-faint:#8891A0;
+    --border:#D5DCE4; --border-soft:#E9EDF2;
+    --accent:#1D3557; --accent-strong:#132840; --accent-soft:#E4EAF3; --accent-soft-2:#EEF2F8;
+    --ok:#1F7A4D; --ok-soft:#E4F3EA; --bad:#B3311C; --bad-soft:#FBEAE7;
+    --shadow-sm:0 1px 2px rgba(20,26,36,.06), 0 1px 1px rgba(20,26,36,.04);
+    --shadow-up:0 -4px 16px rgba(20,26,36,.10);
+    --font: 'Segoe UI', system-ui, -apple-system, Roboto, 'Helvetica Neue', Arial, sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#12161C; --surface:#181D25; --surface-alt:#1F2530;
+      --ink:#E7EAEE; --ink-muted:#9AA4B2; --ink-faint:#6B7382;
+      --border:#2E3542; --border-soft:#242A35;
+      --accent:#7EA0CE; --accent-strong:#9FBBE0; --accent-soft:#1E2A3E; --accent-soft-2:#202836;
+      --ok:#5FBE8B; --ok-soft:#173226; --bad:#E28A7C; --bad-soft:#32201C;
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#12161C; --surface:#181D25; --surface-alt:#1F2530;
+    --ink:#E7EAEE; --ink-muted:#9AA4B2; --ink-faint:#6B7382;
+    --border:#2E3542; --border-soft:#242A35;
+    --accent:#7EA0CE; --accent-strong:#9FBBE0; --accent-soft:#1E2A3E; --accent-soft-2:#202836;
+    --ok:#5FBE8B; --ok-soft:#173226; --bad:#E28A7C; --bad-soft:#32201C;
+  }
+  *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html{ -webkit-text-size-adjust:100%; }
+  body{ margin:0; background:var(--bg); color:var(--ink); font-family:var(--font); font-size:16px; line-height:1.45; -webkit-font-smoothing:antialiased; }
+  button, label, input, select, textarea{ touch-action:manipulation; }
+
+  /* Thanh tiến độ dính trên cùng */
+  .topbar{ position:sticky; top:0; z-index:50; background:var(--accent); color:#fff; padding:calc(.6rem + env(safe-area-inset-top)) 16px .6rem; }
+  .topbar .row{ display:flex; justify-content:space-between; align-items:baseline; gap:.5rem; }
+  .topbar .t{ font-weight:700; font-size:1rem; }
+  .topbar .p{ font-size:.85rem; opacity:.9; white-space:nowrap; }
+  .bar{ height:6px; border-radius:99px; background:rgba(255,255,255,.25); margin-top:.45rem; overflow:hidden; }
+  .bar i{ display:block; height:100%; width:0; background:#fff; border-radius:99px; transition:width .25s; }
+
+  .wrap{ max-width:560px; margin:0 auto; padding:12px 12px calc(96px + env(safe-area-inset-bottom)); }
+  .intro{ font-size:.9rem; color:var(--ink-muted); margin:4px 4px 12px; }
+
+  .card{ background:var(--surface); border:1px solid var(--border-soft); border-radius:16px; box-shadow:var(--shadow-sm); padding:16px; margin-bottom:12px; scroll-margin-top:84px; }
+  .card.invalid{ border-color:var(--bad); box-shadow:0 0 0 2px var(--bad-soft); }
+  .card.done .step{ background:var(--ok); }
+  .card h2{ font-size:1.05rem; line-height:1.35; margin:0 0 14px; display:flex; align-items:flex-start; gap:10px; }
+  .card h2 small{ display:block; font-weight:400; font-size:.85rem; color:var(--ink-faint); margin-top:3px; }
+  .step{ display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; border-radius:50%; background:var(--accent); color:#fff; font-size:.85rem; font-weight:700; flex:none; }
+  .card-err{ display:none; background:var(--bad-soft); color:var(--bad); border-radius:10px; padding:10px 12px; font-size:.9rem; margin-bottom:12px; }
+  .card.invalid .card-err{ display:block; }
+  .card-err ul{ margin:0; padding-left:1.1rem; }
+
+  .field{ margin-bottom:18px; }
+  .field:last-child{ margin-bottom:0; }
+  .lbl{ display:block; font-size:.95rem; font-weight:600; margin-bottom:8px; }
+  .hint{ font-size:.85rem; color:var(--ink-faint); margin-top:6px; }
+  .req{ color:var(--bad); }
+
+  /* Ô nhập: cỡ chữ 16px để iPhone không tự phóng to khi bấm vào */
+  input[type="text"], input[type="number"], select, textarea{
+    width:100%; font-family:inherit; font-size:16px; color:var(--ink); background:var(--surface-alt);
+    border:1px solid var(--border); border-radius:12px; padding:0 14px; min-height:50px; outline:none; -webkit-appearance:none; appearance:none;
+  }
+  select{ background-image:linear-gradient(45deg,transparent 50%,var(--ink-muted) 50%),linear-gradient(135deg,var(--ink-muted) 50%,transparent 50%);
+    background-position:calc(100% - 20px) 50%, calc(100% - 14px) 50%; background-size:6px 6px; background-repeat:no-repeat; padding-right:40px; }
+  textarea{ padding:12px 14px; min-height:110px; resize:vertical; line-height:1.45; }
+  input:focus, select:focus, textarea:focus{ border-color:var(--accent); background:var(--surface); box-shadow:0 0 0 3px var(--accent-soft); }
+  input[readonly]{ color:var(--ink-muted); background:var(--border-soft); }
+  .num-row{ display:flex; align-items:center; gap:10px; }
+  .num-row input{ flex:1; min-width:0; text-align:center; font-size:20px; font-weight:700; }
+  .num-row input::placeholder{ font-size:16px; font-weight:400; }
+  .num-row .unit{ color:var(--ink-muted); font-size:.95rem; flex:none; }
+  .stepper{ flex:none; width:50px; height:50px; border-radius:12px; border:1px solid var(--border); background:var(--surface); color:var(--accent-strong); font-size:1.5rem; font-weight:700; cursor:pointer; }
+  .stepper:active{ background:var(--accent-soft); }
+
+  /* Ô "không bị..." — ô lớn cả chiều ngang */
+  .none-opt{ display:flex; align-items:center; gap:12px; min-height:54px; padding:12px 14px; border:1.5px solid var(--border); border-radius:12px; background:var(--surface-alt); cursor:pointer; font-weight:600; font-size:.98rem; }
+  .none-opt input{ width:22px; height:22px; flex:none; accent-color:var(--ok); margin:0; }
+  .none-opt:has(input:checked){ border-color:var(--ok); background:var(--ok-soft); color:var(--ok); }
+  .or{ text-align:center; font-size:.82rem; color:var(--ink-faint); margin:12px 0; }
+
+  /* Ô tích chọn nhiều — dạng lưới 2 cột, dễ bấm */
+  .grid{ display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:6px; }
+  .multi{ font-weight:400; font-size:.85rem; color:var(--ink-faint); }
+  .opt > span:last-child{ min-width:0; overflow-wrap:break-word; }
+  .opt{ position:relative; display:flex; align-items:center; gap:6px; min-height:48px; padding:6px 8px; border:1.5px solid var(--border); border-radius:10px; background:var(--surface-alt); cursor:pointer; font-size:.84rem; line-height:1.2; user-select:none; }
+  .opt input{ position:absolute; opacity:0; pointer-events:none; }
+  .opt .box{ flex:none; width:20px; height:20px; border-radius:5px; border:2px solid var(--ink-faint); display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:800; color:transparent; background:var(--surface); }
+  .opt:has(input:checked){ border-color:var(--accent); background:var(--accent-soft); color:var(--accent-strong); font-weight:600; }
+  .opt input:checked + .box{ background:var(--accent); border-color:var(--accent); color:#fff; }
+
+  .detail.off{ display:none; }
+
+  /* Ảnh */
+  .photo-btn{ display:flex; align-items:center; justify-content:center; gap:8px; min-height:56px; border:1.5px dashed var(--accent); border-radius:12px; background:var(--accent-soft-2); color:var(--accent-strong); font-weight:700; font-size:1rem; cursor:pointer; }
+  .photo-btn input{ display:none; }
+  .photo-btn.full{ border-color:var(--border); color:var(--ink-faint); background:var(--surface-alt); }
+  .thumbs{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin-top:10px; }
+  .thumbs:empty{ display:none; }
+  .thumb{ position:relative; aspect-ratio:1; }
+  .thumb img{ display:block; width:100%; height:100%; object-fit:cover; border-radius:10px; border:1px solid var(--border); }
+  .thumb .rm{ position:absolute; top:4px; right:4px; width:32px; height:32px; border-radius:50%; border:none; background:rgba(0,0,0,.6); color:#fff; font-size:1.1rem; font-weight:700; cursor:pointer; padding:0; }
+
+  .dup-warn{ display:none; background:var(--bad-soft); color:var(--bad); border-radius:10px; padding:10px 12px; font-size:.88rem; margin-top:10px; }
+  .dup-warn.show{ display:block; }
+
+  /* Nút gửi dính dưới đáy */
+  .bottombar{ position:fixed; left:0; right:0; bottom:0; z-index:60; background:var(--surface); box-shadow:var(--shadow-up); padding:10px 12px calc(10px + env(safe-area-inset-bottom)); }
+  .bottombar .in{ max-width:560px; margin:0 auto; }
+  .submit-btn{ width:100%; min-height:54px; font-size:1.05rem; font-weight:700; color:#fff; background:var(--accent); border:none; border-radius:14px; cursor:pointer; }
+  .submit-btn:active{ background:var(--accent-strong); }
+  .submit-btn:disabled{ opacity:.5; }
+
+  .overlay{ position:fixed; inset:0; background:rgba(10,14,20,.55); display:none; align-items:flex-end; justify-content:center; z-index:100; }
+  .overlay.show{ display:flex; }
+  .ov-card{ background:var(--surface); border-radius:20px 20px 0 0; width:100%; max-width:560px; padding:22px 16px calc(16px + env(safe-area-inset-bottom)); }
+  .ov-card h3{ margin:0 0 6px; font-size:1.2rem; }
+  .ov-card p{ color:var(--ink-muted); font-size:.95rem; margin:0 0 14px; }
+  .ov-status{ font-size:.95rem; font-weight:600; padding:12px 14px; border-radius:12px; background:var(--accent-soft-2); color:var(--accent-strong); }
+  .ov-status.ok{ background:var(--ok-soft); color:var(--ok); }
+  .ov-status.bad{ background:var(--bad-soft); color:var(--bad); }
+  .ov-close{ margin-top:14px; width:100%; min-height:52px; border-radius:14px; border:1px solid var(--border); background:var(--surface-alt); color:var(--ink); font-weight:700; font-size:1rem; cursor:pointer; }
+  .ov-close:disabled{ opacity:.5; }
+
+  @media (max-width:340px){ .grid{ grid-template-columns:repeat(2, minmax(0,1fr)); } }
+</style>
+
+<div class="topbar">
+  <div class="row"><span class="t">Khảo sát thấm, dột & mùi</span><span class="p" id="progText">0/6 mục</span></div>
+  <div class="bar"><i id="progBar"></i></div>
+</div>
+
+<div class="wrap">
+  <p class="intro">Mỗi salon điền 1 lần. Ô vuông chọn được nhiều đáp án. Bấm nút chụp ảnh để chụp trực tiếp hoặc chọn ảnh có sẵn.</p>
+
+  <form id="surveyForm" novalidate>
+    <!-- 1. Salon -->
+    <div class="card" id="sec1">
+      <h2><span class="step">1</span><span>Salon</span></h2>
+      <div class="card-err"></div>
+      <div class="field">
+        <label class="lbl" for="salon">Chọn salon <span class="req">*</span></label>
+        <select id="salon">
+          <option value="" disabled selected>— Chọn salon —</option>
+        </select>
+        <div class="dup-warn" id="dupWarn"></div>
+      </div>
+      <div class="field">
+        <label class="lbl" for="gdkv">GDKV</label>
+        <input type="text" id="gdkv" readonly placeholder="Tự hiện sau khi chọn salon">
+      </div>
+    </div>
+
+    <!-- 2. Dột -->
+    <div class="card" id="sec2">
+      <h2><span class="step">2</span><span>Salon bạn bị dột ở khu vực nào? <span class="req">*</span><small>(nếu không thì chọn "Salon không bị dột")</small></span></h2>
+      <div class="card-err"></div>
+      <label class="none-opt"><input type="checkbox" id="dotNone"><span>Salon không bị dột</span></label>
+      <div class="detail" id="dotDetail">
+        <div class="or">— hoặc chọn chỗ bị dột —</div>
+        <div class="field"><span class="lbl">Tầng <span class="req">*</span> <span class="multi">(có thể tích chọn nhiều tầng)</span></span><div class="grid" id="dotTang"></div></div>
+        <div class="field"><span class="lbl">Khu vực <span class="req">*</span> <span class="multi">(có thể tích chọn nhiều khu vực)</span></span><div class="grid" id="dotKhuVuc"></div></div>
+        <div class="field"><span class="lbl">Ảnh chỗ bị dột <span class="req">*</span></span><div id="dotPhotos"></div></div>
+      </div>
+    </div>
+
+    <!-- 3. Ngấm, thấm, ẩm mốc -->
+    <div class="card" id="sec3">
+      <h2><span class="step">3</span><span>Salon bạn bị ngấm, thấm, mùi ẩm mốc ở khu vực nào? <span class="req">*</span><small>(nếu không thì chọn "Salon không bị ngấm, thấm, ẩm mốc")</small></span></h2>
+      <div class="card-err"></div>
+      <label class="none-opt"><input type="checkbox" id="thamNone"><span>Salon không bị ngấm, thấm, ẩm mốc</span></label>
+      <div class="detail" id="thamDetail">
+        <div class="or">— hoặc chọn chỗ bị ngấm, thấm —</div>
+        <div class="field"><span class="lbl">Tầng <span class="req">*</span> <span class="multi">(có thể tích chọn nhiều tầng)</span></span><div class="grid" id="thamTang"></div></div>
+        <div class="field"><span class="lbl">Khu vực <span class="req">*</span> <span class="multi">(có thể tích chọn nhiều khu vực)</span></span><div class="grid" id="thamKhuVuc"></div></div>
+        <div class="field">
+          <label class="lbl" for="thamM2">Diện tích bị ngấm, thấm, ẩm mốc khoảng bao nhiêu? <span class="req">*</span></label>
+          <div class="num-row"><input type="text" id="thamM2" inputmode="decimal" placeholder="VD: 2,5"><span class="unit">m²</span></div>
+          <div class="hint">Cộng tổng các chỗ bị thấm. Ước lượng là được.</div>
+        </div>
+        <div class="field"><span class="lbl">Ảnh chỗ bị ngấm, thấm, ẩm mốc <span class="req">*</span></span><div id="thamPhotos"></div></div>
+      </div>
+    </div>
+
+    <!-- 4. Mùi hôi -->
+    <div class="card" id="sec4">
+      <h2><span class="step">4</span><span>Salon bạn có mùi hôi, mùi khó chịu không, ở khu vực nào? <span class="req">*</span><small>(nếu không thì chọn "Salon không có mùi hôi, mùi khó chịu")</small></span></h2>
+      <div class="card-err"></div>
+      <label class="none-opt"><input type="checkbox" id="muiNone"><span>Salon không có mùi hôi, mùi khó chịu</span></label>
+      <div class="detail" id="muiDetail">
+        <div class="or">— hoặc chọn chỗ có mùi —</div>
+        <div class="field"><span class="lbl">Tầng <span class="req">*</span> <span class="multi">(có thể tích chọn nhiều tầng)</span></span><div class="grid" id="muiTang"></div></div>
+        <div class="field"><span class="lbl">Khu vực <span class="req">*</span> <span class="multi">(có thể tích chọn nhiều khu vực)</span></span><div class="grid" id="muiKhuVuc"></div></div>
+        <div class="field">
+          <label class="lbl" for="muiDeXuat">Đề xuất xử lý <span class="req">*</span></label>
+          <textarea id="muiDeXuat" placeholder="VD: lắp thêm quạt hút mùi phòng gội; giặt rèm phòng Paradise; lắp nắp ngăn mùi lỗ thoát giường xả..."></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. Quạt hút mùi phòng Paradise -->
+    <div class="card" id="sec5">
+      <h2><span class="step">5</span><span>Quạt hút mùi phòng Paradise</span></h2>
+      <div class="card-err"></div>
+      <label class="none-opt"><input type="checkbox" id="paraNone"><span>Salon không có phòng Paradise</span></label>
+      <div class="detail" id="paraDetail">
+        <div class="or">— hoặc điền số quạt —</div>
+        <div class="field">
+          <label class="lbl" for="paraQuat">Phòng Paradise đang có mấy quạt hút mùi trên trần? <span class="req">*</span></label>
+          <div class="num-row">
+            <button type="button" class="stepper" data-for="paraQuat" data-d="-1" aria-label="Bớt">−</button>
+            <input type="number" id="paraQuat" min="0" step="1" inputmode="numeric" placeholder="Nhập số">
+            <button type="button" class="stepper" data-for="paraQuat" data-d="1" aria-label="Thêm">+</button>
+          </div>
+          <div class="hint">Chưa có quạt thì bấm − hoặc nhập 0.</div>
+        </div>
+        <div class="field"><span class="lbl">Ảnh trần phòng Paradise (thấy rõ quạt) <span class="req" id="paraPhotoReq">*</span></span><div id="paraPhotos"></div></div>
+      </div>
+    </div>
+
+    <!-- 6. Quạt hút mùi khu cắt xả -->
+    <div class="card" id="sec6">
+      <h2><span class="step">6</span><span>Quạt hút mùi khu vực cắt & xả</span></h2>
+      <div class="card-err"></div>
+      <div class="field">
+        <label class="lbl" for="catQuat">Khu cắt & xả đang có mấy quạt hút mùi trên trần? <span class="req">*</span></label>
+        <div class="num-row">
+          <button type="button" class="stepper" data-for="catQuat" data-d="-1" aria-label="Bớt">−</button>
+          <input type="number" id="catQuat" min="0" step="1" inputmode="numeric" placeholder="Nhập số">
+          <button type="button" class="stepper" data-for="catQuat" data-d="1" aria-label="Thêm">+</button>
+        </div>
+        <div class="hint">Chưa có quạt thì bấm − hoặc nhập 0.</div>
+      </div>
+      <div class="field"><span class="lbl">Ảnh trần khu cắt & xả (thấy rõ quạt) <span class="req" id="catPhotoReq">*</span></span><div id="catPhotos"></div></div>
+    </div>
+
+    <!-- 7. Ghi chú -->
+    <div class="card" id="sec7">
+      <h2><span class="step">7</span><span>Ghi chú thêm <small>(không bắt buộc)</small></span></h2>
+      <textarea id="ghiChu" placeholder="VD: dột từ tháng trước, đã báo nhưng chưa xử lý; mùi nặng nhất vào buổi chiều..."></textarea>
+    </div>
+  </form>
+</div>
+
+<div class="bottombar"><div class="in">
+  <button type="submit" form="surveyForm" class="submit-btn" id="submitBtn">Gửi khảo sát</button>
+</div></div>
+
+<div class="overlay" id="overlay">
+  <div class="ov-card">
+    <h3 id="ovTitle">Đang gửi khảo sát...</h3>
+    <p id="ovSub">Vui lòng giữ trang mở cho đến khi có thông báo đã lưu.</p>
+    <div class="ov-status" id="ovStatus">⏳ Đang gửi lên hệ thống...</div>
+    <button type="button" class="ov-close" id="ovClose" disabled>Đóng</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  // Dán URL Web App của Apps Script (Triển khai > Ứng dụng web) vào đây
+  var SHEET_ENDPOINT = 'https://script.google.com/macros/s/AKfycbwAcIEvhzRgKRfo08GO68FPFquRvZ8NN9WMozYPh-VoH0yLRgdZspTfUj1adOAicf2y/exec';
+  var MAX_PHOTOS = 5;
+
+  var SALON_GDKV = [
+    ['1146 KVC','GDKV Cường'],['80 PL BD','GDKV Cường'],['401/1 NDT','GDKV Cường'],['103 TN','GDKV Cường'],
+    ['29 HB','GDKV Cường'],['1371 PVT','GDKV Cường'],['255 NAN','GDKV Cường'],['36 N1 BD','GDKV Cường'],
+    ['148 TD','GDKV Gấm'],['346 KT','GDKV Gấm'],['264 LLQ','GDKV Gấm'],['363 LNQ TN','GDKV Gấm'],
+    ['39 HBT','GDKV Gấm'],['50BT4 NPC LD','GDKV Gấm'],['173 TN','GDKV Gấm'],['202 DC','GDKV Gấm'],
+    ['290 QT TH','GDKV Huệ'],['80 TP TH','GDKV Huệ'],['595 BT TH','GDKV Huệ'],['304 NT TH','GDKV Huệ'],
+    ['68 LN NA','GDKV Huệ'],['58 NVC','GDKV Huệ'],
+    ['76 PVH','GDKV Quang'],['1180 QT','GDKV Quang'],['12 LDT','GDKV Quang'],['32 NAT','GDKV Quang'],['483 TN','GDKV Quang'],
+    ['186 DTH','GDKV Quyền'],['236 DBT','GDKV Quyền'],['237 NTT','GDKV Quyền'],['420 HTP','GDKV Quyền'],
+    ['7 DTP LA','GDKV Quyền'],['113 THD AG','GDKV Quyền'],['25 TD','GDKV Quyền'],['341 XVNT','GDKV Quyền'],
+    ['168 NVC','GDKV Quỳnh'],['362 NGT BN','GDKV Quỳnh'],['4 LQD BN','GDKV Quỳnh'],['11 PKT','GDKV Quỳnh'],
+    ['10 TP','GDKV Quỳnh'],['186 QT','GDKV Quỳnh'],
+    ['312 LVS','GDKV Sang'],['145 THT','GDKV Sang'],['575 AC','GDKV Sang'],['730 TL10','GDKV Sang'],
+    ['708 LTT','GDKV Sang'],['190 HB','GDKV Sang'],['8 CVL','GDKV Sang'],['99 TSN','GDKV Sang'],
+    ['116 TK','GDKV Đức'],['109 TQH','GDKV Đức'],['62 LH','GDKV Đức'],['55A NVL','GDKV Đức'],
+    ['65 CD','GDKV Đức'],['90 NH','GDKV Đức'],['382 NT','GDKV Đức'],
+    ['927 HG','GDKV Sang']
+  ];
+
+  var TANG = ['Tầng hầm','Tầng 1','Tầng gác lửng','Tầng 2','Tầng 3','Tầng 4','Tầng 5','Tầng 6','Tầng 7'];
+  var KHU_VUC = ['Mặt tiền, nhà để xe','Lễ tân, khu chờ khách','Khu vực cắt & xả','Khu vực gội/Paradise','Khu LRT',
+                 'WC','Hành lang, cầu thang','Phòng kho','Phòng giặt, sấy'];
+
+  var $ = function(id){ return document.getElementById(id); };
+  var form = $('surveyForm');
+
+  // ---- Salon -> GDKV ----
+  var salonSel = $('salon'), gdkvInput = $('gdkv'), dupWarn = $('dupWarn');
+  SALON_GDKV.forEach(function(p){
+    var o = document.createElement('option'); o.value = p[0]; o.textContent = p[0] + ' — ' + p[1].replace('GDKV ', ''); salonSel.appendChild(o);
+  });
+  salonSel.addEventListener('change', function(){
+    var found = SALON_GDKV.filter(function(p){ return p[0] === salonSel.value; })[0];
+    gdkvInput.value = found ? found[1] : '';
+    checkDuplicate();
+  });
+
+  // Báo nếu salon này đã điền trước đó — gửi lại sẽ THAY THẾ dòng cũ trên Sheet
+  function checkDuplicate(){
+    dupWarn.classList.remove('show');
+    if (!salonSel.value || SHEET_ENDPOINT.indexOf('DAN_URL') === 0) return;
+    var salon = salonSel.value;
+    fetch(SHEET_ENDPOINT).then(function(r){ return r.json(); }).then(function(rows){
+      if (salonSel.value !== salon) return;
+      var hit = rows.filter(function(r){ return r.salon === salon; })[0];
+      if (!hit) return;
+      dupWarn.textContent = '⚠️ Salon ' + salon + ' đã điền lúc ' + new Date(hit.time).toLocaleString('vi-VN') +
+        '. Nếu gửi tiếp, dữ liệu cũ sẽ bị THAY THẾ.';
+      dupWarn.classList.add('show');
+    }).catch(function(){});
+  }
+
+  // ---- Ô tích chọn nhiều ----
+  function buildGrid(containerId, name, options){
+    var box = $(containerId);
+    options.forEach(function(opt){
+      var l = document.createElement('label'); l.className = 'opt';
+      var i = document.createElement('input'); i.type = 'checkbox'; i.name = name; i.value = opt;
+      var b = document.createElement('span'); b.className = 'box'; b.textContent = '✓';
+      var s = document.createElement('span'); s.textContent = opt.replace('/', '/​'); // cho phép xuống dòng sau dấu "/"
+      l.appendChild(i); l.appendChild(b); l.appendChild(s); box.appendChild(l);
+    });
+  }
+  function checked(name){
+    return Array.prototype.map.call(document.querySelectorAll('input[name="' + name + '"]:checked'), function(i){ return i.value; });
+  }
+  ['dot','tham','mui'].forEach(function(k){
+    buildGrid(k + 'Tang', k + 'Tang', TANG);
+    buildGrid(k + 'KhuVuc', k + 'KhuVuc', KHU_VUC);
+  });
+
+  // Tích "không bị ..." thì ẩn phần chi tiết
+  ['dot','tham','mui','para'].forEach(function(k){
+    var cb = $(k + 'None'), detail = $(k + 'Detail');
+    cb.addEventListener('change', function(){ detail.classList.toggle('off', cb.checked); });
+  });
+
+  // Nút − / + cho ô số quạt
+  Array.prototype.forEach.call(document.querySelectorAll('.stepper'), function(b){
+    b.addEventListener('click', function(){
+      var inp = $(b.dataset.for);
+      var v = Math.max(0, (parseInt(inp.value, 10) || 0) + Number(b.dataset.d));
+      inp.value = v;
+      inp.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+  });
+
+  // ---- Ảnh ----
+  function compressImage(file){
+    var MAX_DIM = 1200, QUALITY = 0.75;
+    return new Promise(function(resolve, reject){
+      var reader = new FileReader();
+      reader.onload = function(e){
+        var img = new Image();
+        img.onload = function(){
+          var w = img.width, h = img.height;
+          if (w > MAX_DIM || h > MAX_DIM){
+            if (w > h){ h = Math.round(h * MAX_DIM / w); w = MAX_DIM; }
+            else { w = Math.round(w * MAX_DIM / h); h = MAX_DIM; }
+          }
+          var canvas = document.createElement('canvas');
+          canvas.width = w; canvas.height = h;
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+          var dataUrl = canvas.toDataURL('image/jpeg', QUALITY);
+          resolve({ name: file.name.replace(/\.[^.]+$/, '') + '.jpg', type: 'image/jpeg', data: dataUrl.substring(dataUrl.indexOf(',') + 1) });
+        };
+        img.onerror = function(){ reject(new Error('image load failed')); };
+        img.src = e.target.result;
+      };
+      reader.onerror = function(){ reject(reader.error); };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  var photoSets = {};
+  function buildPhotoPicker(containerId){
+    var files = [];
+    photoSets[containerId] = files;
+    var box = $(containerId);
+    var lab = document.createElement('label'); lab.className = 'photo-btn';
+    var inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'image/*'; inp.multiple = true;
+    var txt = document.createElement('span');
+    lab.appendChild(inp); lab.appendChild(txt); box.appendChild(lab);
+    var thumbs = document.createElement('div'); thumbs.className = 'thumbs'; box.appendChild(thumbs);
+
+    function render(){
+      var full = files.length >= MAX_PHOTOS;
+      txt.textContent = full ? 'Đã đủ ' + MAX_PHOTOS + ' ảnh' : '📷 Chụp / chọn ảnh  (' + files.length + '/' + MAX_PHOTOS + ')';
+      lab.classList.toggle('full', full);
+      inp.disabled = full;
+      Array.prototype.forEach.call(thumbs.querySelectorAll('img'), function(im){ URL.revokeObjectURL(im.src); });
+      thumbs.innerHTML = '';
+      files.forEach(function(f, idx){
+        var t = document.createElement('div'); t.className = 'thumb';
+        var im = document.createElement('img'); im.src = URL.createObjectURL(f); im.alt = '';
+        var rm = document.createElement('button'); rm.type = 'button'; rm.className = 'rm'; rm.textContent = '✕'; rm.setAttribute('aria-label', 'Xóa ảnh');
+        rm.addEventListener('click', function(){ files.splice(idx, 1); render(); onChange(); });
+        t.appendChild(im); t.appendChild(rm); thumbs.appendChild(t);
+      });
+    }
+    inp.addEventListener('change', function(){
+      Array.prototype.slice.call(inp.files).forEach(function(f){ if (files.length < MAX_PHOTOS) files.push(f); });
+      inp.value = '';
+      render(); onChange();
+    });
+    render();
+  }
+  ['dotPhotos','thamPhotos','paraPhotos','catPhotos'].forEach(buildPhotoPicker);
+  function encodePhotos(id){ return Promise.all(photoSets[id].map(compressImage)); }
+
+  function intVal(id){ var v = $(id).value.trim(); return v === '' ? null : Number(v); }
+
+  // ---- Kiểm tra theo từng mục ----
+  function sectionErrors(){
+    var e = { sec1: [], sec2: [], sec3: [], sec4: [], sec5: [], sec6: [] };
+    if (!salonSel.value) e.sec1.push('Chưa chọn salon.');
+
+    if (!$('dotNone').checked){
+      if (!checked('dotTang').length && !checked('dotKhuVuc').length && !photoSets.dotPhotos.length){
+        e.sec2.push('Chọn chỗ bị dột, hoặc tích "Salon không bị dột".');
+      } else {
+        if (!checked('dotTang').length) e.sec2.push('Chưa chọn tầng.');
+        if (!checked('dotKhuVuc').length) e.sec2.push('Chưa chọn khu vực.');
+        if (!photoSets.dotPhotos.length) e.sec2.push('Chưa có ảnh.');
+      }
+    }
+    if (!$('thamNone').checked){
+      var m2 = parseFloat($('thamM2').value.replace(',', '.'));
+      if (!checked('thamTang').length && !checked('thamKhuVuc').length && !(m2 > 0) && !photoSets.thamPhotos.length){
+        e.sec3.push('Chọn chỗ bị ngấm, thấm, hoặc tích "Salon không bị ngấm, thấm, ẩm mốc".');
+      } else {
+        if (!checked('thamTang').length) e.sec3.push('Chưa chọn tầng.');
+        if (!checked('thamKhuVuc').length) e.sec3.push('Chưa chọn khu vực.');
+        if (!(m2 > 0)) e.sec3.push('Chưa điền diện tích (m²).');
+        if (!photoSets.thamPhotos.length) e.sec3.push('Chưa có ảnh.');
+      }
+    }
+    if (!$('muiNone').checked){
+      if (!checked('muiTang').length && !checked('muiKhuVuc').length && !$('muiDeXuat').value.trim()){
+        e.sec4.push('Chọn chỗ có mùi, hoặc tích "Salon không có mùi hôi, mùi khó chịu".');
+      } else {
+        if (!checked('muiTang').length) e.sec4.push('Chưa chọn tầng.');
+        if (!checked('muiKhuVuc').length) e.sec4.push('Chưa chọn khu vực.');
+        if (!$('muiDeXuat').value.trim()) e.sec4.push('Chưa ghi đề xuất xử lý.');
+      }
+    }
+    if (!$('paraNone').checked){
+      var pq = intVal('paraQuat');
+      if (pq === null || pq < 0 || pq % 1) e.sec5.push('Điền số quạt (để 0 nếu chưa có), hoặc tích "Salon không có phòng Paradise".');
+      else if (pq > 0 && !photoSets.paraPhotos.length) e.sec5.push('Chưa có ảnh quạt hút mùi.');
+    }
+    var cq = intVal('catQuat');
+    if (cq === null || cq < 0 || cq % 1) e.sec6.push('Điền số quạt (để 0 nếu chưa có).');
+    else if (cq > 0 && !photoSets.catPhotos.length) e.sec6.push('Chưa có ảnh quạt hút mùi.');
+    return e;
+  }
+
+  // Cập nhật thanh tiến độ, tô xanh mục đã xong, gỡ báo lỗi khi đã sửa
+  var progText = $('progText'), progBar = $('progBar');
+  function onChange(){
+    var e = sectionErrors(), done = 0, keys = Object.keys(e);
+    $('paraPhotoReq').style.display = (intVal('paraQuat') || 0) > 0 ? '' : 'none';
+    $('catPhotoReq').style.display = (intVal('catQuat') || 0) > 0 ? '' : 'none';
+    keys.forEach(function(k){
+      var card = $(k), ok = !e[k].length;
+      if (ok) done++;
+      card.classList.toggle('done', ok);
+      if (ok) card.classList.remove('invalid');
+      else if (card.classList.contains('invalid')) showCardErr(card, e[k]);
+    });
+    progText.textContent = done + '/' + keys.length + ' mục';
+    progBar.style.width = (done / keys.length * 100) + '%';
+  }
+  function showCardErr(card, msgs){
+    card.querySelector('.card-err').innerHTML = '<ul>' + msgs.map(function(m){ return '<li>' + m + '</li>'; }).join('') + '</ul>';
+  }
+  form.addEventListener('input', onChange);
+  form.addEventListener('change', onChange);
+  onChange();
+
+  // ---- Gửi ----
+  function sendPayload(payload, attempt){
+    attempt = attempt || 1;
+    return fetch(SHEET_ENDPOINT, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) })
+      .catch(function(err){
+        if (attempt < 3) return new Promise(function(r){ setTimeout(r, attempt * 2000); }).then(function(){ return sendPayload(payload, attempt + 1); });
+        throw err;
+      });
+  }
+  // POST no-cors không đọc được phản hồi -> đọc lại Sheet qua doGet để chắc chắn đã lưu
+  function verifySaved(id, tries){
+    tries = tries || 0;
+    return new Promise(function(r){ setTimeout(r, 5000); }).then(function(){
+      return fetch(SHEET_ENDPOINT).then(function(r){ return r.json(); }).then(function(rows){
+        if (rows.some(function(r){ return r.id === id; })) return true;
+        return tries < 20 ? verifySaved(id, tries + 1) : false;
+      }).catch(function(){ return tries < 20 ? verifySaved(id, tries + 1) : false; });
+    });
+  }
+
+  var overlay = $('overlay'), ovTitle = $('ovTitle'), ovSub = $('ovSub'), ovStatus = $('ovStatus'), ovClose = $('ovClose');
+  var lastPayload = null, saved = false;
+
+  function setStatus(cls, text){ ovStatus.className = 'ov-status' + (cls ? ' ' + cls : ''); ovStatus.textContent = text; }
+
+  function submit(payload){
+    saved = false;
+    ovTitle.textContent = 'Đang gửi khảo sát...';
+    ovSub.textContent = 'Vui lòng giữ màn hình mở cho đến khi có thông báo đã lưu.';
+    setStatus('', '⏳ Đang gửi lên hệ thống...');
+    ovClose.disabled = true; ovClose.textContent = 'Đóng';
+    overlay.classList.add('show');
+    sendPayload(payload).then(function(){ return verifySaved(payload.id); }).then(function(ok){
+      if (ok){
+        saved = true;
+        ovTitle.textContent = '✅ Đã lưu khảo sát';
+        ovSub.textContent = 'Salon ' + payload.salon + ' đã được ghi nhận. Cảm ơn bạn!';
+        setStatus('ok', 'Dữ liệu và ảnh đã lên hệ thống.');
+        ovClose.textContent = 'Đóng';
+      } else { fail(); }
+      ovClose.disabled = false;
+    }).catch(function(){ fail(); ovClose.disabled = false; });
+  }
+  function fail(){
+    ovTitle.textContent = '⚠️ Chưa xác nhận được';
+    ovSub.textContent = 'Có thể do mạng yếu. Dữ liệu bạn điền vẫn còn trên trang.';
+    setStatus('bad', 'Bấm "Gửi lại" để thử lần nữa.');
+    ovClose.textContent = '🔄 Gửi lại';
+  }
+  ovClose.addEventListener('click', function(){
+    if (!saved && lastPayload){ submit(lastPayload); return; }
+    overlay.classList.remove('show');
+    if (saved){ window.scrollTo(0, 0); location.reload(); }
+  });
+
+  form.addEventListener('submit', function(e){
+    e.preventDefault();
+    var errs = sectionErrors(), first = null;
+    Object.keys(errs).forEach(function(k){
+      var card = $(k);
+      if (errs[k].length){ card.classList.add('invalid'); showCardErr(card, errs[k]); if (!first) first = card; }
+      else card.classList.remove('invalid');
+    });
+    if (first){ first.scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
+    if (SHEET_ENDPOINT.indexOf('DAN_URL') === 0){ alert('Form chưa được nối với Google Sheet (thiếu URL Apps Script).'); return; }
+
+    var dotNone = $('dotNone').checked, thamNone = $('thamNone').checked, muiNone = $('muiNone').checked, paraNone = $('paraNone').checked;
+    var btn = $('submitBtn'); btn.disabled = true; btn.textContent = 'Đang nén ảnh...';
+    Promise.all([
+      dotNone ? [] : encodePhotos('dotPhotos'),
+      thamNone ? [] : encodePhotos('thamPhotos'),
+      paraNone ? [] : encodePhotos('paraPhotos'),
+      encodePhotos('catPhotos')
+    ]).then(function(enc){
+      lastPayload = {
+        id: Date.now().toString(36) + Math.random().toString(36).slice(2, 8),
+        salon: salonSel.value,
+        gdkv: gdkvInput.value,
+        dot: { co: !dotNone, tang: dotNone ? [] : checked('dotTang'), khuVuc: dotNone ? [] : checked('dotKhuVuc'), anh: enc[0] },
+        tham: { co: !thamNone, tang: thamNone ? [] : checked('thamTang'), khuVuc: thamNone ? [] : checked('thamKhuVuc'),
+                dienTich: thamNone ? '' : $('thamM2').value.trim().replace(',', '.'), anh: enc[1] },
+        mui: { co: !muiNone, tang: muiNone ? [] : checked('muiTang'), khuVuc: muiNone ? [] : checked('muiKhuVuc'),
+               deXuat: muiNone ? '' : $('muiDeXuat').value.trim() },
+        paradise: { khongCo: paraNone, soQuat: paraNone ? '' : intVal('paraQuat'), anh: enc[2] },
+        catXa: { soQuat: intVal('catQuat'), anh: enc[3] },
+        ghiChu: $('ghiChu').value.trim()
+      };
+      btn.disabled = false; btn.textContent = 'Gửi khảo sát';
+      submit(lastPayload);
+    }).catch(function(){
+      btn.disabled = false; btn.textContent = 'Gửi khảo sát';
+      alert('Không đọc được 1 trong các ảnh. Hãy xóa ảnh đó và chọn lại.');
+    });
+  });
+})();
+</script>

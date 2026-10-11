@@ -1,0 +1,566 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tiêu chuẩn 5S khăn — 30Shine</title>
+<style>
+  :root{
+    --bg:#F3F5F7; --surface:#FFFFFF; --surface-alt:#EAEEF3;
+    --ink:#1B222C; --ink-muted:#5B6472; --ink-faint:#8891A0;
+    --border:#DCE2E9; --border-soft:#E9EDF2;
+    --accent:#1D3557; --accent-strong:#132840; --accent-soft:#E4EAF3; --accent-soft-2:#EEF2F8;
+    --good:#2F7D5C; --good-bg:#E4F3EC; --good-border:#BEE0D0;
+    --bad:#B3453D; --bad-bg:#FBEAE8; --bad-border:#F0C7C3;
+    --warn:#9C6B1F; --warn-bg:#FBF1E1; --warn-border:#EFD9AE;
+    --photo-bg:#F7F8FA; --photo-border:#D3DAE2;
+    --font: 'Segoe UI', system-ui, -apple-system, Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --shadow-sm: 0 1px 2px rgba(20,30,45,.06), 0 1px 1px rgba(20,30,45,.04);
+    color-scheme: light dark;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#12161C; --surface:#181D25; --surface-alt:#1F2530;
+      --ink:#E7EAEE; --ink-muted:#9AA4B2; --ink-faint:#6B7382;
+      --border:#2B323E; --border-soft:#242A35;
+      --accent:#7EA0CE; --accent-strong:#9FBBE0; --accent-soft:#1E2A3E; --accent-soft-2:#202836;
+      --good:#5FBE94; --good-bg:#15291F; --good-border:#254A38;
+      --bad:#E2857D; --bad-bg:#341B19; --bad-border:#4D2925;
+      --warn:#E0AC63; --warn-bg:#332711; --warn-border:#4A3A1C;
+      --photo-bg:#1A1F27; --photo-border:#333B48;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,.3);
+    }
+  }
+  :root[data-theme="dark"]{
+    --bg:#12161C; --surface:#181D25; --surface-alt:#1F2530;
+    --ink:#E7EAEE; --ink-muted:#9AA4B2; --ink-faint:#6B7382;
+    --border:#2B323E; --border-soft:#242A35;
+    --accent:#7EA0CE; --accent-strong:#9FBBE0; --accent-soft:#1E2A3E; --accent-soft-2:#202836;
+    --good:#5FBE94; --good-bg:#15291F; --good-border:#254A38;
+    --bad:#E2857D; --bad-bg:#341B19; --bad-border:#4D2925;
+    --warn:#E0AC63; --warn-bg:#332711; --warn-border:#4A3A1C;
+    --photo-bg:#1A1F27; --photo-border:#333B48;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{ background:var(--bg); color:var(--ink); font-family:var(--font); font-size:15.5px; line-height:1.6; -webkit-font-smoothing:antialiased; }
+  a{ color:var(--accent); }
+
+  /* ---- Header ---- */
+  .doc-header{ background:linear-gradient(180deg, var(--accent-strong), var(--accent) 130%); color:#F3F6FA; padding:2.4rem 2rem 2rem; }
+  .doc-header-inner{ max-width:1180px; margin:0 auto; }
+  .doc-eyebrow{ font-size:.72rem; letter-spacing:.14em; text-transform:uppercase; color:#BFD0E6; margin:0 0 .6rem; }
+  .doc-title{ font-weight:700; font-size:clamp(1.5rem,3.2vw,2.3rem); line-height:1.2; margin:0; color:#FFFFFF; }
+  .doc-sub{ margin:.6rem 0 0; color:#D6E1EE; font-size:.95rem; max-width:70ch; }
+  .doc-actions{ margin-top:1.1rem; display:flex; flex-wrap:wrap; align-items:center; gap:.6rem .9rem; }
+  .export-btn{ font-family:var(--font); font-size:.86rem; font-weight:600; padding:.6rem 1.1rem; border-radius:8px; border:1px solid rgba(255,255,255,.35); background:rgba(255,255,255,.14); color:#fff; cursor:pointer; }
+  .export-btn:hover{ background:rgba(255,255,255,.24); }
+  .export-btn:disabled{ opacity:.6; cursor:default; }
+  .export-hint{ margin:0; font-size:.78rem; color:#C9D6E8; max-width:52ch; }
+
+  /* ---- Layout ---- */
+  .layout{ max-width:1180px; margin:0 auto; display:grid; grid-template-columns:240px minmax(0,1fr); gap:2.2rem; padding:1.6rem 2rem 2rem; align-items:start; }
+  @media (max-width:860px){ .layout{ grid-template-columns:1fr; padding:1.2rem 1rem 2rem; gap:1.2rem; } }
+  .sidebar{ position:sticky; top:1.2rem; background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:1.1rem 1.1rem 1.3rem; box-shadow:var(--shadow-sm); }
+  @media (max-width:860px){ .sidebar{ position:static; } }
+  .toc-title{ font-size:.72rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-faint); margin:0 0 .7rem; }
+  .toc ul{ list-style:none; margin:0; padding:0; }
+  .toc a{ display:block; color:var(--ink-muted); text-decoration:none; font-size:.88rem; padding:.3rem 0; }
+  .toc a:hover{ color:var(--accent); }
+  .main{ min-width:0; }
+
+  .part-title{ font-weight:700; font-size:clamp(1.3rem,2.2vw,1.6rem); color:var(--accent); margin:0 0 .3rem; padding-bottom:.7rem; border-bottom:2px solid var(--accent); }
+  .part-intro{ color:var(--ink-muted); font-size:.95rem; margin:.8rem 0 1.4rem; max-width:74ch; }
+
+  .item{ background:var(--surface); border:1px solid var(--border); border-radius:12px; padding:1.4rem 1.5rem 1.6rem; margin:0 0 1.4rem; box-shadow:var(--shadow-sm); scroll-margin-top:1rem; }
+  @media (max-width:600px){ .item{ padding:1.1rem 1rem 1.2rem; } }
+  .item-title{ font-size:1.15rem; font-weight:700; color:var(--ink); margin:0 0 .5rem; }
+  .item-title .num{ color:var(--accent); margin-right:.4em; }
+  .item-meta{ font-size:.88rem; color:var(--ink-muted); margin:0 0 .9rem; }
+  p{ margin:.7rem 0; }
+
+  /* ---- Tables ---- */
+  .table-scroll{ overflow-x:auto; border:1px solid var(--border); border-radius:10px; margin:0 0 .9rem; }
+  table.data{ width:100%; border-collapse:collapse; min-width:720px; font-size:.87rem; }
+  table.data th, table.data td{ padding:.65rem .8rem; text-align:left; vertical-align:top; border-bottom:1px solid var(--border-soft); border-right:1px solid var(--border-soft); word-break:break-word; }
+  table.data th:last-child, table.data td:last-child{ border-right:none; }
+  table.data tbody tr:last-child td{ border-bottom:none; }
+  table.data thead th{ background:var(--surface-alt); font-weight:700; font-size:.78rem; }
+  table.data th.col-pass{ background:var(--good-bg); color:var(--good); }
+  table.data th.col-fail{ background:var(--bad-bg); color:var(--bad); }
+  table.data th.col-photo{ color:var(--ink-faint); }
+  table.data td.col-item{ font-weight:700; background:var(--accent-soft-2); }
+  table.data td.cell-pass{ border-left:3px solid var(--good); }
+  table.data td.cell-fail{ border-left:3px solid var(--bad); }
+  table.data td.cell-photo{ background:var(--photo-bg); }
+  table.data td.group{ font-weight:700; color:var(--accent-strong); background:var(--accent-soft); vertical-align:middle; }
+  table.data tr.row-huy td{ background:var(--bad-bg); }
+  table.data tr.row-huy td.group{ color:var(--bad); background:var(--bad-bg); }
+
+  table.fixed{ table-layout:fixed; }
+  table.w-phanloai{ min-width:760px; }
+  table.w-phanloai col.c1{ width:15%; } table.w-phanloai col.c2{ width:22%; } table.w-phanloai col.c3{ width:43%; } table.w-phanloai col.c4{ width:20%; }
+  table.w-dat{ min-width:760px; }
+  table.w-dat col.c1{ width:12%; } table.w-dat col.c2{ width:18%; } table.w-dat col.c3{ width:18%; } table.w-dat col.c4{ width:22%; } table.w-dat col.c5{ width:15%; } table.w-dat col.c6{ width:15%; }
+  table.w-xuly{ min-width:720px; }
+  table.w-xuly col.c1{ width:34%; } table.w-xuly col.c2{ width:44%; } table.w-xuly col.c3{ width:22%; }
+  table.w-chode{ min-width:760px; }
+  table.w-chode col.c1{ width:16%; } table.w-chode col.c2{ width:24%; } table.w-chode col.c3{ width:24%; } table.w-chode col.c4{ width:18%; } table.w-chode col.c5{ width:18%; }
+
+  .pill{ display:inline-block; font-weight:700; font-size:.75rem; padding:.12rem .55rem; border-radius:999px; white-space:nowrap; }
+  .pill-ok{ background:var(--good-bg); color:var(--good); border:1px solid var(--good-border); }
+  .pill-bad{ background:var(--bad-bg); color:var(--bad); border:1px solid var(--bad-border); }
+  .pill-warn{ background:var(--warn-bg); color:var(--warn); border:1px solid var(--warn-border); }
+
+  .note{ background:var(--accent-soft-2); border:1px solid var(--border); border-left:3px solid var(--accent); border-radius:8px; padding:.8rem 1rem; margin:1rem 0 0; font-size:.88rem; color:var(--ink-muted); }
+  .note strong{ color:var(--ink); }
+  .note ul{ margin:.3rem 0 0; padding-left:1.2rem; }
+  .warn-note{ background:var(--warn-bg); border:1px solid var(--warn-border); border-left:3px solid var(--warn); border-radius:8px; padding:.8rem 1rem; margin:1rem 0 0; font-size:.88rem; }
+  .warn-note strong{ color:var(--warn); }
+
+  /* ---- Photo cells ---- */
+  .photo-cell{ display:flex; flex-direction:column; gap:.35rem; min-height:2.4rem; }
+  .photo-thumbs, .photo-baked{ display:flex; flex-wrap:wrap; gap:.3rem; }
+  .photo-thumb{ position:relative; width:52px; height:52px; border-radius:6px; overflow:hidden; border:1px solid var(--photo-border); cursor:zoom-in; }
+  .photo-thumb img, .photo-baked img{ width:52px; height:52px; object-fit:cover; display:block; border-radius:6px; }
+  .photo-baked img{ border:1px solid var(--photo-border); cursor:zoom-in; }
+  .photo-thumb .rm{ position:absolute; top:-1px; right:-1px; width:18px; height:18px; border-radius:50%; background:var(--bad); color:#fff; font-size:11px; line-height:17px; text-align:center; cursor:pointer; }
+  .photo-add{ display:inline-flex; align-items:center; justify-content:center; min-height:1.9rem; border:1px dashed var(--photo-border); border-radius:6px; color:var(--ink-faint); font-size:.74rem; cursor:pointer; padding:.3rem .5rem; }
+  .photo-add:hover{ border-color:var(--accent); color:var(--accent); background:var(--accent-soft-2); }
+  .photo-add input{ display:none; }
+
+  .lightbox-overlay{ position:fixed; inset:0; background:rgba(10,14,20,.85); display:flex; align-items:center; justify-content:center; z-index:1000; padding:2rem; }
+  .lightbox-overlay img{ max-width:100%; max-height:100%; border-radius:8px; }
+  .lightbox-overlay button{ position:absolute; color:#fff; background:rgba(0,0,0,.3); border:none; cursor:pointer; }
+  .lb-close{ top:1rem; right:1.2rem; font-size:2rem; border-radius:8px; padding:0 .6rem; }
+  .lb-nav{ top:50%; transform:translateY(-50%); font-size:2.2rem; width:2.6rem; height:2.6rem; border-radius:50%; }
+  .lb-prev{ left:.8rem; } .lb-next{ right:.8rem; }
+  .lb-counter{ position:absolute; bottom:1rem; left:50%; transform:translateX(-50%); color:#fff; font-size:.8rem; background:rgba(0,0,0,.4); border-radius:999px; padding:.25rem .8rem; }
+
+  .doc-footer{ max-width:1180px; margin:0 auto; padding:0 2rem 3rem; color:var(--ink-faint); font-size:.8rem; }
+
+  @media print{
+    body{ background:#fff; }
+    .doc-header{ background:#fff !important; color:#000 !important; padding:0 0 1rem; }
+    .doc-title{ color:#000 !important; } .doc-sub, .doc-eyebrow{ color:#333 !important; }
+    .doc-actions, .sidebar, .photo-add, .photo-thumb .rm{ display:none; }
+    .layout{ display:block; padding:0 .3in; }
+    .item{ box-shadow:none; break-inside:avoid; }
+    table.data{ min-width:0 !important; font-size:9.5px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="doc-header">
+  <div class="doc-header-inner">
+    <p class="doc-eyebrow">Tài liệu nội bộ · 30Shine · CSVC</p>
+    <h1 class="doc-title">TIÊU CHUẨN 5S KHĂN TRONG SALON</h1>
+    <p class="doc-sub">Phân loại khăn, tiêu chí khăn sạch được đưa vào sử dụng, cách xử lý khăn không đạt, và cách sắp xếp chỗ để khăn.</p>
+    <div class="doc-actions">
+      <button type="button" class="export-btn" id="exportPhotosBtn">📤 Xuất file xem (kèm ảnh) để gửi cho người khác</button>
+      <p class="export-hint">Ảnh chỉ lưu trên trình duyệt này. Bấm nút trên để tạo 1 file mới có sẵn ảnh, gửi cho ai họ cũng xem được.</p>
+    </div>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="sidebar">
+    <p class="toc-title">Mục lục</p>
+    <nav class="toc">
+      <ul>
+        <li><a href="#sec1">1. Phân loại khăn</a></li>
+        <li><a href="#sec2">2. Khăn sạch: thế nào là ĐẠT</a></li>
+        <li><a href="#sec3">3. Khăn không đạt: xử lý</a></li>
+        <li><a href="#sec4">4. Sắp xếp và chỗ để</a></li>
+      </ul>
+    </nav>
+  </aside>
+
+  <main class="main">
+    <h2 class="part-title">Tiêu chuẩn 5S khăn</h2>
+    <p class="part-intro">Nguyên tắc chung: nhìn <strong>màu khăn</strong> là biết <strong>khăn dùng để làm gì</strong>. Khăn dịch vụ và khăn lau chùi không bao giờ dùng chung, để chung hay giặt chung.</p>
+
+    <!-- 1. Phân loại -->
+    <article class="item" id="sec1">
+      <h3 class="item-title"><span class="num">1.</span>Phân loại khăn (Sàng lọc – Sắp xếp)</h3>
+      <p class="item-meta">Mỗi nhóm khăn có giỏ bẩn riêng, sọt sạch riêng, mẻ giặt riêng.</p>
+      <div class="table-scroll"><table class="data fixed w-phanloai">
+        <colgroup><col class="c1"><col class="c2"><col class="c3"><col class="c4"></colgroup>
+        <thead><tr><th>Nhóm</th><th>Loại khăn</th><th>Được dùng cho</th><th class="col-photo">📷 Ảnh mẫu</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="group" rowspan="4">Khăn dịch vụ<br><span style="font-weight:400;font-size:.8rem;color:var(--ink-muted)">(dùng cho khách)</span></td>
+            <td><strong>Khăn xám</strong></td>
+            <td>Gội, lau đầu, lau mặt, xả, nhuộm/uốn cho khách. Loại khăn dịch vụ chính.</td>
+            <td class="cell-photo"><div class="photo-cell" data-photo="pl-xam"></div></td>
+          </tr>
+          <tr>
+            <td><strong>Khăn xanh</strong></td>
+            <td>Dùng chung với khăn xám để gội, lau đầu, lau mặt cho khách.</td>
+            <td class="cell-photo"><div class="photo-cell" data-photo="pl-xanh"></div></td>
+          </tr>
+          <tr>
+            <td><strong>Khăn vàng</strong></td>
+            <td>Dùng cho dịch vụ khách như khăn xám.</td>
+            <td class="cell-photo"><div class="photo-cell" data-photo="pl-vang"></div></td>
+          </tr>
+          <tr>
+            <td><strong>Khăn khổ to Paradise</strong></td>
+            <td>Lót giường, đắp cho khách trong phòng Paradise. Chỉ dùng trong phòng Paradise.</td>
+            <td class="cell-photo"><div class="photo-cell" data-photo="pl-paradise"></div></td>
+          </tr>
+          <tr>
+            <td class="group" rowspan="2">Khăn lau chùi<br><span style="font-weight:400;font-size:.8rem;color:var(--ink-muted)">(vệ sinh, không dùng cho khách)</span></td>
+            <td><strong>Khăn nâu</strong></td>
+            <td>Lau dụng cụ, gương, bàn ghế, thấm nước đổ.</td>
+            <td class="cell-photo"><div class="photo-cell" data-photo="pl-nau"></div></td>
+          </tr>
+          <tr>
+            <td><strong>Khăn Moyo</strong> <span style="color:var(--ink-faint);font-size:.8rem">(có chữ Moyo)</span></td>
+            <td>Lau chùi, vệ sinh như khăn nâu.</td>
+            <td class="cell-photo"><div class="photo-cell" data-photo="pl-moyo"></div></td>
+          </tr>
+          <tr class="row-huy">
+            <td class="group">Khăn bị hủy</td>
+            <td><strong>Khăn không đạt</strong> (theo mục 3)</td>
+            <td><strong>Không dùng cho khách, không tận dụng làm khăn lau chùi.</strong> Bỏ vào thùng rác hủy.</td>
+            <td class="cell-photo"><div class="photo-cell" data-photo="pl-huy"></div></td>
+          </tr>
+        </tbody>
+      </table></div>
+      <div class="warn-note"><strong>Lưu ý:</strong> khăn lau chùi (nâu, Moyo) <strong>tuyệt đối không</strong> dùng cho khách, không để ở khu khách nhìn thấy. Khăn dịch vụ <strong>tuyệt đối không</strong> dùng để lau dụng cụ, bàn, gương, sàn, hay dùng cá nhân (lau mũi, lau tay).</div>
+    </article>
+
+    <!-- 2. Khăn sạch đạt -->
+    <article class="item" id="sec2">
+      <h3 class="item-title"><span class="num">2.</span>Khăn sạch: thế nào là ĐẠT (được phép đưa vào sử dụng)</h3>
+      <p class="item-meta">Một khăn chỉ được <strong>đặt lên sọt khăn sạch</strong> và <strong>dùng cho khách</strong> khi đạt <strong>đủ 6 tiêu chí</strong>. Kiểm tra từng khăn lúc gấp.</p>
+      <div class="table-scroll"><table class="data fixed w-dat">
+        <colgroup><col class="c1"><col class="c2"><col class="c3"><col class="c4"><col class="c5"><col class="c6"></colgroup>
+        <thead><tr><th>Tiêu chí</th><th>Cách kiểm tra</th><th class="col-pass">✅ Đạt</th><th class="col-fail">❌ Không đạt</th><th class="col-photo">📷 Ảnh Đạt</th><th class="col-photo">📷 Ảnh Không đạt</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="col-item">1. Mùi</td>
+            <td>Áp khăn lên mũi, ngửi cả 2 mặt.</td>
+            <td class="cell-pass">Không mùi, hoặc chỉ có mùi nước giặt/nước xả nhẹ.</td>
+            <td class="cell-fail">Mùi hôi, chua, mốc, mùi hóa chất, mùi mồ hôi.</td>
+            <td class="cell-photo"><div class="photo-cell" data-photo="dat-mui-dat"></div></td>
+            <td class="cell-photo"><div class="photo-cell" data-photo="dat-mui-kd"></div></td>
+          </tr>
+          <tr>
+            <td class="col-item">2. Độ khô</td>
+            <td>Nắm chặt phần dày nhất của khăn (mép viền) trong 3 giây.</td>
+            <td class="cell-pass">Khô hoàn toàn, kể cả lõi và mép gấp.</td>
+            <td class="cell-fail">Còn ẩm, mát tay, hoặc mép dày còn ẩm.</td>
+            <td class="cell-photo"><div class="photo-cell" data-photo="dat-kho-dat"></div></td>
+            <td class="cell-photo"><div class="photo-cell" data-photo="dat-kho-kd"></div></td>
+          </tr>
+          <tr>
+            <td class="col-item">3. Nhiệt độ</td>
+            <td>Sờ tay vào khăn.</td>
+            <td class="cell-pass">Đã nguội.</td>
+            <td class="cell-fail">Còn ấm, nóng (mới ra máy sấy).</td>
+            <td class="cell-photo"><div class="photo-cell" data-photo="dat-nhiet-dat"></div></td>
+            <td class="cell-photo"><div class="photo-cell" data-photo="dat-nhiet-kd"></div></td>
+          </tr>
+          <tr>
+            <td class="col-item">4. Sạch</td>
+            <td>Nhìn 2 mặt khăn dưới đèn.</td>
+            <td class="cell-pass">Không vết bẩn, không tóc, không xơ vải bám.</td>
+            <td class="cell-fail">Còn tóc, bọt, vết bẩn.</td>
+            <td class="cell-photo"><div class="photo-cell" data-photo="dat-sach-dat"></div></td>
+            <td class="cell-photo"><div class="photo-cell" data-photo="dat-sach-kd"></div></td>
+          </tr>
+          <tr>
+            <td class="col-item">5. Màu</td>
+            <td>Nhìn 2 mặt khăn.</td>
+            <td class="cell-pass">Đều màu.</td>
+            <td class="cell-fail">Ố vàng, loang màu, <strong>dính thuốc nhuộm/hóa chất</strong>.</td>
+            <td class="cell-photo"><div class="photo-cell" data-photo="dat-mau-dat"></div></td>
+            <td class="cell-photo"><div class="photo-cell" data-photo="dat-mau-kd"></div></td>
+          </tr>
+          <tr>
+            <td class="col-item">6. Nguyên vẹn, mềm</td>
+            <td>Kéo nhẹ 2 đầu khăn, sờ mặt khăn.</td>
+            <td class="cell-pass">Mềm, viền nguyên, không thủng.</td>
+            <td class="cell-fail">Sờn, rách, thủng, bung viền, sổ chỉ, cứng.</td>
+            <td class="cell-photo"><div class="photo-cell" data-photo="dat-nguyen-dat"></div></td>
+            <td class="cell-photo"><div class="photo-cell" data-photo="dat-nguyen-kd"></div></td>
+          </tr>
+        </tbody>
+      </table></div>
+      <div class="warn-note"><strong>Quy tắc:</strong> không đạt <strong>1</strong> tiêu chí là <strong>không được dùng cho khách</strong>. Xử lý theo mục 3.</div>
+    </article>
+
+    <!-- 3. Xử lý khăn không đạt -->
+    <article class="item" id="sec3">
+      <h3 class="item-title"><span class="num">3.</span>Khăn không đạt: xử lý như thế nào</h3>
+      <div class="table-scroll"><table class="data fixed w-xuly">
+        <colgroup><col class="c1"><col class="c2"><col class="c3"></colgroup>
+        <thead><tr><th>Tình trạng</th><th>Xử lý</th><th>Kết quả</th></tr></thead>
+        <tbody>
+          <tr><td>Còn ẩm / còn nóng</td><td><strong>Sấy tiếp</strong> hoặc để nguội. <strong>Không gấp</strong> khi còn ẩm/nóng.</td><td><span class="pill pill-ok">Dùng lại</span> sau khi đạt</td></tr>
+          <tr><td>Còn bẩn, tóc, xơ vải</td><td><strong>Giặt lại</strong> 1 lần.</td><td><span class="pill pill-ok">Dùng lại</span> sau khi đạt</td></tr>
+          <tr><td>Có mùi lần đầu</td><td><strong>Giặt xử lý mùi</strong> 1 lần: giặt lại, sấy khô hoàn toàn.</td><td><span class="pill pill-warn">Kiểm tra lại</span></td></tr>
+          <tr><td>Đã giặt xử lý mà <strong>vẫn hôi</strong></td><td>Khăn đã ám mùi, giặt cách nào cũng không hết.</td><td><span class="pill pill-bad">HỦY</span></td></tr>
+          <tr><td>Ố, dính thuốc nhuộm/hóa chất <strong>sau 1 lần giặt</strong></td><td>Không giặt lại nhiều lần.</td><td><span class="pill pill-bad">HỦY</span></td></tr>
+          <tr><td>Sờn, mỏng xơ, rách, thủng, bung viền</td><td>—</td><td><span class="pill pill-bad">HỦY</span></td></tr>
+          <tr><td>Cứng, mất độ mềm</td><td>—</td><td><span class="pill pill-bad">HỦY</span></td></tr>
+        </tbody>
+      </table></div>
+      <div class="note"><strong>Khăn HỦY:</strong>
+        <ul>
+          <li>Bỏ vào <strong>thùng "KHĂN HỦY"</strong> riêng, có nhãn.</li>
+          <li><strong>Không</strong> để lại sọt sạch, <strong>không</strong> tận dụng làm khăn lau chùi.</li>        </ul>
+      </div>
+    </article>
+
+    <!-- 4. Sắp xếp và chỗ để -->
+    <article class="item" id="sec4">
+      <h3 class="item-title"><span class="num">4.</span>Sắp xếp và chỗ để (Sắp xếp – Sạch sẽ)</h3>
+      <div class="table-scroll"><table class="data fixed w-chode">
+        <colgroup><col class="c1"><col class="c2"><col class="c3"><col class="c4"><col class="c5"></colgroup>
+        <thead><tr><th>Vị trí</th><th class="col-pass">✅ Đạt</th><th class="col-fail">❌ Không đạt</th><th class="col-photo">📷 Ảnh Đạt</th><th class="col-photo">📷 Ảnh Không đạt</th></tr></thead>
+        <tbody>
+          <tr>
+            <td class="col-item">Sọt/Tủ để khăn (nếu có) dịch vụ sạch</td>
+            <td class="cell-pass">Chỉ có khăn dịch vụ đạt chuẩn. Gấp cùng một kiểu. Sọt/tủ cách sàn, khô ráo, xa khu giặt bẩn và khu ẩm.</td>
+            <td class="cell-fail">Lẫn khăn lau chùi. Khăn chưa gấp, để đống. Sọt/tủ đặt sát sàn, gần nơi đọng nước.</td>
+            <td class="cell-photo"><div class="photo-cell" data-photo="cd-dvsach-dat"></div></td>
+            <td class="cell-photo"><div class="photo-cell" data-photo="cd-dvsach-kd"></div></td>
+          </tr>
+          <tr>
+            <td class="col-item">Giỏ khăn dịch vụ bẩn</td>
+            <td class="cell-pass">Có nhãn "KHĂN DỊCH VỤ – BẨN". Chỉ có khăn dịch vụ. Giỏ có lỗ thoáng, không đậy kín.</td>
+            <td class="cell-fail">Lẫn khăn lau chùi. Không có nhãn. Đầy tràn.</td>
+            <td class="cell-photo"><div class="photo-cell" data-photo="cd-dvban-dat"></div></td>
+            <td class="cell-photo"><div class="photo-cell" data-photo="cd-dvban-kd"></div></td>
+          </tr>
+          <tr>
+            <td class="col-item">Sọt/Tủ để khăn (nếu có) lau chùi sạch</td>
+            <td class="cell-pass">Ở khu khuất (kho, khu giặt).</td>
+            <td class="cell-fail">Ở khu khách nhìn thấy.</td>
+            <td class="cell-photo"><div class="photo-cell" data-photo="cd-lcsach-dat"></div></td>
+            <td class="cell-photo"><div class="photo-cell" data-photo="cd-lcsach-kd"></div></td>
+          </tr>
+          <tr>
+            <td class="col-item">Giỏ khăn lau chùi bẩn</td>
+            <td class="cell-pass">Có nhãn "KHĂN LAU CHÙI – BẨN". Ở khu giặt.</td>
+            <td class="cell-fail">Để chung giỏ với khăn dịch vụ.</td>
+            <td class="cell-photo"><div class="photo-cell" data-photo="cd-lcban-dat"></div></td>
+            <td class="cell-photo"><div class="photo-cell" data-photo="cd-lcban-kd"></div></td>
+          </tr>
+          <tr>
+            <td class="col-item">Khu phục vụ</td>
+            <td class="cell-pass">Không có khăn trên bàn gương, ghế, sàn. Khăn lau chùi dùng xong cất ngay.</td>
+            <td class="cell-fail">Khăn dịch vụ để trên bàn gương. Khăn lau chùi vứt trên ghế/sàn trong giờ có khách.</td>
+            <td class="cell-photo"><div class="photo-cell" data-photo="cd-phucvu-dat"></div></td>
+            <td class="cell-photo"><div class="photo-cell" data-photo="cd-phucvu-kd"></div></td>
+          </tr>
+        </tbody>
+      </table></div>
+      <div class="note"><strong>Số sọt tham khảo (salon lớn):</strong> khăn dịch vụ sạch ~4 sọt, khăn lau chùi sạch ~2 sọt, mỗi nhóm khăn bẩn 1 giỏ.</div>
+    </article>
+  </main>
+</div>
+
+<footer class="doc-footer">Tiêu chuẩn 5S khăn · 30Shine CSVC · bản nháp 10/2026</footer>
+
+<script>
+(function(){
+  var MAX_DIM = 1400, JPEG_QUALITY = 0.82;
+  var DB_NAME = 'khan5s30shine_db', STORE_NAME = 'photos';
+  var dbPromise = null;
+
+  // Ảnh lưu trong IndexedDB của trình duyệt (dung lượng lớn hơn localStorage nhiều)
+  function openDB(){
+    if (dbPromise) return dbPromise;
+    dbPromise = new Promise(function(resolve, reject){
+      var req = indexedDB.open(DB_NAME, 1);
+      req.onupgradeneeded = function(){ req.result.createObjectStore(STORE_NAME); };
+      req.onsuccess = function(){ resolve(req.result); };
+      req.onerror = function(){ reject(req.error); };
+    });
+    return dbPromise;
+  }
+  function idbGet(key){
+    return openDB().then(function(db){
+      return new Promise(function(resolve, reject){
+        var req = db.transaction(STORE_NAME, 'readonly').objectStore(STORE_NAME).get(key);
+        req.onsuccess = function(){ resolve(req.result || []); };
+        req.onerror = function(){ reject(req.error); };
+      });
+    });
+  }
+  function idbPut(key, value){
+    return openDB().then(function(db){
+      return new Promise(function(resolve, reject){
+        var tx = db.transaction(STORE_NAME, 'readwrite');
+        tx.objectStore(STORE_NAME).put(value, key);
+        tx.oncomplete = function(){ resolve(); };
+        tx.onerror = function(){ reject(tx.error); };
+      });
+    });
+  }
+
+  function compressImage(file){
+    return new Promise(function(resolve, reject){
+      var reader = new FileReader();
+      reader.onload = function(e){
+        var img = new Image();
+        img.onload = function(){
+          var w = img.width, h = img.height;
+          if (w > MAX_DIM || h > MAX_DIM){
+            if (w > h){ h = Math.round(h * MAX_DIM / w); w = MAX_DIM; }
+            else { w = Math.round(w * MAX_DIM / h); h = MAX_DIM; }
+          }
+          var canvas = document.createElement('canvas');
+          canvas.width = w; canvas.height = h;
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+          canvas.toBlob(function(blob){ blob ? resolve(blob) : reject(new Error('toBlob failed')); }, 'image/jpeg', JPEG_QUALITY);
+        };
+        img.onerror = function(){ reject(new Error('image load failed')); };
+        img.src = e.target.result;
+      };
+      reader.onerror = function(){ reject(new Error('file read failed')); };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  function openLightbox(urls, startIndex){
+    if (!urls.length) return;
+    var idx = startIndex || 0, multi = urls.length > 1;
+    var ov = document.createElement('div'); ov.className = 'lightbox-overlay';
+    var img = document.createElement('img'); img.alt = 'Ảnh minh hoạ'; ov.appendChild(img);
+    var close = document.createElement('button'); close.type = 'button'; close.className = 'lb-close'; close.textContent = '×'; close.setAttribute('aria-label', 'Đóng'); ov.appendChild(close);
+    var counter = null;
+    if (multi){
+      var prev = document.createElement('button'); prev.type = 'button'; prev.className = 'lb-nav lb-prev'; prev.textContent = '‹';
+      var next = document.createElement('button'); next.type = 'button'; next.className = 'lb-nav lb-next'; next.textContent = '›';
+      counter = document.createElement('div'); counter.className = 'lb-counter';
+      ov.appendChild(prev); ov.appendChild(next); ov.appendChild(counter);
+      prev.addEventListener('click', function(e){ e.stopPropagation(); go(-1); });
+      next.addEventListener('click', function(e){ e.stopPropagation(); go(1); });
+    }
+    function render(){ img.src = urls[idx]; if (counter) counter.textContent = (idx + 1) + ' / ' + urls.length; }
+    function go(d){ idx = (idx + d + urls.length) % urls.length; render(); }
+    function shut(){ ov.remove(); document.removeEventListener('keydown', onKey); }
+    function onKey(e){ if (e.key === 'Escape') shut(); else if (multi && e.key === 'ArrowLeft') go(-1); else if (multi && e.key === 'ArrowRight') go(1); }
+    ov.addEventListener('click', function(e){ if (e.target === ov) shut(); });
+    close.addEventListener('click', shut);
+    document.addEventListener('keydown', onKey);
+    var sx = null;
+    ov.addEventListener('touchstart', function(e){ sx = e.touches.length === 1 ? e.touches[0].clientX : null; });
+    ov.addEventListener('touchend', function(e){
+      if (sx === null || !multi) return;
+      var dx = e.changedTouches[0].clientX - sx; sx = null;
+      if (Math.abs(dx) > 40) go(dx < 0 ? 1 : -1);
+    });
+    render();
+    document.body.appendChild(ov);
+  }
+
+  // Mỗi ô ảnh có khoá cố định ở thuộc tính data-photo, nên sửa nội dung bảng không làm lệch ảnh
+  function keyOf(cell){ return 'khan5s__' + cell.getAttribute('data-photo'); }
+
+  function renderCell(cell){
+    var key = keyOf(cell);
+    return idbGet(key).then(function(blobs){
+      var thumbs = cell.querySelector('.photo-thumbs');
+      thumbs.innerHTML = '';
+      var urls = blobs.map(function(b){ return URL.createObjectURL(b); });
+      blobs.forEach(function(b, i){
+        var t = document.createElement('div'); t.className = 'photo-thumb';
+        var im = document.createElement('img'); im.src = urls[i]; im.alt = 'Ảnh minh hoạ';
+        im.addEventListener('click', function(){ openLightbox(urls, i); });
+        var rm = document.createElement('span'); rm.className = 'rm'; rm.textContent = '×'; rm.title = 'Xoá ảnh';
+        rm.addEventListener('click', function(ev){
+          ev.stopPropagation();
+          if (!confirm('Xoá ảnh này?')) return;
+          blobs.splice(i, 1);
+          idbPut(key, blobs).then(function(){ renderCell(cell); });
+        });
+        t.appendChild(im); t.appendChild(rm); thumbs.appendChild(t);
+      });
+    });
+  }
+
+  function initCell(cell){
+    var thumbs = document.createElement('div'); thumbs.className = 'photo-thumbs';
+    var add = document.createElement('label'); add.className = 'photo-add';
+    add.appendChild(document.createTextNode('+ Thêm ảnh'));
+    var input = document.createElement('input'); input.type = 'file'; input.accept = 'image/*'; input.multiple = true;
+    add.appendChild(input);
+    cell.appendChild(thumbs); cell.appendChild(add);
+    input.addEventListener('change', function(){
+      var files = Array.prototype.slice.call(input.files);
+      if (!files.length) return;
+      var key = keyOf(cell);
+      Promise.all(files.map(compressImage)).then(function(blobs){
+        return idbGet(key).then(function(existing){ return idbPut(key, existing.concat(blobs)); });
+      }).then(function(){ return renderCell(cell); }).catch(function(err){
+        alert('Có lỗi khi lưu ảnh: ' + (err && err.message ? err.message : 'không rõ nguyên nhân') + '. Vui lòng thử lại.');
+      });
+      input.value = '';
+    });
+    renderCell(cell);
+  }
+
+  // Ảnh đã "nướng" sẵn trong file xuất (kèm ảnh) — bấm để phóng to
+  document.addEventListener('click', function(e){
+    var t = e.target && e.target.closest ? e.target.closest('.photo-baked img') : null;
+    if (!t) return;
+    var imgs = Array.prototype.slice.call(t.closest('.photo-baked').querySelectorAll('img'));
+    openLightbox(imgs.map(function(im){ return im.src; }), imgs.indexOf(t));
+  });
+
+  if (!window.indexedDB){
+    alert('Trình duyệt này không hỗ trợ lưu ảnh cục bộ. Vui lòng dùng Chrome hoặc Edge bản mới.');
+    return;
+  }
+  var cells = Array.prototype.slice.call(document.querySelectorAll('[data-photo]'));
+  cells.forEach(initCell);
+
+  // Xuất file kèm ảnh: nhúng ảnh đang lưu trên trình duyệt vào 1 file HTML mới để gửi người khác
+  function blobToDataURL(blob){
+    return new Promise(function(resolve, reject){
+      var r = new FileReader();
+      r.onload = function(){ resolve(r.result); };
+      r.onerror = function(){ reject(r.error); };
+      r.readAsDataURL(blob);
+    });
+  }
+  function exportWithPhotos(){
+    var btn = document.getElementById('exportPhotosBtn');
+    var label = btn.textContent;
+    btn.disabled = true; btn.textContent = 'Đang chuẩn bị file...';
+    Promise.all(cells.map(function(cell){
+      return idbGet(keyOf(cell)).then(function(blobs){ return Promise.all(blobs.map(blobToDataURL)); });
+    })).then(function(all){
+      var clone = document.documentElement.cloneNode(true);
+      Array.prototype.forEach.call(clone.querySelectorAll('[data-photo]'), function(c, i){
+        c.querySelectorAll('.photo-thumbs, .photo-add').forEach(function(n){ n.remove(); });
+        if (!all[i] || !all[i].length) return;
+        var g = document.createElement('div'); g.className = 'photo-baked';
+        all[i].forEach(function(u){ var im = document.createElement('img'); im.src = u; im.alt = 'Ảnh minh hoạ'; g.appendChild(im); });
+        c.insertBefore(g, c.firstChild);
+      });
+      var cb = clone.querySelector('#exportPhotosBtn');
+      if (cb){ cb.removeAttribute('disabled'); cb.textContent = label; }
+      var blob = new Blob(['<!DOCTYPE html>\n' + clone.outerHTML], { type: 'text/html;charset=utf-8' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url; a.download = 'Tieu chuan 5S khan - 30Shine (kem anh) ' + new Date().toISOString().slice(0, 10) + '.html';
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function(){ URL.revokeObjectURL(url); }, 5000);
+    }).catch(function(err){
+      alert('Có lỗi khi xuất file: ' + (err && err.message ? err.message : 'không rõ nguyên nhân') + '. Vui lòng thử lại.');
+    }).then(function(){ btn.disabled = false; btn.textContent = label; });
+  }
+  document.getElementById('exportPhotosBtn').addEventListener('click', exportWithPhotos);
+})();
+</script>
+</body>
+</html>

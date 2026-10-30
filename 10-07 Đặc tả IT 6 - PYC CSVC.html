@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Đặc tả IT — Tổng quan thẻ CSVC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FFFFFF; --surface:#FFFFFF; --surface-2:#F1F5FB;
+  --fg:#10151C; --fg-muted:#5B6672; --border:rgba(20,24,31,.16);
+  --accent:#143680; --accent-fg:#FFFFFF; --accent-soft:#E7EAF4;
+  --danger:#D6362B; --danger-soft:#FBE4E1;
+  --warning:#DD8A1F; --warning-soft:#FCEBD2;
+  --success:#1F9254; --success-soft:#DFF3E7;
+  --shadow:0 1px 2px rgba(16,20,24,.05),0 8px 24px -12px rgba(16,20,24,.14);
+  --mono:'SF Mono',Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1420; --surface:#141B29; --surface-2:#1B2434;
+    --fg:#EAF0FB; --fg-muted:#8E9BB0; --border:rgba(145,160,184,.25);
+    --accent:#7B9BE0; --accent-fg:#0E1420; --accent-soft:#223050;
+    --danger:#F08478; --danger-soft:#3A2220;
+    --warning:#F0B35E; --warning-soft:#3A2C16;
+    --success:#6FD19B; --success-soft:#17301F;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -12px rgba(0,0,0,.6);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1420; --surface:#141B29; --surface-2:#1B2434;
+  --fg:#EAF0FB; --fg-muted:#8E9BB0; --border:rgba(145,160,184,.25);
+  --accent:#7B9BE0; --accent-fg:#0E1420; --accent-soft:#223050;
+  --danger:#F08478; --danger-soft:#3A2220;
+  --warning:#F0B35E; --warning-soft:#3A2C16;
+  --success:#6FD19B; --success-soft:#17301F;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -12px rgba(0,0,0,.6);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{background:var(--bg)}
+body{margin:0;color:var(--fg);font-family:'Be Vietnam Pro',system-ui,-apple-system,sans-serif;font-size:15px;line-height:1.6}
+h1,h2,h3,h4{font-family:'Be Vietnam Pro',system-ui,sans-serif;text-wrap:balance;margin:0}
+p{margin:0}
+a{color:var(--accent)}
+[hidden]{display:none!important}
+.sheet-nav{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--border);display:flex;gap:6px;overflow-x:auto;padding:10px 16px;scrollbar-width:thin}
+.sheet-nav a{flex:none;font-size:12.5px;font-weight:700;color:var(--fg-muted);text-decoration:none;padding:7px 13px;border-radius:99px;border:1.5px solid var(--border);white-space:nowrap}
+.sheet-nav a.active{color:var(--accent-fg);background:var(--accent);border-color:var(--accent)}
+.sheet-nav a:hover:not(.active){color:var(--fg);background:var(--surface-2)}
+main.wrap{max-width:1180px;margin:0 auto;padding:36px 28px 120px}
+.doc-head{margin-bottom:30px;padding-bottom:26px;border-bottom:1px solid var(--border)}
+.doc-head .kicker{font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.doc-head .kicker .pathtag{background:var(--accent-soft);padding:2px 9px;border-radius:99px}
+.doc-head h1{font-size:28px;font-weight:800;margin-bottom:10px}
+.doc-head .meta{font-size:13px;color:var(--fg-muted);display:flex;flex-wrap:wrap;gap:4px 18px;margin-top:14px}
+.doc-head .meta b{color:var(--fg)}
+.doc-head .lead{font-size:14.5px;color:var(--fg);max-width:70ch;margin-top:14px;line-height:1.65}
+.quicknav{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:38px}
+.quicknav a{font-size:12px;font-weight:700;color:var(--accent);text-decoration:none;background:var(--accent-soft);padding:6px 12px;border-radius:99px}
+.quicknav a:hover{text-decoration:underline}
+section.block{margin-bottom:52px;scroll-margin-top:60px}
+section.block > h2{font-size:21px;font-weight:800;padding-bottom:12px;margin-bottom:18px;border-bottom:2px solid var(--fg);display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+section.block > h2 .tag{font-size:11px;font-weight:800;color:var(--accent-fg);background:var(--accent);padding:3px 9px;border-radius:99px;letter-spacing:.02em}
+h4.sub2{font-size:13.5px;font-weight:800;margin:18px 0 8px;color:var(--fg)}
+.note{font-size:13px;color:var(--fg-muted);line-height:1.6;margin-bottom:14px}
+.note b{color:var(--fg)}
+.callout{background:var(--accent-soft);border:1px solid var(--border);border-radius:12px;padding:13px 16px;font-size:13px;line-height:1.6;margin:14px 0 20px;color:var(--fg)}
+.callout b{color:var(--accent)}
+.callout.warn{background:var(--warning-soft)}
+.callout.warn b{color:var(--warning)}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:12px;margin:12px 0 22px}
+table{border-collapse:collapse;width:100%;font-size:13px;min-width:560px}
+th,td{padding:9px 13px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+th{background:var(--surface-2);font-weight:800;font-size:11.5px;text-transform:uppercase;letter-spacing:.03em;color:var(--fg-muted);white-space:nowrap}
+tr:last-child td{border-bottom:none}
+td b{font-weight:700}
+td code,.callout code{background:var(--surface-2);padding:1px 6px;border-radius:5px;font-family:var(--mono);font-size:12px}
+.req-y{color:var(--success);font-weight:800}
+
+/* ---------- view tabs ---------- */
+.view-tabs{display:flex;gap:8px;margin:18px 0 16px;flex-wrap:wrap}
+.view-tabs button{font:inherit;font-weight:700;font-size:13px;padding:9px 16px;border-radius:99px;cursor:pointer;border:1.5px solid var(--border);background:var(--surface);color:var(--fg-muted)}
+.view-tabs button.active{border-color:var(--accent);background:var(--accent);color:var(--accent-fg)}
+.view-pane{display:none}
+.view-pane.active{display:block}
+
+/* ---------- mock app shell (lấy nguyên từ demo tương tác) ---------- */
+.app-mock{border:1px solid var(--border);border-radius:20px;background:var(--surface);padding:20px 18px;max-width:640px}
+.stat-row3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.stat-card{border:1.5px solid var(--border);border-radius:12px;padding:10px 12px}
+.stat-card.red{background:var(--danger-soft);border-color:var(--danger)}
+.stat-card.orange{background:var(--warning-soft);border-color:var(--warning)}
+.stat-card.green{background:var(--success-soft);border-color:var(--success)}
+.stat-card .shead{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:7px}
+.stat-card .slabel{font-size:12px;font-weight:800}
+.stat-card .stotal{font-size:19px;font-weight:800}
+.stat-lines{display:grid;grid-template-columns:repeat(2,1fr);gap:2px 4px}
+.stat-line{display:flex;justify-content:space-between;align-items:center;gap:4px;padding:3px 5px}
+.stat-line .slbl{font-size:9px;font-weight:700;color:var(--fg);line-height:1.2}
+.stat-line .snum{font-size:13px;font-weight:800;color:var(--fg)}
+.filters{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:14px}
+@media (max-width:560px){.filters{grid-template-columns:repeat(2,1fr)}}
+.sel-filter,.date-field .dval{
+  display:block;width:100%;font:inherit;font-weight:700;font-size:10.5px;color:var(--fg);
+  padding:8px 20px 8px 10px;border-radius:99px;border:1.5px solid var(--border);background:var(--surface);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8'><path d='M1 1l5 5 5-5' stroke='%235B6672' stroke-width='1.6' fill='none' stroke-linecap='round'/></svg>");
+  background-repeat:no-repeat;background-position:right 9px center;
+}
+.date-field .dlabel{font-size:8.5px;font-weight:800;color:var(--fg-muted);padding-left:10px;display:block;margin-bottom:3px}
+.sel-filter.locked,.date-field .dval.locked{background:var(--surface-2);color:var(--fg-muted);border-style:dashed}
+.ticket-list{display:flex;flex-direction:column;gap:8px}
+.trow{display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(4,1fr);column-gap:7px;row-gap:5px;width:100%;min-height:150px;border:1px solid var(--border);border-radius:10px;padding:9px 10px}
+.trow.red{background:var(--danger-soft);border-color:transparent}
+.trow.orange{background:var(--warning-soft);border-color:transparent}
+.trow.green{background:var(--success-soft);border-color:transparent}
+.rcell{font-size:10.5px;font-weight:800;color:var(--fg);line-height:1.3;min-width:0;overflow-wrap:break-word;align-self:center}
+.rcell .ic{font-size:10.5px;margin-right:2px}
+.rcell .bigicon{font-size:14px;line-height:1;font-weight:800;margin-right:3px;vertical-align:-2px}
+.list-note{font-size:11px;color:var(--fg-muted);margin-top:10px;text-align:center}
+footer{border-top:1px solid var(--border);margin-top:40px;padding-top:18px;font-size:12px;color:var(--fg-muted)}
+@media (max-width:860px){ main.wrap{padding:28px 16px 90px} }
+</style>
+</head>
+<body>
+
+<div class="sheet-nav">
+  <a href="10-07 Đặc tả IT 5 - SM Phiếu yêu cầu và Nghiệm thu.html">📋 1. SM — Phiếu & Nghiệm thu</a>
+  <a class="active" href="10-07 Đặc tả IT 6 - PYC CSVC.html">🗂️ 2. Tổng quan thẻ CSVC</a>
+  <a href="10-07 Đặc tả IT 1 - Nhóm Sự cố Sửa chữa.html">🔧 3. Sự cố / Sửa chữa</a>
+  <a href="10-07 Đặc tả IT 2 - Nhóm Lắp đặt Nâng cấp Thay thế.html">🛠️ 4. Lắp đặt / Nâng cấp / Thay thế</a>
+  <a href="10-07 Đặc tả IT 3 - Nhóm Luân chuyển CSVC.html">🔄 5. Luân chuyển CSVC</a>
+  <a href="10-07 Đặc tả IT 4 - Nhóm Vệ sinh Dọn dẹp.html">🧹 6. Vệ sinh / Dọn dẹp</a>
+  <a href="10-07 Đặc tả IT 7 - Bảng quản lý tổng hợp.html">📊 7. Bảng tổng hợp</a>
+  <a href="10-07 Đặc tả IT 8 - Luồng CSVC.html">🧭 8. Luồng CSVC</a>
+</div>
+
+<main class="wrap">
+  <div class="doc-head">
+    <div class="kicker"><span class="pathtag">4B.7A</span> Đặc tả màn hình gửi IT</div>
+    <h1>🗂️ Tổng quan & danh sách thẻ CSVC</h1>
+    <p class="lead">Màn hình quản lý/điều phối — không gắn với 1 nhánh cụ thể, hiển thị thẻ của <b>cả 4 nhánh</b> trộn chung trong 1 danh sách. Khác với 4 sheet nhánh và sheet SM (dạng form từng bước), đây là màn hình <b>tra cứu — lọc — theo dõi</b>, là nơi CSVC bấm vào 1 thẻ để mở ra đúng màn hình Bước 2 tương ứng ở sheet nhánh.</p>
+    <div class="meta">
+      <span><b>Nguồn:</b> 10-08 CSVC Bước 2 — Xem xét xác nhận thẻ.html</span>
+      <span><b>Cập nhật:</b> 29/10/2026</span>
+    </div>
+  </div>
+
+  <nav class="quicknav">
+    <a href="#mock">Màn hình minh hoạ</a>
+    <a href="#overview">Tổng quan & phân quyền</a>
+    <a href="#fields">Cấu trúc 1 thẻ trong danh sách</a>
+    <a href="#filters">Bộ lọc</a>
+  </nav>
+
+  <!-- ============ MOCKUP ============ -->
+  <section class="block" id="mock">
+    <h2>Màn hình minh hoạ</h2>
+    <p class="note">Bấm nút bên dưới để so sánh 2 góc nhìn trên cùng 1 bộ dữ liệu — khác nhau ở phạm vi salon và số ô lọc hiển thị.</p>
+
+    <div class="view-tabs">
+      <button type="button" class="active" data-viewtab="csvc">👷 CSVC / Quản lý CSVC — xem tất cả</button>
+      <button type="button" data-viewtab="sm">🏠 SM — chỉ salon của mình</button>
+    </div>
+
+    <!-- ===== VIEW CSVC ===== -->
+    <div class="view-pane active" data-viewpane="csvc">
+      <div class="app-mock">
+        <div class="stat-row3">
+          <div class="stat-card red">
+            <div class="shead"><span class="slabel">🔴 Đỏ</span><span class="stotal">4</span></div>
+            <div class="stat-lines">
+              <div class="stat-line"><span class="slbl">Chưa xem</span><span class="snum">1</span></div>
+              <div class="stat-line"><span class="slbl">Chưa xác nhận</span><span class="snum">1</span></div>
+              <div class="stat-line"><span class="slbl">Đã xác nhận</span><span class="snum">2</span></div>
+              <div class="stat-line"><span class="slbl">Xử lý từ xa</span><span class="snum">0</span></div>
+            </div>
+          </div>
+          <div class="stat-card orange">
+            <div class="shead"><span class="slabel">🟠 Cam</span><span class="stotal">3</span></div>
+            <div class="stat-lines">
+              <div class="stat-line"><span class="slbl">Chưa xem</span><span class="snum">0</span></div>
+              <div class="stat-line"><span class="slbl">Chưa xác nhận</span><span class="snum">0</span></div>
+              <div class="stat-line"><span class="slbl">Đã xác nhận</span><span class="snum">2</span></div>
+              <div class="stat-line"><span class="slbl">Xử lý từ xa</span><span class="snum">1</span></div>
+            </div>
+          </div>
+          <div class="stat-card green">
+            <div class="shead"><span class="slabel">🟢 Xanh</span><span class="stotal">3</span></div>
+            <div class="stat-lines">
+              <div class="stat-line"><span class="slbl">Chưa xem</span><span class="snum">0</span></div>
+              <div class="stat-line"><span class="slbl">Chưa xác nhận</span><span class="snum">0</span></div>
+              <div class="stat-line"><span class="slbl">Đã xác nhận</span><span class="snum">3</span></div>
+              <div class="stat-line"><span class="slbl">Xử lý từ xa</span><span class="snum">0</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="filters">
+          <div class="date-field"><span class="dlabel">Ngày lên thẻ</span><span class="dval">Tất cả</span></div>
+          <span class="sel-filter">Salon: Tất cả</span>
+          <span class="sel-filter">Vùng: Tất cả</span>
+          <span class="sel-filter">GĐKV: Tất cả</span>
+          <span class="sel-filter">Màu: Tất cả</span>
+          <span class="sel-filter">Trạng thái thẻ: Tất cả</span>
+          <span class="sel-filter">Tình trạng thẻ: Tất cả</span>
+          <span class="sel-filter">Loại yêu cầu: Tất cả</span>
+          <div class="date-field"><span class="dlabel">Ngày mong muốn</span><span class="dval">Tất cả</span></div>
+          <span class="sel-filter">Nhóm thiết bị: Tất cả</span>
+          <span class="sel-filter">Tên thiết bị: Tất cả</span>
+          <span class="sel-filter">Người thực hiện: Tất cả</span>
+        </div>
+
+        <div class="ticket-list">
+          <div class="trow red">
+            <div class="rcell"><span class="ic">🎫</span>#2103</div>
+            <div class="rcell">109 TQH</div>
+            <div class="rcell"><span class="bigicon">🔧</span>Sự cố/Sửa chữa</div>
+            <div class="rcell">STT 7</div>
+            <div class="rcell"><span class="ic">📅</span>Lên 08/10</div>
+            <div class="rcell">Nguyễn Thị Lan</div>
+            <div class="rcell"><span class="ic">📦</span>Hệ thống điện</div>
+            <div class="rcell"><span class="ic">📍</span>Hà Nội</div>
+            <div class="rcell"><span class="ic">🎯</span>Mong muốn 08/10</div>
+            <div class="rcell">GĐKV Hà</div>
+            <div class="rcell"><span class="ic">🔩</span>CB tổng</div>
+            <div class="rcell" style="color:var(--danger)"><span class="ic">⚡</span>Gấp</div>
+            <div class="rcell"><span class="ic">✅</span>Chưa có</div>
+            <div class="rcell"><span class="ic">👷</span>— (Chưa phân công)</div>
+            <div class="rcell">○ Chưa xử lý</div>
+            <div class="rcell">● Chưa xem</div>
+          </div>
+          <div class="trow orange">
+            <div class="rcell"><span class="ic">🎫</span>#2118</div>
+            <div class="rcell">65 CD</div>
+            <div class="rcell"><span class="bigicon">🧹</span>Vệ sinh/Dọn dẹp</div>
+            <div class="rcell">STT 2</div>
+            <div class="rcell"><span class="ic">📅</span>Lên 03/10</div>
+            <div class="rcell">SM</div>
+            <div class="rcell"><span class="ic">📦</span>Vệ sinh</div>
+            <div class="rcell"><span class="ic">📍</span>TP.HCM</div>
+            <div class="rcell"><span class="ic">🎯</span>Mong muốn 04/10</div>
+            <div class="rcell">GĐKV Minh</div>
+            <div class="rcell"><span class="ic">🔩</span>Khu WC</div>
+            <div class="rcell" style="color:var(--warning)"><span class="ic">⚡</span>Gấp</div>
+            <div class="rcell"><span class="ic">✅</span>Hoàn thành 03/10</div>
+            <div class="rcell"><span class="ic">👷</span>Tiến — CSVC</div>
+            <div class="rcell">● Đã xử lý xong</div>
+            <div class="rcell">✓ Đã xử lý từ xa</div>
+          </div>
+          <div class="trow green">
+            <div class="rcell"><span class="ic">🎫</span>#2099</div>
+            <div class="rcell">730 TL10</div>
+            <div class="rcell"><span class="bigicon">🧹</span>Vệ sinh/Dọn dẹp</div>
+            <div class="rcell">STT 9</div>
+            <div class="rcell"><span class="ic">📅</span>Lên 10/10</div>
+            <div class="rcell">SM</div>
+            <div class="rcell"><span class="ic">📦</span>Điện lạnh</div>
+            <div class="rcell"><span class="ic">📍</span>TP.HCM</div>
+            <div class="rcell"><span class="ic">🎯</span>Mong muốn 12/10</div>
+            <div class="rcell">GĐKV Minh</div>
+            <div class="rcell"><span class="ic">🔩</span>Điều hoà + máy lọc nước</div>
+            <div class="rcell" style="color:var(--success)"><span class="ic">⚡</span>Không gấp</div>
+            <div class="rcell"><span class="ic">✅</span>Hoàn thành 12/10</div>
+            <div class="rcell"><span class="ic">👷</span>Hoa — Đội vệ sinh CSVC</div>
+            <div class="rcell">● Đã xử lý xong</div>
+            <div class="rcell">✓ Đã xác nhận</div>
+          </div>
+        </div>
+        <p class="list-note">10 thẻ minh hoạ — đủ 3 màu × 4 trạng thái. Danh sách thật sắp xếp theo mức ưu tiên (🔴 trước 🟠 trước 🟢), trong cùng màu sắp theo ngày lên thẻ gần nhất.</p>
+      </div>
+    </div>
+
+    <!-- ===== VIEW SM ===== -->
+    <div class="view-pane" data-viewpane="sm">
+      <div class="app-mock">
+        <div class="stat-row3">
+          <div class="stat-card red">
+            <div class="shead"><span class="slabel">🔴 Đỏ</span><span class="stotal">1</span></div>
+            <div class="stat-lines">
+              <div class="stat-line"><span class="slbl">Chưa xem</span><span class="snum">1</span></div>
+              <div class="stat-line"><span class="slbl">Chưa xác nhận</span><span class="snum">0</span></div>
+              <div class="stat-line"><span class="slbl">Đã xác nhận</span><span class="snum">0</span></div>
+              <div class="stat-line"><span class="slbl">Xử lý từ xa</span><span class="snum">0</span></div>
+            </div>
+          </div>
+          <div class="stat-card orange">
+            <div class="shead"><span class="slabel">🟠 Cam</span><span class="stotal">0</span></div>
+            <div class="stat-lines">
+              <div class="stat-line"><span class="slbl">Chưa xem</span><span class="snum">0</span></div>
+              <div class="stat-line"><span class="slbl">Chưa xác nhận</span><span class="snum">0</span></div>
+              <div class="stat-line"><span class="slbl">Đã xác nhận</span><span class="snum">0</span></div>
+              <div class="stat-line"><span class="slbl">Xử lý từ xa</span><span class="snum">0</span></div>
+            </div>
+          </div>
+          <div class="stat-card green">
+            <div class="shead"><span class="slabel">🟢 Xanh</span><span class="stotal">0</span></div>
+            <div class="stat-lines">
+              <div class="stat-line"><span class="slbl">Chưa xem</span><span class="snum">0</span></div>
+              <div class="stat-line"><span class="slbl">Chưa xác nhận</span><span class="snum">0</span></div>
+              <div class="stat-line"><span class="slbl">Đã xác nhận</span><span class="snum">0</span></div>
+              <div class="stat-line"><span class="slbl">Xử lý từ xa</span><span class="snum">0</span></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="filters">
+          <div class="date-field"><span class="dlabel">Ngày lên thẻ</span><span class="dval">Tất cả</span></div>
+          <div class="date-field"><span class="dlabel">Salon</span><span class="dval locked">109 TQH 🔒</span></div>
+          <span class="sel-filter">Màu: Tất cả</span>
+          <span class="sel-filter">Trạng thái thẻ: Tất cả</span>
+          <span class="sel-filter">Tình trạng thẻ: Tất cả</span>
+          <span class="sel-filter">Loại yêu cầu: Tất cả</span>
+          <div class="date-field"><span class="dlabel">Ngày mong muốn</span><span class="dval">Tất cả</span></div>
+          <span class="sel-filter">Nhóm thiết bị: Tất cả</span>
+          <span class="sel-filter">Tên thiết bị: Tất cả</span>
+          <span class="sel-filter">Người thực hiện: Tất cả</span>
+        </div>
+
+        <div class="ticket-list">
+          <div class="trow red">
+            <div class="rcell"><span class="ic">🎫</span>#2103</div>
+            <div class="rcell">109 TQH</div>
+            <div class="rcell"><span class="bigicon">🔧</span>Sự cố/Sửa chữa</div>
+            <div class="rcell">STT 7</div>
+            <div class="rcell"><span class="ic">📅</span>Lên 08/10</div>
+            <div class="rcell">Nguyễn Thị Lan</div>
+            <div class="rcell"><span class="ic">📦</span>Hệ thống điện</div>
+            <div class="rcell"><span class="ic">📍</span>Hà Nội</div>
+            <div class="rcell"><span class="ic">🎯</span>Mong muốn 08/10</div>
+            <div class="rcell">GĐKV Hà</div>
+            <div class="rcell"><span class="ic">🔩</span>CB tổng</div>
+            <div class="rcell" style="color:var(--danger)"><span class="ic">⚡</span>Gấp</div>
+            <div class="rcell"><span class="ic">✅</span>Chưa có</div>
+            <div class="rcell"><span class="ic">👷</span>— (Chưa phân công)</div>
+            <div class="rcell">○ Chưa xử lý</div>
+            <div class="rcell">● Chưa xem</div>
+          </div>
+        </div>
+        <p class="list-note">SM salon 109 TQH chỉ thấy đúng thẻ của salon mình — các thẻ #2118, #2099… của salon khác ở tab CSVC không hiển thị ở đây.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ TỔNG QUAN & PHÂN QUYỀN ============ -->
+  <section class="block" id="overview">
+    <h2><span class="tag">4B.7A</span> Tổng quan & phân quyền xem</h2>
+    <p class="note"><b>Mục đích:</b> 1 màn hình duy nhất để xem toàn bộ thẻ CSVC đang có, lọc theo nhiều tiêu chí, bấm vào 1 dòng để vào chi tiết xử lý. Đây là màn hình mặc định khi CSVC/Quản lý CSVC/SM mở hệ thống.</p>
+    <div class="tbl-wrap"><table>
+      <tr><th>Vai trò</th><th>Phạm vi xem</th><th>Có bộ lọc Salon/Vùng/GĐKV?</th></tr>
+      <tr><td><b>Nhân viên CSVC</b></td><td>Tất cả thẻ — mọi salon</td><td class="req-y">✅ Có</td></tr>
+      <tr><td><b>Quản lý CSVC</b></td><td>Tất cả thẻ — mọi salon</td><td class="req-y">✅ Có</td></tr>
+      <tr><td><b>SM</b></td><td>Chỉ thẻ thuộc salon mình quản lý</td><td>❌ Không — salon tự khoá cố định theo tài khoản đăng nhập, ẩn luôn 2 bộ lọc Vùng/GĐKV vì chỉ có 1 salon nên không cần lọc theo vùng</td></tr>
+    </table></div>
+    <div class="callout"><b>Lưu ý IT:</b> cùng 1 cấu trúc dữ liệu thẻ, chỉ khác <b>điều kiện lọc mặc định</b> theo vai trò đăng nhập (SM = <code>salon == tài khoản đang đăng nhập</code>, luôn bật, không tắt được) và <b>ẩn bớt 3 ô lọc</b> không cần thiết khi chỉ xem 1 salon. Xem đối chiếu trực quan ở mục "Màn hình minh hoạ" phía trên.</div>
+  </section>
+
+  <!-- ============ CẤU TRÚC 1 THẺ ============ -->
+  <section class="block" id="fields">
+    <h2>Cấu trúc 1 thẻ trong danh sách</h2>
+    <p class="note">Mỗi thẻ hiển thị dạng khối 4 hàng × 4 cột, màu nền theo Màu ưu tiên (🔴/🟠/🟢). Bấm vào khối để mở chi tiết thẻ (4B.8 ở sheet nhánh tương ứng).</p>
+    <div class="tbl-wrap"><table>
+      <tr><th>Hàng</th><th>Cột 1</th><th>Cột 2</th><th>Cột 3</th><th>Cột 4</th></tr>
+      <tr><td>1</td><td>Mã thẻ</td><td>Salon</td><td>Loại yêu cầu</td><td>STT <small>(số thứ tự theo ngày lên thẻ)</small></td></tr>
+      <tr><td>2</td><td>Ngày lên thẻ</td><td>Người gửi</td><td>Nhóm thiết bị / hạng mục</td><td>Vùng</td></tr>
+      <tr><td>3</td><td>Ngày mong muốn</td><td>GĐKV</td><td>Tên thiết bị</td><td>Mức độ (gấp/không gấp)</td></tr>
+      <tr><td>4</td><td>Ngày hoàn thành <small>(hoặc "Chưa có")</small></td><td>Người xử lý <small>(hoặc "Chưa phân công")</small></td><td>Tình trạng thẻ</td><td>Trạng thái thẻ</td></tr>
+    </table></div>
+    <p class="note"><b>Phân biệt 2 trường trạng thái hay nhầm:</b></p>
+    <div class="tbl-wrap"><table>
+      <tr><th>Trường</th><th>Theo dõi gì</th><th>Giá trị</th></tr>
+      <tr><td><b>Trạng thái thẻ</b></td><td>Riêng Bước 2 — CSVC đã xem/xác nhận thông tin chưa</td><td>Chưa xem / Đã xem & chưa xác nhận / Đã xác nhận / Đã xử lý từ xa</td></tr>
+      <tr><td><b>Tình trạng thẻ</b></td><td>Tiến trình xử lý tổng thể toàn thẻ (= "Tiến độ" điền ở Bước 5)</td><td>Chưa xử lý / Đang xử lý / Đã xử lý xong</td></tr>
+    </table></div>
+  </section>
+
+  <!-- ============ BỘ LỌC ============ -->
+  <section class="block" id="filters">
+    <h2>Bộ lọc</h2>
+    <p class="note">Toàn bộ ô lọc đều chọn được <b>nhiều giá trị cùng lúc</b> (trừ 2 ô khoảng ngày) qua bottom sheet riêng, trừ Salon/Vùng/GĐKV bị khoá ở màn hình SM.</p>
+    <div class="tbl-wrap"><table>
+      <tr><th>Bộ lọc</th><th>Kiểu</th><th>CSVC / Quản lý</th><th>SM</th></tr>
+      <tr><td>Ngày lên thẻ</td><td>Khoảng ngày</td><td class="req-y">✅</td><td class="req-y">✅</td></tr>
+      <tr><td>Salon</td><td>Chọn nhiều</td><td class="req-y">✅</td><td>❌ Ẩn — khoá cố định theo salon đăng nhập</td></tr>
+      <tr><td>Vùng</td><td>Chọn nhiều</td><td class="req-y">✅</td><td>❌ Ẩn</td></tr>
+      <tr><td>GĐKV</td><td>Chọn nhiều</td><td class="req-y">✅</td><td>❌ Ẩn</td></tr>
+      <tr><td>Màu</td><td>Chọn nhiều</td><td class="req-y">✅</td><td class="req-y">✅</td></tr>
+      <tr><td>Trạng thái thẻ</td><td>Chọn nhiều</td><td class="req-y">✅</td><td class="req-y">✅</td></tr>
+      <tr><td>Tình trạng thẻ</td><td>Chọn nhiều</td><td class="req-y">✅</td><td class="req-y">✅</td></tr>
+      <tr><td>Loại yêu cầu</td><td>Chọn nhiều</td><td class="req-y">✅</td><td class="req-y">✅</td></tr>
+      <tr><td>Ngày mong muốn</td><td>Khoảng ngày</td><td class="req-y">✅</td><td class="req-y">✅</td></tr>
+      <tr><td>Nhóm thiết bị / hạng mục</td><td>Chọn nhiều</td><td class="req-y">✅</td><td class="req-y">✅</td></tr>
+      <tr><td>Tên thiết bị</td><td>Chọn nhiều</td><td class="req-y">✅</td><td class="req-y">✅</td></tr>
+      <tr><td>Người thực hiện</td><td>Chọn nhiều</td><td class="req-y">✅</td><td class="req-y">✅</td></tr>
+      <tr><td colspan="4"><i>— tức Nội bộ / Thợ ngoài, lấy theo Phương án điền ở Bước 4</i></td></tr>
+    </table></div>
+    <h4 class="sub2">Thẻ thống kê theo màu (đầu trang)</h4>
+    <p class="note">3 thẻ 🔴/🟠/🟢 hiển thị tổng số + breakdown theo Trạng thái thẻ (4 dòng), bấm vào thẻ hoặc 1 dòng để lọc nhanh theo đúng tổ hợp màu + trạng thái đó. Số liệu luôn tính theo các bộ lọc khác đang bật (vd: nếu SM đang lọc, số liệu chỉ tính trong salon của SM).</p>
+  </section>
+
+  <footer>
+    Bộ đặc tả gồm 8 sheet — xem tiếp:
+    <a href="10-07 Đặc tả IT 5 - SM Phiếu yêu cầu và Nghiệm thu.html">1. SM — Phiếu yêu cầu & Nghiệm thu</a> ·
+    <a href="10-07 Đặc tả IT 1 - Nhóm Sự cố Sửa chữa.html">3. Sự cố/Sửa chữa</a> ·
+    <a href="10-07 Đặc tả IT 7 - Bảng quản lý tổng hợp.html">7. Bảng tổng hợp</a>
+  </footer>
+</main>
+
+<script>
+document.querySelectorAll('[data-viewtab]').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('[data-viewtab]').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('[data-viewpane]').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelector(`[data-viewpane="${btn.dataset.viewtab}"]`).classList.add('active');
+  });
+});
+</script>
+</body>
+</html>

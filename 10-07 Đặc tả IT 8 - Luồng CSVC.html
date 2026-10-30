@@ -1,0 +1,469 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Đặc tả IT — Luồng CSVC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FFFFFF; --surface:#FFFFFF; --surface-2:#F1F5FB;
+  --fg:#10151C; --fg-muted:#5B6672; --border:rgba(20,24,31,.16);
+  --accent:#143680; --accent-fg:#FFFFFF; --accent-soft:#E7EAF4;
+  --danger:#D6362B; --danger-soft:#FBE4E1;
+  --warning:#DD8A1F; --warning-soft:#FCEBD2;
+  --success:#1F9254; --success-soft:#DFF3E7;
+  --shadow:0 1px 2px rgba(16,20,24,.05),0 8px 24px -12px rgba(16,20,24,.14);
+  --mono:'SF Mono',Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1420; --surface:#141B29; --surface-2:#1B2434;
+    --fg:#EAF0FB; --fg-muted:#8E9BB0; --border:rgba(145,160,184,.25);
+    --accent:#7B9BE0; --accent-fg:#0E1420; --accent-soft:#223050;
+    --danger:#F08478; --danger-soft:#3A2220;
+    --warning:#F0B35E; --warning-soft:#3A2C16;
+    --success:#6FD19B; --success-soft:#17301F;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -12px rgba(0,0,0,.6);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1420; --surface:#141B29; --surface-2:#1B2434;
+  --fg:#EAF0FB; --fg-muted:#8E9BB0; --border:rgba(145,160,184,.25);
+  --accent:#7B9BE0; --accent-fg:#0E1420; --accent-soft:#223050;
+  --danger:#F08478; --danger-soft:#3A2220;
+  --warning:#F0B35E; --warning-soft:#3A2C16;
+  --success:#6FD19B; --success-soft:#17301F;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -12px rgba(0,0,0,.6);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{background:var(--bg)}
+body{margin:0;color:var(--fg);font-family:'Be Vietnam Pro',system-ui,-apple-system,sans-serif;font-size:15px;line-height:1.6}
+h1,h2,h3,h4{font-family:'Be Vietnam Pro',system-ui,sans-serif;text-wrap:balance;margin:0}
+p{margin:0}
+a{color:var(--accent)}
+[hidden]{display:none!important}
+.sheet-nav{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--border);display:flex;gap:6px;overflow-x:auto;padding:10px 16px;scrollbar-width:thin}
+.sheet-nav a{flex:none;font-size:12.5px;font-weight:700;color:var(--fg-muted);text-decoration:none;padding:7px 13px;border-radius:99px;border:1.5px solid var(--border);white-space:nowrap}
+.sheet-nav a.active{color:var(--accent-fg);background:var(--accent);border-color:var(--accent)}
+.sheet-nav a:hover:not(.active){color:var(--fg);background:var(--surface-2)}
+main.wrap{max-width:1180px;margin:0 auto;padding:36px 28px 120px}
+.doc-head{margin-bottom:30px;padding-bottom:26px;border-bottom:1px solid var(--border)}
+.doc-head .kicker{font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.doc-head .kicker .pathtag{background:var(--accent-soft);padding:2px 9px;border-radius:99px}
+.doc-head h1{font-size:28px;font-weight:800;margin-bottom:10px}
+.doc-head .meta{font-size:13px;color:var(--fg-muted);display:flex;flex-wrap:wrap;gap:4px 18px;margin-top:14px}
+.doc-head .meta b{color:var(--fg)}
+.doc-head .lead{font-size:14.5px;color:var(--fg);max-width:70ch;margin-top:14px;line-height:1.65}
+.quicknav{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:38px}
+.quicknav a{font-size:12px;font-weight:700;color:var(--accent);text-decoration:none;background:var(--accent-soft);padding:6px 12px;border-radius:99px}
+.quicknav a:hover{text-decoration:underline}
+section.block{margin-bottom:52px;scroll-margin-top:60px}
+section.block > h2{font-size:21px;font-weight:800;padding-bottom:12px;margin-bottom:18px;border-bottom:2px solid var(--fg);display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+section.block > h2 .tag{font-size:11px;font-weight:800;color:var(--accent-fg);background:var(--accent);padding:3px 9px;border-radius:99px;letter-spacing:.02em}
+h3.sub{font-size:16px;font-weight:800;margin:28px 0 10px;scroll-margin-top:60px}
+h4.sub2{font-size:13.5px;font-weight:800;margin:18px 0 8px;color:var(--fg)}
+.note{font-size:13px;color:var(--fg-muted);line-height:1.6;margin-bottom:14px}
+.note b{color:var(--fg)}
+.callout{background:var(--accent-soft);border:1px solid var(--border);border-radius:12px;padding:13px 16px;font-size:13px;line-height:1.6;margin:14px 0 20px;color:var(--fg)}
+.callout b{color:var(--accent)}
+.callout.warn{background:var(--warning-soft)}
+.callout.warn b{color:var(--warning)}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:12px;margin:12px 0 22px}
+table{border-collapse:collapse;width:100%;font-size:13px;min-width:560px}
+th,td{padding:9px 13px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+th{background:var(--surface-2);font-weight:800;font-size:11.5px;text-transform:uppercase;letter-spacing:.03em;color:var(--fg-muted);white-space:nowrap}
+tr:last-child td{border-bottom:none}
+td b{font-weight:700}
+td code,.callout code{background:var(--surface-2);padding:1px 6px;border-radius:5px;font-family:var(--mono);font-size:12px}
+.req-y{color:var(--success);font-weight:800}
+.req-c{color:var(--warning);font-weight:700}
+.pri-r{color:var(--danger);font-weight:800}
+.pri-o{color:var(--warning);font-weight:800}
+.pri-g{color:var(--success);font-weight:800}
+.linkout{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;color:var(--accent);text-decoration:none;margin-bottom:4px}
+.linkout:hover{text-decoration:underline}
+ul.plain{list-style:none;padding-left:0;margin:0;font-size:13.5px;line-height:1.75}
+ul.plain li{padding-left:20px;position:relative;margin-bottom:6px}
+ul.plain li::before{content:"—";position:absolute;left:0;color:var(--accent);font-weight:800}
+/* ---------- mermaid diagrams ---------- */
+.diagram{border:1px solid var(--border);border-radius:14px;padding:18px;overflow-x:auto;background:var(--surface-2);margin:14px 0 22px}
+.mermaid{display:flex;justify-content:center;min-width:620px}
+footer{border-top:1px solid var(--border);margin-top:40px;padding-top:18px;font-size:12px;color:var(--fg-muted)}
+@media (max-width:860px){ main.wrap{padding:28px 16px 90px} }
+</style>
+</head>
+<body>
+
+<div class="sheet-nav">
+  <a href="10-07 Đặc tả IT 5 - SM Phiếu yêu cầu và Nghiệm thu.html">📋 1. SM — Phiếu & Nghiệm thu</a>
+  <a href="10-07 Đặc tả IT 6 - PYC CSVC.html">🗂️ 2. Tổng quan thẻ CSVC</a>
+  <a href="10-07 Đặc tả IT 1 - Nhóm Sự cố Sửa chữa.html">🔧 3. Sự cố / Sửa chữa</a>
+  <a href="10-07 Đặc tả IT 2 - Nhóm Lắp đặt Nâng cấp Thay thế.html">🛠️ 4. Lắp đặt / Nâng cấp / Thay thế</a>
+  <a href="10-07 Đặc tả IT 3 - Nhóm Luân chuyển CSVC.html">🔄 5. Luân chuyển CSVC</a>
+  <a href="10-07 Đặc tả IT 4 - Nhóm Vệ sinh Dọn dẹp.html">🧹 6. Vệ sinh / Dọn dẹp</a>
+  <a href="10-07 Đặc tả IT 7 - Bảng quản lý tổng hợp.html">📊 7. Bảng tổng hợp</a>
+  <a class="active" href="10-07 Đặc tả IT 8 - Luồng CSVC.html">🧭 8. Luồng CSVC</a>
+</div>
+
+<main class="wrap">
+  <div class="doc-head">
+    <div class="kicker"><span class="pathtag">A1–A2 · A6 · B1</span> Đặc tả màn hình gửi IT</div>
+    <h1>🧭 Luồng CSVC — Quy tắc & Dữ liệu chuẩn</h1>
+    <p class="lead">Sheet này <b>không phải 1 màn hình</b> — là tài liệu <b>nguyên tắc nghiệp vụ + dữ liệu chuẩn</b> mà CSVC dùng để tự ra quyết định (gắn màu, chọn phương án), và IT dùng để hiểu <b>vì sao</b> các trường/điều kiện ở sheet 1, 3–6 được thiết kế như vậy. Nội dung lấy lại từ bản đặc tả gốc <code>10-07 Đặc tả CSVC gửi IT.html</code>, giữ nguyên các phần còn đúng — không copy lại phần đặc tả màn hình (4B.8–4B.12) vì đã có bản mới, chi tiết hơn, ở sheet 1 và 3–6.</p>
+    <div class="meta">
+      <span><b>Nguồn:</b> 10-07 Đặc tả CSVC gửi IT.html (A1, A2, A6.2, A6.5, A6.6, A6.7, A6.9, B1, Phụ lục A1)</span>
+      <span><b>Cập nhật:</b> 29/10/2026</span>
+    </div>
+  </div>
+
+  <div class="callout warn"><b>Lưu ý IT — đối chiếu enum:</b> tài liệu gốc này được viết trước khi 6 sheet UI (1, 3–6) được chốt chi tiết, nên vài tên trường/giá trị <b>đã đổi</b> ở bản mới hơn. Ví dụ: "Chi phí dự kiến" (1 trường) ở B1/4B.10 cũ → tách thành "Giá tiền vật tư" + "Giá tiền nhân công" ở sheet 1/3–6; "Tiến độ" 5 giá trị (Đã liên hệ SM/Đang trên đường/...) ở 4B.11 cũ → rút gọn còn 3 giá trị (Chưa xử lý/Đang xử lý/Đã xử lý xong) ở sheet 3–6. <b>Lấy sheet 1, 2, 3–6, 7 làm chuẩn cho tên trường/màn hình cụ thể</b> — sheet này chỉ để tham chiếu nguyên tắc/dữ liệu nền.</div>
+
+  <nav class="quicknav">
+    <a href="#overview">Tổng quan hệ thống</a>
+    <a href="#flow">Sơ đồ luồng tổng</a>
+    <a href="#a62">19 nhóm thiết bị</a>
+    <a href="#color">Phân loại màu</a>
+    <a href="#b1">Ra quyết định phương án</a>
+    <a href="#lifecycle">Vòng đời thẻ</a>
+  </nav>
+
+  <!-- ============ A1 — TỔNG QUAN ============ -->
+  <section class="block" id="overview">
+    <h2><span class="tag">A1</span> Tổng quan hệ thống</h2>
+
+    <h3 class="sub">Mục đích hệ thống</h3>
+    <p class="note">Xây dựng 1 form thống nhất để SM gửi mọi yêu cầu cơ sở vật chất, và bộ màn hình để CSVC tiếp nhận, phân công, thực hiện, nghiệm thu. Hệ thống tự động phân màu ưu tiên từ câu trả lời SM — CSVC không cần phân loại thủ công.</p>
+
+    <h3 class="sub">Người tham gia</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>Vai trò</th><th>Màn hình sử dụng</th></tr>
+      <tr><td><b>SM / Nhân viên thay SM</b></td><td>Sheet 1 — Phiếu yêu cầu (4B.1–4B.6) &amp; Nghiệm thu (4B.12)</td></tr>
+      <tr><td><b>Nhân viên CSVC</b></td><td>Sheet 3–6 — Xem xét thẻ (4B.8) · Hướng dẫn sơ bộ (4B.9) · Ra quyết định (4B.10) · Cập nhật tiến độ (4B.11) · Sheet 2 — Tổng quan &amp; điều phối</td></tr>
+      <tr><td><b>Quản lý CSVC</b></td><td>Toàn bộ — thêm quyền xem tất cả thẻ mọi salon, nhận thông báo vượt hạn, cập nhật Tình trạng thanh toán (sheet 7)</td></tr>
+    </table></div>
+
+    <h3 class="sub">Bộ màn hình đã xây <small style="font-weight:400;font-size:13px;color:var(--fg-muted)">(xem chi tiết ở từng sheet tương ứng)</small></h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>Mã</th><th>Màn hình</th><th>Xem ở sheet</th></tr>
+      <tr><td>4B.1 – 4B.2</td><td>SM: Bước 0 — Xác nhận người gửi · Bước 1 — Chọn loại yêu cầu</td><td>1 — SM</td></tr>
+      <tr><td>4B.3 – 4B.6</td><td>SM: Điền chi tiết theo 4 nhánh (Sự cố / Lắp đặt / Luân chuyển / Vệ sinh)</td><td>1 — SM</td></tr>
+      <tr><td>4B.7A</td><td>Tổng quan &amp; danh sách thẻ CSVC</td><td>2 — Tổng quan thẻ CSVC</td></tr>
+      <tr><td>4B.8 – 4B.11</td><td>CSVC: Bước 2 Xem xét → Bước 3 Hướng dẫn sơ bộ → Bước 4 Ra quyết định → Bước 5 Cập nhật tiến độ</td><td>3, 4, 5, 6 — theo nhánh</td></tr>
+      <tr><td>4B.12</td><td>SM: Bước 6 — Nghiệm thu</td><td>1 — SM</td></tr>
+      <tr><td>4B.13</td><td>Bảng quản lý tổng hợp (24 cột, mọi thẻ)</td><td>7 — Bảng tổng hợp</td></tr>
+    </table></div>
+  </section>
+
+  <!-- ============ A2 — SƠ ĐỒ LUỒNG ============ -->
+  <section class="block" id="flow">
+    <h2><span class="tag">A2</span> Sơ đồ luồng tổng</h2>
+    <p class="note">Toàn bộ luồng từ lúc SM gửi yêu cầu đến khi thẻ được đóng — gồm 6 bước CSVC xử lý sau khi thẻ được tạo.</p>
+    <div class="diagram"><pre class="mermaid">
+flowchart TD
+    subgraph FORM["📋 SM — Tạo yêu cầu"]
+        direction LR
+        A0["Bước 0 — Xác nhận người gửi<br/>Salon · Có phải SM không?"]
+        A1n["Bước 1 — Loại yêu cầu"]
+        AA["🔧 A — Sự cố / Hỏng hóc"]
+        AB["🛠️ B — Lắp đặt mới / Nâng cấp"]
+        AC["🔄 C — Luân chuyển/vận chuyển thiết bị"]
+        AD["🧹 D — Vệ sinh / Dọn dẹp"]
+    end
+
+    B1n["Thẻ được tạo<br/>Màu ưu tiên tự động gắn từ câu trả lời SM"]
+
+    subgraph B2n["Bước 2 — CSVC xem xét & xác nhận"]
+        C1{"Màu đã tự động gắn<br/>CSVC xác nhận hoặc điều chỉnh"}
+        C_RED["🔴 ĐỎ"]
+        C_ORG["🟠 CAM"]
+        C_GRN["🟢 XANH"]
+    end
+
+    subgraph B3n["Bước 3 — Hướng dẫn sơ bộ (chỉ 🟠🟢)"]
+        D1["CSVC gọi SM<br/>hướng dẫn tự xử lý"]
+        D2{"SM xử lý<br/>được không?"}
+        D3(["✅ Đã xử lý từ xa"])
+    end
+
+    subgraph B4n["Bước 4 — Ra quyết định phương án"]
+        E1{"Gấp?"}
+        E2{"Nội bộ đủ<br/>năng lực và<br/>nguồn lực?"}
+        E3["Nội bộ<br/>Đi ngay"]
+        E4["Thuê thợ ngoài"]
+        E5{"Có thẻ cùng khu<br/>và còn trong<br/>hạn SM?"}
+        E6["Ghép thẻ<br/>Lên lịch nội bộ"]
+        E7["Lên lịch riêng<br/>nội bộ hoặc thuê ngoài"]
+    end
+
+    subgraph B5n["Bước 5 — Cập nhật tiến độ"]
+        F1["Thực hiện"]
+        F2["Cập nhật kết quả<br/>+ ảnh + chi phí"]
+    end
+
+    subgraph B6n["Bước 6 — SM Nghiệm thu"]
+        G1{"Đạt?"}
+        G2(["✅ Hoàn thành"])
+        G3["Mở lại thẻ<br/>CSVC xử lý tiếp"]
+    end
+
+    A0 --> A1n
+    A1n --> AA & AB & AC & AD
+    AA & AB & AC & AD --> B1n
+
+    B1n --> C1
+    C1 --> C_RED & C_ORG & C_GRN
+
+    C_RED -->|"Gọi điện SM ngay<br/>Đồng thời cử người/gọi thợ đến"| E1
+    C_ORG & C_GRN --> D1
+    D1 --> D2
+    D2 -->|Được| D3
+    D2 -->|Không được| E1
+
+    E1 -->|Gấp| E2
+    E2 -->|Có| E3
+    E2 -->|Không| E4
+    E1 -->|Không gấp| E5
+    E5 -->|Có| E6
+    E5 -->|Không| E7
+
+    E3 & E4 & E6 & E7 --> F1
+    F1 --> F2 --> G1
+    G1 -->|Đạt| G2
+    G1 -->|Không đạt| G3 --> F1
+      </pre></div>
+  </section>
+
+  <!-- ============ A6.2 ============ -->
+  <section class="block" id="a62">
+    <h2><span class="tag">A6.2</span> Nhóm thiết bị / hạng mục — 19 nhóm</h2>
+    <p class="note">Gộp chung "Thiết bị" và "Hạng mục công trình" thành 1 danh sách duy nhất. Nhóm thiết bị quyết định danh sách "Tên thiết bị" cascading bên dưới trên form (cột 10–11 ở sheet 7, trường "Nhóm thiết bị/hạng mục" + "Tên thiết bị" ở sheet 1).</p>
+    <div class="tbl-wrap"><table>
+      <tr><th>#</th><th>Tên nhóm</th><th>Thiết bị / hạng mục</th></tr>
+      <tr><td>1</td><td>Gương cắt</td><td>Hệ gương cắt · Gương cắt sắt đen · Khoang cabin</td></tr>
+      <tr><td>2</td><td>Ghế Cắt</td><td>Ghế cắt đen · Ghế maybach</td></tr>
+      <tr><td>3</td><td>Giường dịch vụ</td><td>Ghế LRT · Giường thera studio · Đệm lót lưng/vai giường thera studio · Vải lót giường thera studio · Gối giường thera studio · Máy massage giường thera studio · Giường phi thuyền · Đệm lót lưng/vai giường phi thuyền · Đệm làm massage paradise phi thuyền · Bồn gội giường phi thuyền · Máy massage giường phi thuyền · Giường xả · Remote máy massage giường gội paradise · Giường spa trắng · Bồn gội giường spa trắng · Bồn sứ đen · Bục để chân · Giường gội paradise · Bồn gội giường paradise · Đệm lót lưng paradise · Máy massage giường gội paradise · Ghế Skinner · Vòi Gật gù · Vòi sen · Dây cấp · Gác vòi Gật gù</td></tr>
+      <tr><td>4</td><td>Sofa & bàn ghế chờ khách</td><td>Ghế sofa · Ghế chờ đơn · Ghế toix thấp/cao · Bàn chờ thấp/cao · Ghế sofa đơn chữ Z · Ghế nhựa khách ngồi</td></tr>
+      <tr><td>5</td><td>Điều hòa & quạt</td><td>Điều hòa treo tường · Điều hòa âm trần · Quạt cây · Quạt trần · Quạt hút mùi</td></tr>
+      <tr><td>6</td><td>Máy dịch vụ <i>(PV trực tiếp khách hàng)</i></td><td>Máy H2O2 · Máy phun Nano · Máy sấy tóc · Máy hấp đá nóng · Máy xông 2 vòi · Máy tẩy da chết · Máy hút mụn · Súng phun Hoa hồng · Mặt lạ ánh sáng xanh</td></tr>
+      <tr><td>7</td><td>Vận hành</td><td>Hotline · Laptop · Chuột laptop · Tablet DV · Máy inbill · Máy Pos thanh toán · Tivi · Xe đẩy hóa chất · Máy lọc nước · Máy giặt · Máy sấy · Remote cửa cuốn · Khay đựng tiền</td></tr>
+      <tr><td>8</td><td>Cam, loa, mạng</td><td>Đầu ghi camera · Mắt camera · Mắt camera wifi · WIFI · Switch · Loa kéo · Loa âm trần BLT · Âm ly · Loa treo tường</td></tr>
+      <tr><td>9</td><td>Quầy, tủ, kệ</td><td>Tủ vật tư · Tủ đồ · Quầy mỹ phẩm · Quầy lễ tân</td></tr>
+      <tr><td>10</td><td>PCCC</td><td>Bình PCCC · Đèn exit · Tiêu lệnh PCCC · Đèn sự cố</td></tr>
+      <tr><td>11</td><td>Ánh sáng</td><td>Đèn âm trần · Đèn led gương cắt 1,2m · Đèn led gương cắt tròn D65 · Đèn tuyp led 1,2m · Đèn led trang trí · Đèn tường phòng paradise · Đèn pha mặt tiền · Đèn Logo 30 Shine mặt tiền · Đèn led quầy tủ kệ</td></tr>
+      <tr><td>12</td><td>POSM</td><td>Vật phẩm trưng bày/marketing (standee, banner...) — phạm vi quản lý chi tiết đang chốt riêng, form chỉ nhận báo sự cố/vệ sinh chung</td></tr>
+      <tr><td>13</td><td>Hệ thống nước</td><td>Bơm tăng áp · Bơm tổng · Bình nóng lạnh · Vòi nước · Van nước · Bồn nước · Đường ống nước · Đồng hồ nước · Phao điện · Phao cơ</td></tr>
+      <tr><td>14</td><td>Hệ thống điện</td><td>CB tổng · CB nhánh · Công tắc · Ổ cắm · Đường dây điện · Nẹp điện · Đồng hồ điện</td></tr>
+      <tr><td>15</td><td>Trần/Tường/Sàn</td><td>Trần thạch cao · Trần la phông · Mái tôn · Trần bê tông · Tường thạch cao · Tường nhựa · Vách gỗ · Tường gạch · Sàn gạch · Sàn gỗ · Thảm · Sàn bê tông · Cửa cuốn · Cửa kính · Rèm nhựa PVC · Rèm vải · Cửa sổ · Cửa WC · Cửa phòng paradise · Alu</td></tr>
+      <tr><td>16</td><td>Thang máy</td><td>Thang máy</td></tr>
+      <tr><td>17</td><td>WC</td><td>Bồn cầu WC · Lavabo · Vòi xịt · Thoát sàn · Gương</td></tr>
+      <tr><td>18</td><td>Mùi</td><td>Mùi hôi · Tinh dầu</td></tr>
+      <tr><td>19</td><td>Khác</td><td>Thiết bị/hạng mục chưa có trong danh mục → SM gõ tay tên + mô tả</td></tr>
+    </table></div>
+  </section>
+
+  <!-- ============ A6.5 — A6.6 — A6.7 — A6.9 ============ -->
+  <section class="block" id="color">
+    <h2>Phân loại màu ưu tiên</h2>
+
+    <h3 class="sub" id="a65">A6.5 — Phân loại màu theo biểu hiện <small style="font-weight:400;font-size:13px;color:var(--fg-muted)">(tham chiếu)</small></h3>
+    <div class="callout warn">Dùng để CSVC gắn màu khi nhận thẻ — dựa trên những gì SM tick trong form. <b>Nguyên tắc cứng:</b> 1 dấu hiệu 🔴 trong form là đủ để thẻ thành 🔴 — không xét các dấu hiệu còn lại.</div>
+
+    <h4 class="sub2">Nhánh A — Sự cố / Hỏng hóc</h4>
+    <div class="tbl-wrap"><table>
+      <tr><th>Màu thẻ</th><th>Biểu hiện SM tick</th></tr>
+      <tr><td class="pri-r">🔴 Nguy hiểm — xử lý ngay</td><td>Cháy / khói · Tiếng nổ · Mùi khét / cháy</td></tr>
+      <tr><td class="pri-o">🟠 Ảnh hưởng vận hành</td><td>Chảy nước / ẩm ướt · Gãy/vỡ/nứt · Đèn tắt/nhấp nháy · Không chuyển động · Mùi hôi · Thiết bị nóng bất thường · Cảm giác bị giật nhẹ · Máy gây đau/khó chịu · Bề mặt sắc/bong tróc gây trầy · Không bật được · Bật nhưng không làm việc · Mất kết nối · Thao tác không phản hồi</td></tr>
+      <tr><td class="pri-g">🟢 Không khẩn cấp</td><td>Bẩn / rách / méo · Tiếng kêu lạ/rít · Không có âm thanh · Rung lắc bất thường · Âm thanh méo/rè · Mùi lạ/hóa chất · Chạy chậm/giật/lag · Tự ngắt/không ổn định</td></tr>
+    </table></div>
+
+    <h4 class="sub2">Nhánh B — Lắp đặt mới</h4>
+    <div class="tbl-wrap"><table>
+      <tr><th>Màu thẻ</th><th>SM chọn</th></tr>
+      <tr><td class="pri-o">🟠 Ảnh hưởng vận hành</td><td>Cấp thiết — ảnh hưởng vận hành ngay</td></tr>
+      <tr><td class="pri-g">🟢 Không khẩn cấp</td><td>Cần trong tuần này · Không gấp — có thể sắp xếp linh hoạt</td></tr>
+    </table></div>
+
+    <h4 class="sub2">Nhánh C — Luân chuyển</h4>
+    <div class="tbl-wrap"><table>
+      <tr><th>Màu thẻ</th><th>SM chọn</th></tr>
+      <tr><td class="pri-o">🟠 Ảnh hưởng vận hành</td><td>Gấp — salon nhận đang thiếu và ảnh hưởng vận hành</td></tr>
+      <tr><td class="pri-g">🟢 Không khẩn cấp</td><td>Không gấp — có thể sắp lịch linh hoạt</td></tr>
+    </table></div>
+
+    <h4 class="sub2">Nhánh D — Vệ sinh / Dọn dẹp</h4>
+    <div class="tbl-wrap"><table>
+      <tr><th>Màu thẻ</th><th>Loại vệ sinh</th></tr>
+      <tr><td class="pri-o">🟠 Ảnh hưởng vận hành</td><td>Vệ sinh sau sự cố (tràn nước, cháy, sửa chữa xong)</td></tr>
+      <tr><td class="pri-g">🟢 Không khẩn cấp</td><td>Vệ sinh định kỳ · Dọn rác/Thanh lý · Vệ sinh tổng</td></tr>
+    </table></div>
+
+    <h3 class="sub" id="a66">A6.6 — Nguyên tắc phân loại màu</h3>
+    <p class="note">Áp dụng theo thứ tự — nguyên tắc trên ghi đè nguyên tắc dưới.</p>
+    <div class="tbl-wrap"><table>
+      <tr><th>#</th><th>Nguyên tắc</th><th>Ví dụ</th></tr>
+      <tr><td>1</td><td><b>Biểu hiện cháy/nổ/khói ghi đè tất cả → 🔴</b>, trừ thiết bị nhỏ cô lập</td><td>Hệ thống điện cháy = 🔴 · Điện thoại cháy = 🔴</td></tr>
+      <tr><td>2</td><td><b>Thiết bị/hạng mục gắn hạ tầng an toàn</b> (điện tổng, PCCC, nước tổng, thang máy) → mặc định 🟠, leo 🔴 khi có biểu hiện nguy hiểm</td><td>CB tổng hỏng thông thường = 🟠 · CB tổng kèm mùi khét = 🔴</td></tr>
+      <tr><td>3</td><td><b>Thiết bị thẩm mỹ / không thiết yếu → mặc định 🟢</b> bất kể biểu hiện</td><td>Tivi hỏng = 🟢 · Gương WC rơi = 🟢 · Cửa sổ vỡ = 🟢</td></tr>
+      <tr><td>4</td><td><b>Số lượng ảnh hưởng</b>: 1 cái trong nhiều cái cùng loại → xuống 1 bậc; ≥2 cái cùng phòng hỏng hoặc gây chi phí vận hành thay thế → giữ hoặc lên 1 bậc</td><td>1/10 điều hòa hỏng = 🟢 · 3/10 hỏng cùng phòng = 🟠 · Máy giặt hỏng = 🟠 (phải giặt ngoài)</td></tr>
+      <tr><td>5</td><td><b>Khu vực dịch vụ trực tiếp</b> (cắt, gội/xả/LRT, paradise) ưu tiên hơn khu hậu trường (kho, giặt sấy, hành lang) cùng mức biểu hiện</td><td>Điều hòa hỏng khu cắt = 🟠 · Điều hòa hỏng phòng kho = 🟢</td></tr>
+      <tr><td>6</td><td><b>Biểu hiện gây hại trực tiếp người dùng</b> (điện giật, trơn ngã, bề mặt sắc nhọn, máy gây đau) → tăng 1 bậc so với mặc định</td><td>Sàn trơn = 🟠 · Ghế bong lộ lò xo sắc = 🟠</td></tr>
+    </table></div>
+
+    <h3 class="sub" id="a67">A6.7 — Bảng phân loại mặc định theo Nhóm thiết bị/hạng mục</h3>
+    <p class="note">Đây là màu <b>mặc định cấp nhóm</b> — CSVC vẫn áp các nguyên tắc ghi đè ở A6.6 để ra màu cuối cùng cho từng thẻ cụ thể.</p>
+    <div class="tbl-wrap"><table>
+      <tr><th>#</th><th>Nhóm</th><th>Mặc định</th><th>Lên 🔴 khi</th><th>Ghi chú</th></tr>
+      <tr><td>1</td><td>Gương cắt</td><td class="pri-o">🟠</td><td>Cháy khói / điện giật</td><td>Không có gương = không cắt được</td></tr>
+      <tr><td>2</td><td>Ghế Cắt</td><td class="pri-o">🟠</td><td>Điện giật · Bề mặt lộ sắc nhọn</td><td>Thiết bị dịch vụ chính — mất slot dịch vụ trực tiếp</td></tr>
+      <tr><td>3</td><td>Giường dịch vụ</td><td class="pri-o">🟠</td><td>Cháy khói / điện giật</td><td>Mất slot dịch vụ gội/xả/massage</td></tr>
+      <tr><td>4</td><td>Sofa & bàn ghế chờ khách</td><td class="pri-g">🟢</td><td>Bề mặt sắc nhọn gây trầy xước</td><td>Thẩm mỹ / tiện nghi phụ</td></tr>
+      <tr><td>5</td><td>Điều hòa & quạt</td><td>🟠 nếu ≥2 cái cùng khu hỏng · 🟢 nếu 1 cái/còn đủ cái khác</td><td>—</td><td>Quạt hỗ trợ mặc định 🟢</td></tr>
+      <tr><td>6</td><td>Máy dịch vụ (PV trực tiếp KH)</td><td class="pri-o">🟠</td><td>Cháy khói / điện giật</td><td>Không có = không thực hiện được đúng dịch vụ đó</td></tr>
+      <tr><td>7</td><td>Vận hành</td><td>🟠 Máy Pos/inbill/lọc nước/giặt/sấy · 🟢 Hotline/Laptop/Tablet/Tivi/Khay đựng tiền</td><td>—</td><td>Máy Pos/inbill ảnh hưởng thanh toán; máy giặt/sấy hỏng phải thuê ngoài</td></tr>
+      <tr><td>8</td><td>Cam, loa, mạng</td><td class="pri-g">🟢</td><td>—</td><td>Không ảnh hưởng vận hành trực tiếp</td></tr>
+      <tr><td>9</td><td>Quầy, tủ, kệ</td><td class="pri-g">🟢</td><td>—</td><td>Có thể dùng tạm</td></tr>
+      <tr><td>10</td><td>PCCC</td><td class="pri-o">🟠</td><td>Cháy thật / hệ thống kích hoạt sai</td><td>Liên quan an toàn trực tiếp</td></tr>
+      <tr><td>11</td><td>Ánh sáng</td><td>🟢 mặc định · 🟠 nếu tắt hết đèn khu dịch vụ chính</td><td>Cháy / mùi khét</td><td>Theo A6.6 rule 5</td></tr>
+      <tr><td>12</td><td>POSM</td><td class="pri-g">🟢</td><td>—</td><td>Thẩm mỹ/marketing</td></tr>
+      <tr><td>13</td><td>Hệ thống nước</td><td class="pri-o">🟠</td><td>Ngập / rò rỉ lớn không kiểm soát</td><td>Không có nước = không làm dịch vụ gội/xả</td></tr>
+      <tr><td>14</td><td>Hệ thống điện</td><td class="pri-o">🟠</td><td>Cháy khói / chập toàn salon</td><td>Hỏng = mất điện toàn salon</td></tr>
+      <tr><td>15</td><td>Trần/Tường/Sàn</td><td>🟢 mặc định (thẩm mỹ) · 🟠 sàn trơn trượt/nứt gây vấp, cửa cuốn không mở được</td><td>Trần rơi đổ / thấm dột xuống thiết bị điện</td><td>Phân biệt hỏng thẩm mỹ (🟢) vs gây nguy hiểm/cản trở vận hành (🟠)</td></tr>
+      <tr><td>16</td><td>Thang máy</td><td class="pri-o">🟠</td><td>Kẹt người bên trong</td><td>Hỏng thông thường = 🟠</td></tr>
+      <tr><td>17</td><td>WC</td><td>🟠 Bồn cầu/Vòi xịt/Thoát sàn · 🟢 Gương</td><td>—</td><td>WC không dùng được = không phục vụ KH</td></tr>
+      <tr><td>18</td><td>Mùi</td><td class="pri-g">🟢 mặc định</td><td>Nghi mùi gas/hóa chất nguy hiểm</td><td>Mùi hôi thông thường xử lý như vệ sinh</td></tr>
+      <tr><td>19</td><td>Khác</td><td>CSVC đánh giá theo A6.6</td><td>—</td><td>Chưa có mặc định cố định</td></tr>
+    </table></div>
+
+    <h3 class="sub" id="a69">A6.9 — Ưu tiên theo khu vực <small style="font-weight:400;font-size:13px;color:var(--fg-muted)">— khi 2 thẻ cùng màu, xử lý khu nào trước</small></h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>Mức ưu tiên khu vực</th><th>Khu vực</th></tr>
+      <tr><td><b>Cao</b> — dịch vụ trực tiếp tạo doanh thu</td><td>Khu vực cắt & xả · Khu vực gội/Paradise · Khu LRT · Lễ tân, khu chờ khách</td></tr>
+      <tr><td><b>Trung</b> — hỗ trợ khách hoặc an toàn</td><td>WC · Mặt tiền, nhà để xe · Hành lang, cầu thang</td></tr>
+      <tr><td><b>Thấp</b> — hậu trường</td><td>Phòng kho · Phòng giặt, sấy</td></tr>
+    </table></div>
+  </section>
+
+  <!-- ============ B1 ============ -->
+  <section class="block" id="b1">
+    <h2><span class="tag">B1</span> Nguyên tắc chốt phương án</h2>
+    <p class="note">Mục tiêu: nhân viên CSVC tự ra quyết định theo bảng này ở Bước 4 (sheet 1/3–6) — Quản lý CSVC chỉ xử lý ngoại lệ.</p>
+
+    <h3 class="sub" id="b1-var">4 biến số đầu vào</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>Biến số</th><th>Ai xác định</th><th>Nội dung</th></tr>
+      <tr><td><b>1 — An toàn</b></td><td>SM chọn trong form</td><td>Có nguy hiểm cháy nổ, chập điện, thân thể không?</td></tr>
+      <tr><td><b>2 — Khẩn cấp</b></td><td>SM chọn trong form</td><td>Gấp (ảnh hưởng vận hành ngay) hay không gấp (chịu được 1–2 ngày)?</td></tr>
+      <tr><td><b>3 — Địa lý</b></td><td>CSVC xác định</td><td>Salon đó cách nhân viên CSVC đang ở bao xa? Cùng khu với thẻ nào khác không?</td></tr>
+      <tr><td><b>4a — Năng lực</b></td><td>CSVC xác định</td><td>Đội nội bộ biết làm loại hạng mục này không? (cửa cuốn, thang máy... = không biết làm)</td></tr>
+      <tr><td><b>4b — Nguồn lực</b></td><td>CSVC xác định</td><td>Đội nội bộ có người rảnh để làm ngay không?</td></tr>
+    </table></div>
+
+    <h3 class="sub" id="b1-table">Bảng ra quyết định</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>An toàn (SM)</th><th>Khẩn cấp (SM)</th><th>Địa lý (CSVC)</th><th>Năng lực nội bộ</th><th>Nguồn lực nội bộ</th><th>Phương án</th><th>Phản hồi tối đa</th><th>Xử lý xong tối đa</th></tr>
+      <tr><td class="pri-r">🔴 Nguy hiểm</td><td>Luôn gấp</td><td>Bất kỳ</td><td>Bất kỳ</td><td>Bất kỳ</td><td>Gọi điện SM + cử người đến + báo Quản lý CSVC</td><td><b>30 phút</b></td><td>Trong ngày</td></tr>
+      <tr><td class="pri-o">🟠 Ảnh hưởng vận hành</td><td>Gấp</td><td>≤ 30 phút</td><td>Biết làm</td><td>Có người rảnh</td><td>Đi ngay — nội bộ</td><td><b>2 tiếng</b></td><td>Trong ngày</td></tr>
+      <tr><td class="pri-o">🟠 Ảnh hưởng vận hành</td><td>Gấp</td><td>&gt; 30 phút</td><td>Biết làm</td><td>Có người rảnh</td><td>Điều nhân viên gần nhất</td><td><b>2 tiếng</b></td><td>Trong ngày hoặc sáng hôm sau</td></tr>
+      <tr><td>🟠🟢 Bất kỳ</td><td>Bất kỳ</td><td>Bất kỳ</td><td><b>Không biết làm</b> (cửa cuốn, thang máy, điện 3 pha, PCCC, thi công, bảng hiệu)</td><td>—</td><td>Thuê thợ chuyên biệt theo danh sách đối tác</td><td>Theo màu</td><td>Theo màu</td></tr>
+      <tr><td>🟠🟢 Bất kỳ</td><td>Gấp</td><td>Bất kỳ</td><td>Biết làm</td><td><b>Không có người rảnh</b></td><td>Thuê thợ ngoài</td><td>Theo màu</td><td>Theo màu</td></tr>
+      <tr><td class="pri-g">🟢 Không ảnh hưởng</td><td>Không gấp</td><td>≤ 30 phút + đã có thẻ cùng khu</td><td>Biết làm</td><td>Có người rảnh</td><td>Ghép thẻ — 1 chuyến ≥ 2 thẻ</td><td><b>8 tiếng</b></td><td>Theo ngày SM yêu cầu</td></tr>
+      <tr><td class="pri-g">🟢 Không ảnh hưởng</td><td>Không gấp</td><td>≤ 30 phút, chưa có thẻ ghép</td><td>Biết làm</td><td>Có người rảnh</td><td>Chờ 1 ngày làm việc; không ghép được → lên lịch đi riêng</td><td><b>8 tiếng</b></td><td>Theo ngày SM yêu cầu</td></tr>
+      <tr><td class="pri-g">🟢 Không ảnh hưởng</td><td>Không gấp</td><td>&gt; 30 phút</td><td>Biết làm</td><td>Có người rảnh</td><td>Giao nhân viên khu đó; hoặc lùi sang ngày đi qua khu đó</td><td><b>8 tiếng</b></td><td>Theo ngày SM yêu cầu</td></tr>
+    </table></div>
+
+    <h3 class="sub" id="b1-ghep">Nguyên tắc ghép thẻ</h3>
+    <div class="tbl-wrap"><table>
+      <tr><th>Trường hợp</th><th>Quy tắc</th></tr>
+      <tr><td>Thẻ mới vào, chưa có thẻ cùng khu</td><td>Chờ 1 ngày làm việc — nếu không có thẻ ghép → lên lịch đi riêng</td></tr>
+      <tr><td>Thẻ mới + đã có thẻ cùng khu từ hôm trước</td><td>Ghép ngay — đặt lịch hôm đó hoặc hôm sau</td></tr>
+      <tr><td>Thẻ sắp đến ngày SM yêu cầu</td><td>Không chờ ghép nữa → lên lịch đi ngay</td></tr>
+      <tr><td>Quá 2 ngày chưa ghép được</td><td>Xử lý riêng — không ghép bằng mọi giá</td></tr>
+    </table></div>
+
+    <h3 class="sub" id="b1-cung">Nguyên tắc cứng</h3>
+    <ul class="plain">
+      <li>"Cùng khu" = di chuyển giữa 2 điểm ≤ 30 phút. Không ghép khi phải chạy ngược hướng hoàn toàn (Hà Đông ↔ Long Biên)</li>
+      <li>Ngày SM mong muốn là giới hạn trên — không ghép thẻ làm trễ hơn ngày đó</li>
+      <li>Thẻ xanh tồn quá 2 ngày chưa ghép được → xử lý riêng</li>
+    </ul>
+
+    <h3 class="sub" id="b1-tree">Cây quyết định nhanh</h3>
+    <div class="diagram"><pre class="mermaid">
+flowchart TD
+    S1{"Biến 1 — Có nguy hiểm an toàn?"}
+    R1["🔴 Gọi điện SM ngay<br/>+ cử người / gọi thợ đến<br/>+ báo Quản lý CSVC"]
+    S2{"Biến 2 — Gấp?"}
+    S4a{"Biến 4a+4b<br/>Nội bộ làm được không?"}
+    R2["🟠 Đi ngay — nội bộ"]
+    R3["🟠 Thuê thợ ngoài"]
+    S3{"Biến 3 — Có thẻ cùng khu<br/>và còn trong hạn SM?"}
+    R4["🟢 Ghép thẻ, đi 1 lần"]
+    S3b["Lùi lịch đến ngày SM chấp nhận"]
+    S4b{"Biến 4a+4b"}
+    R5["🟢 Lên lịch nội bộ"]
+    R6["🟢 Lên lịch thuê ngoài"]
+
+    S1 -->|"CÓ"| R1
+    S1 -->|"KHÔNG"| S2
+    S2 -->|"Gấp — xử lý trong ngày"| S4a
+    S4a -->|"Làm được + có người"| R2
+    S4a -->|"Không làm được / không người"| R3
+    S2 -->|"Không gấp"| S3
+    S3 -->|"CÓ"| R4
+    S3 -->|"KHÔNG"| S3b
+    S3b --> S4b
+    S4b -->|"Làm được + có người"| R5
+    S4b -->|"Không"| R6
+
+    classDef danger fill:#FBE4E1,stroke:#D6362B,color:#D6362B,font-weight:bold;
+    classDef warn fill:#FCEBD2,stroke:#DD8A1F,color:#DD8A1F,font-weight:bold;
+    classDef ok fill:#DFF3E7,stroke:#1F9254,color:#1F9254,font-weight:bold;
+    classDef dec fill:#E7EAF4,stroke:#143680,color:#143680,font-weight:bold;
+    class S1,S2,S3,S3b,S4a,S4b dec;
+    class R1 danger;
+    class R2,R3 warn;
+    class R4,R5,R6 ok;
+      </pre></div>
+  </section>
+
+  <!-- ============ PHỤ LỤC A1 — VÒNG ĐỜI THẺ ============ -->
+  <section class="block" id="lifecycle">
+    <h2><span class="tag">Phụ lục A1</span> Vòng đời thẻ</h2>
+    <p class="note">Trạng thái hệ thống nội bộ của 1 thẻ, xuyên suốt từ lúc tạo đến lúc đóng — rộng hơn và chi tiết hơn 3 giá trị "Tình trạng" (Chưa xử lý/Đang xử lý/Đã xử lý xong) hiển thị ở sheet 2/3–6/7, vì gồm cả các trạng thái chờ/trung gian hệ thống tự quản lý.</p>
+    <div class="tbl-wrap"><table>
+      <tr><th>Trạng thái</th><th>Người xử lý</th><th>Thẻ vào đây khi</th><th>Hành động yêu cầu</th><th>Định mức phản hồi</th><th>Quá hạn →</th><th>Chuyển sang</th></tr>
+      <tr><td><code>Mới tạo</code></td><td>Nhóm CSVC</td><td>SM gửi form</td><td>Xem xét: xác nhận màu + thông tin (Bước 2)</td><td>🔴: <b>30 phút</b> · 🟠: <b>2 tiếng</b> · 🟢: <b>8 tiếng</b></td><td>Gửi thông báo Quản lý CSVC</td><td><code>Chờ bổ sung thông tin</code> hoặc <code>Chờ phân công</code></td></tr>
+      <tr><td><code>Chờ bổ sung thông tin</code></td><td>SM</td><td>CSVC hỏi thêm</td><td>SM điền bổ sung qua Giao tiếp trong thẻ</td><td><b>2 tiếng</b> (giờ làm việc)</td><td>CSVC gọi điện trực tiếp</td><td><code>Mới tạo</code> (xem xét lại)</td></tr>
+      <tr><td><code>Chờ phân công</code></td><td>CSVC</td><td>Xác nhận xong</td><td>Phân công người + lịch hẹn (Bước 4)</td><td>🔴🟠: <b>30 phút</b> · 🟢: <b>4 tiếng</b></td><td>Gửi thông báo Quản lý CSVC</td><td><code>Đang xử lý</code></td></tr>
+      <tr><td><code>Đang xử lý</code></td><td>Nhân viên CSVC / Thợ ngoài</td><td>Sau phân công</td><td>Thực hiện + cập nhật tiến độ (Bước 5)</td><td>Theo ngày hẹn đã chốt</td><td>Gửi thông báo Quản lý CSVC</td><td><code>Chờ nghiệm thu</code></td></tr>
+      <tr><td><code>Chờ nghiệm thu</code></td><td>SM</td><td>Tiến độ chuyển "Đã xử lý xong"</td><td>SM xác nhận kết quả (Bước 6)</td><td><b>1 ngày</b></td><td>Tự chuyển → <code>Hoàn thành</code></td><td><code>Hoàn thành</code> hoặc <code>Nghiệm thu không đạt</code></td></tr>
+      <tr><td><code>Nghiệm thu không đạt</code></td><td>CSVC</td><td>SM từ chối</td><td>Xem lý do, lên lịch xử lý lại</td><td>—</td><td>—</td><td><code>Đang xử lý</code></td></tr>
+      <tr><td><code>Đã xử lý từ xa</code></td><td>—</td><td>SM tự xử lý được (Bước 3)</td><td>—</td><td>—</td><td>—</td><td>✅ Đóng thẻ</td></tr>
+      <tr><td><code>Hoàn thành</code></td><td>—</td><td>SM xác nhận đạt hoặc hệ thống tự đóng sau định mức</td><td>—</td><td>—</td><td>—</td><td>✅ Đóng thẻ</td></tr>
+    </table></div>
+    <div class="callout warn"><b>Lưu ý IT:</b> <code>Đã xử lý từ xa</code> là trạng thái kết thúc riêng biệt với <code>Hoàn thành</code> — phân biệt rõ trong báo cáo/bảng tổng hợp (sheet 7).</div>
+  </section>
+
+  <footer>
+    Bộ đặc tả gồm 8 sheet — xem tiếp:
+    <a href="10-07 Đặc tả IT 5 - SM Phiếu yêu cầu và Nghiệm thu.html">1. SM — Phiếu yêu cầu & Nghiệm thu</a> ·
+    <a href="10-07 Đặc tả IT 6 - PYC CSVC.html">2. Tổng quan thẻ CSVC</a> ·
+    <a href="10-07 Đặc tả IT 7 - Bảng quản lý tổng hợp.html">7. Bảng tổng hợp</a>
+  </footer>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.9.1/mermaid.min.js"></script>
+<script>
+mermaid.initialize({ startOnLoad:true, theme:'base', themeVariables:{
+  primaryColor:'#E7EAF4', primaryTextColor:'#10151C', primaryBorderColor:'#143680',
+  lineColor:'#5B6672', fontFamily:'Be Vietnam Pro, system-ui, sans-serif', fontSize:'13px'
+}});
+</script>
+</body>
+</html>

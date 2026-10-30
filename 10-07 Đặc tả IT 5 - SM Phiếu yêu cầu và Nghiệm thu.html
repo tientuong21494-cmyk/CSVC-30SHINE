@@ -1,0 +1,689 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Đặc tả IT — SM: Phiếu yêu cầu & Nghiệm thu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FFFFFF; --surface:#FFFFFF; --surface-2:#F1F5FB;
+  --fg:#10151C; --fg-muted:#5B6672; --border:rgba(20,24,31,.16);
+  --accent:#143680; --accent-fg:#FFFFFF; --accent-soft:#E7EAF4;
+  --danger:#D6362B; --danger-soft:#FBE4E1;
+  --warning:#DD8A1F; --warning-soft:#FCEBD2;
+  --success:#1F9254; --success-soft:#DFF3E7;
+  --shadow:0 1px 2px rgba(16,20,24,.05),0 8px 24px -12px rgba(16,20,24,.14);
+  --mono:'SF Mono',Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1420; --surface:#141B29; --surface-2:#1B2434;
+    --fg:#EAF0FB; --fg-muted:#8E9BB0; --border:rgba(145,160,184,.25);
+    --accent:#7B9BE0; --accent-fg:#0E1420; --accent-soft:#223050;
+    --danger:#F08478; --danger-soft:#3A2220;
+    --warning:#F0B35E; --warning-soft:#3A2C16;
+    --success:#6FD19B; --success-soft:#17301F;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -12px rgba(0,0,0,.6);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1420; --surface:#141B29; --surface-2:#1B2434;
+  --fg:#EAF0FB; --fg-muted:#8E9BB0; --border:rgba(145,160,184,.25);
+  --accent:#7B9BE0; --accent-fg:#0E1420; --accent-soft:#223050;
+  --danger:#F08478; --danger-soft:#3A2220;
+  --warning:#F0B35E; --warning-soft:#3A2C16;
+  --success:#6FD19B; --success-soft:#17301F;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -12px rgba(0,0,0,.6);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{background:var(--bg)}
+body{margin:0;color:var(--fg);font-family:'Be Vietnam Pro',system-ui,-apple-system,sans-serif;font-size:15px;line-height:1.6}
+h1,h2,h3,h4{font-family:'Be Vietnam Pro',system-ui,sans-serif;text-wrap:balance;margin:0}
+p{margin:0}
+a{color:var(--accent)}
+.sheet-nav{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--border);display:flex;gap:6px;overflow-x:auto;padding:10px 16px;scrollbar-width:thin}
+.sheet-nav a{flex:none;font-size:12.5px;font-weight:700;color:var(--fg-muted);text-decoration:none;padding:7px 13px;border-radius:99px;border:1.5px solid var(--border);white-space:nowrap}
+.sheet-nav a.active{color:var(--accent-fg);background:var(--accent);border-color:var(--accent)}
+.sheet-nav a:hover:not(.active){color:var(--fg);background:var(--surface-2)}
+main.wrap{max-width:1180px;margin:0 auto;padding:36px 28px 120px}
+.doc-head{margin-bottom:30px;padding-bottom:26px;border-bottom:1px solid var(--border)}
+.doc-head .kicker{font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.doc-head .kicker .pathtag{background:var(--accent-soft);padding:2px 9px;border-radius:99px}
+.doc-head h1{font-size:28px;font-weight:800;margin-bottom:10px}
+.doc-head .meta{font-size:13px;color:var(--fg-muted);display:flex;flex-wrap:wrap;gap:4px 18px;margin-top:14px}
+.doc-head .meta b{color:var(--fg)}
+.doc-head .lead{font-size:14.5px;color:var(--fg);max-width:70ch;margin-top:14px;line-height:1.65}
+.quicknav{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:38px}
+.quicknav a{font-size:12px;font-weight:700;color:var(--accent);text-decoration:none;background:var(--accent-soft);padding:6px 12px;border-radius:99px}
+.quicknav a:hover{text-decoration:underline}
+section.block{margin-bottom:52px;scroll-margin-top:60px}
+section.block > h2{font-size:21px;font-weight:800;padding-bottom:12px;margin-bottom:18px;border-bottom:2px solid var(--fg);display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+section.block > h2 .tag{font-size:11px;font-weight:800;color:var(--accent-fg);background:var(--accent);padding:3px 9px;border-radius:99px;letter-spacing:.02em}
+h3.sub{font-size:16px;font-weight:800;margin:28px 0 10px}
+h4.sub2{font-size:13.5px;font-weight:800;margin:18px 0 8px;color:var(--fg)}
+.note{font-size:13px;color:var(--fg-muted);line-height:1.6;margin-bottom:14px}
+.note b{color:var(--fg)}
+.callout{background:var(--accent-soft);border:1px solid var(--border);border-radius:12px;padding:13px 16px;font-size:13px;line-height:1.6;margin:14px 0 20px;color:var(--fg)}
+.callout b{color:var(--accent)}
+.callout.warn{background:var(--warning-soft)}
+.callout.warn b{color:var(--warning)}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:12px;margin:12px 0 22px}
+table{border-collapse:collapse;width:100%;font-size:13px;min-width:560px}
+th,td{padding:9px 13px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+th{background:var(--surface-2);font-weight:800;font-size:11.5px;text-transform:uppercase;letter-spacing:.03em;color:var(--fg-muted);white-space:nowrap}
+tr:last-child td{border-bottom:none}
+td b{font-weight:700}
+td code,.callout code{background:var(--surface-2);padding:1px 6px;border-radius:5px;font-family:var(--mono);font-size:12px}
+.req-y{color:var(--success);font-weight:800}
+.req-c{color:var(--warning);font-weight:800}
+.pri-r{color:var(--danger);font-weight:800}
+.pri-o{color:var(--warning);font-weight:800}
+.pri-g{color:var(--success);font-weight:800}
+.a3-grid{display:grid;grid-template-columns:minmax(0,1fr) 380px;gap:28px;align-items:start}
+@media (max-width:860px){.a3-grid{grid-template-columns:1fr}}
+.mock-label{font-size:11px;font-weight:800;color:var(--fg-muted);letter-spacing:.04em;text-transform:uppercase;text-align:center;margin-bottom:8px}
+.phone{background:var(--bg);border:1px solid var(--border);border-radius:28px;padding:10px;box-shadow:var(--shadow);position:sticky;top:56px}
+.phone-screen{background:var(--surface);border-radius:18px;padding:18px 16px 20px;max-height:80vh;overflow-y:auto}
+.phone-screen .mock-card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:16px 15px 18px;margin-bottom:14px}
+.phone-screen .mock-card:last-child{margin-bottom:0}
+.phone-screen .mock-tag{font-size:10.5px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;margin-bottom:5px;color:var(--fg)}
+.phone-screen .eyebrow{font-size:10.5px;font-weight:800;letter-spacing:.03em;text-transform:uppercase;color:var(--fg-muted);margin-bottom:5px;display:block}
+.phone-screen h2{font-size:15px;font-weight:800;margin-bottom:3px}
+.phone-screen .mhint{font-size:11.5px;color:var(--fg);font-weight:500;margin-bottom:13px;line-height:1.5}
+.phone-screen .field{margin-bottom:13px}
+.phone-screen .field:last-child{margin-bottom:0}
+.phone-screen .field label{display:block;font-size:11.5px;font-weight:700;margin-bottom:5px;color:var(--fg)}
+.phone-screen .field label .req{color:var(--danger);margin-left:2px}
+.phone-screen .field label .opt{color:var(--fg-muted);font-weight:400;margin-left:3px}
+.phone-screen select,.phone-screen input,.phone-screen textarea,.phone-screen button.mockbtn{
+  width:100%;font:inherit;font-size:12.5px;color:var(--fg);background:var(--surface-2);
+  border:1px solid var(--border);border-radius:9px;padding:9px 10px;
+}
+.phone-screen button.mockbtn{text-align:left;cursor:default}
+.phone-screen input[readonly],.phone-screen input:disabled,.phone-screen select:disabled,.phone-screen textarea:disabled{color:var(--fg-muted);opacity:1;-webkit-text-fill-color:var(--fg-muted)}
+.phone-screen textarea{resize:none;min-height:46px}
+.phone-screen .two-col{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+.phone-screen .three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px}
+.phone-screen .opt-row{display:flex;align-items:flex-start;gap:8px;border:1px solid var(--border);border-radius:9px;padding:9px 10px;background:var(--surface-2);margin-bottom:7px}
+.phone-screen .opt-row:last-child{margin-bottom:0}
+.phone-screen .opt-row.checked{border-color:var(--accent);background:var(--accent-soft)}
+.phone-screen .opt-row input{margin-top:2px;accent-color:var(--accent);width:13px;height:13px;flex:none}
+.phone-screen .opt-row .opt-text b{display:block;font-size:12px;font-weight:700}
+.phone-screen .opt-row .opt-text small{color:var(--fg-muted);font-size:10.5px}
+.phone-screen .type-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.phone-screen .type-card{border:1.5px solid var(--border);border-radius:11px;padding:11px 8px;text-align:center;background:var(--surface-2)}
+.phone-screen .type-card.checked{border-color:var(--accent);background:var(--accent-soft)}
+.phone-screen .type-card .ico{font-size:19px;display:block;margin-bottom:4px}
+.phone-screen .type-card .lbl{font-size:11px;font-weight:700;line-height:1.3}
+.phone-screen .two-col-qty{display:grid;grid-template-columns:1fr 2fr;gap:9px}
+.phone-screen .chip-row{display:flex;gap:6px}
+.phone-screen .chip{flex:1;text-align:center;border:1px solid var(--border);border-radius:9px;background:var(--surface-2);padding:9px 4px;font-size:10.5px;font-weight:700}
+.phone-screen .chip.checked{border-color:var(--accent);background:var(--accent-soft);color:var(--accent)}
+.phone-screen .chip.checked.pri-red{border-color:var(--danger);background:var(--danger-soft);color:var(--danger)}
+.phone-screen .chip.checked.pri-orange{border-color:var(--warning);background:var(--warning-soft);color:var(--warning)}
+.phone-screen .chip.checked.pri-green{border-color:var(--success);background:var(--success-soft);color:var(--success)}
+.phone-screen .sense-title{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:800;margin:14px 0 8px}
+.phone-screen .sense-title .emo{font-size:17px}
+.phone-screen .hint-pill{display:inline-flex;background:var(--accent-soft);color:var(--accent);border-radius:99px;padding:4px 10px;font-size:10px;font-weight:700;margin-bottom:9px}
+.phone-screen .sense-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:4px}
+.phone-screen .sense-chip{border:1px solid var(--border);border-radius:9px;background:var(--surface-2);padding:8px;font-size:11px;font-weight:600;display:flex;gap:5px;align-items:flex-start}
+.phone-screen .sense-chip.checked{border-color:var(--accent);background:var(--accent-soft)}
+.phone-screen .sense-chip input{width:12px;height:12px;margin-top:1px;accent-color:var(--accent);flex:none}
+.phone-screen .upload-zone{border:1.5px dashed var(--border);border-radius:11px;padding:13px;text-align:center;background:var(--surface-2)}
+.phone-screen .upload-zone .u-ico{font-size:17px;display:block;margin-bottom:3px}
+.phone-screen .upload-zone .u-txt{font-size:10.5px;color:var(--fg-muted)}
+.phone-screen .item-row{display:grid;grid-template-columns:1fr 54px 24px;gap:6px;margin-bottom:6px;align-items:center}
+.phone-screen .rm{width:24px;height:24px;border-radius:7px;border:1px solid var(--border);background:var(--surface-2);font-size:12px;color:var(--fg-muted);text-align:center;line-height:22px}
+.phone-screen .add-row{width:100%;border:1.5px dashed var(--accent);color:var(--accent);background:transparent;border-radius:9px;padding:8px;font-size:11px;font-weight:700;text-align:center}
+.phone-screen .live-pri{display:flex;align-items:center;justify-content:space-between;gap:8px;border:1.5px dashed var(--accent);background:var(--accent-soft);border-radius:10px;padding:10px 11px;margin-top:14px;flex-wrap:wrap}
+.phone-screen .live-pri .lbl{font-size:10.5px;font-weight:700;color:var(--fg-muted)}
+.phone-screen .thumbs{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
+.phone-screen .thumbs .ph{width:44px;height:44px;border-radius:8px;background:var(--surface-2);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--fg-muted)}
+.phone-screen .kv{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-bottom:1px solid var(--border);font-size:11.5px}
+.phone-screen .kv:last-child{border-bottom:none}
+.phone-screen .kv .k{color:var(--fg-muted);flex:0 0 42%}
+.phone-screen .kv .v{text-align:right;font-weight:700;flex:1}
+.phone-screen .kv .v.long{text-align:left;font-weight:500;flex:0 0 100%;margin-top:3px}
+.badge{display:inline-flex;align-items:center;gap:5px;border-radius:99px;padding:5px 11px;font-size:11px;font-weight:800}
+.badge .dot{width:7px;height:7px;border-radius:50%}
+.badge.red{background:var(--danger-soft);color:var(--danger)}.badge.red .dot{background:var(--danger)}
+.badge.orange{background:var(--warning-soft);color:var(--warning)}.badge.orange .dot{background:var(--warning)}
+.badge.green{background:var(--success-soft);color:var(--success)}.badge.green .dot{background:var(--success)}
+.phone-screen .btn-fake{width:100%;background:var(--accent);color:var(--accent-fg);border-radius:11px;padding:11px;text-align:center;font-weight:800;font-size:12.5px;margin-top:14px}
+.phone-screen .hint{font-size:10.5px;color:var(--fg-muted);line-height:1.5;margin-bottom:10px}
+.phone-screen .thread{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
+.phone-screen .msg{max-width:84%;padding:8px 10px;border-radius:12px;font-size:11px;line-height:1.5}
+.phone-screen .msg .who{font-size:9.5px;font-weight:800;margin-bottom:2px;opacity:.7}
+.phone-screen .msg.in{background:var(--surface-2);border:1px solid var(--border);align-self:flex-start;border-bottom-left-radius:4px}
+.phone-screen .msg.out{background:var(--accent);color:var(--accent-fg);align-self:flex-end;border-bottom-right-radius:4px}
+.phone-screen .msg.out .who{opacity:.75}
+.phone-screen .composer{display:flex;gap:7px;align-items:flex-end;margin-bottom:6px}
+.phone-screen .composer textarea{flex:1;font:inherit;font-size:11px;color:var(--fg);background:var(--surface-2);border:1px solid var(--border);border-radius:10px;padding:8px 10px;resize:none;min-height:36px}
+.phone-screen .composer .sendbtn{flex:none;background:var(--accent);color:var(--accent-fg);border:none;border-radius:10px;width:36px;height:36px;font-size:14px}
+.phone-screen .tag-hint{font-size:10px;color:var(--fg-muted)}
+.phone-screen .tag-hint b{color:var(--accent)}
+.ticket-head-mock{border-radius:14px;padding:13px 14px;margin-bottom:12px;background:var(--accent)}
+.ticket-head-mock.red{background:var(--danger)}
+.ticket-head-mock .tnum{font-size:10.5px;opacity:.85;font-weight:700;color:#fff;letter-spacing:.02em}
+.ticket-head-mock h3{color:#fff;font-size:16px;margin-top:3px}
+.ticket-head-mock .typebadge{display:inline-block;margin-top:8px;background:rgba(255,255,255,.22);color:#fff;font-size:10.5px;font-weight:800;padding:4px 10px;border-radius:99px}
+.linkout{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;color:var(--accent);text-decoration:none;margin-bottom:4px}
+.linkout:hover{text-decoration:underline}
+.branch-links{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0 22px}
+@media (max-width:760px){.branch-links{grid-template-columns:1fr 1fr}}
+.branch-links a{display:block;border:1.5px solid var(--border);border-radius:12px;padding:12px 13px;text-decoration:none;color:var(--fg);background:var(--surface)}
+.branch-links a:hover{border-color:var(--accent);background:var(--accent-soft)}
+.branch-links .ico{font-size:20px;display:block;margin-bottom:6px}
+.branch-links b{font-size:12.5px;display:block;margin-bottom:2px}
+.branch-links span.d{font-size:11px;color:var(--fg-muted)}
+ul.plain{list-style:none;padding-left:0;margin:0;font-size:13.5px;line-height:1.75}
+ul.plain li{padding-left:20px;position:relative;margin-bottom:6px}
+ul.plain li::before{content:"—";position:absolute;left:0;color:var(--accent);font-weight:800}
+footer{border-top:1px solid var(--border);margin-top:40px;padding-top:18px;font-size:12px;color:var(--fg-muted)}
+@media (max-width:860px){ main.wrap{padding:28px 16px 90px} }
+</style>
+</head>
+<body>
+
+<div class="sheet-nav">
+  <a class="active" href="10-07 Đặc tả IT 5 - SM Phiếu yêu cầu và Nghiệm thu.html">📋 1. SM — Phiếu & Nghiệm thu</a>
+  <a href="10-07 Đặc tả IT 6 - PYC CSVC.html">🗂️ 2. Tổng quan thẻ CSVC</a>
+  <a href="10-07 Đặc tả IT 1 - Nhóm Sự cố Sửa chữa.html">🔧 3. Sự cố / Sửa chữa</a>
+  <a href="10-07 Đặc tả IT 2 - Nhóm Lắp đặt Nâng cấp Thay thế.html">🛠️ 4. Lắp đặt / Nâng cấp / Thay thế</a>
+  <a href="10-07 Đặc tả IT 3 - Nhóm Luân chuyển CSVC.html">🔄 5. Luân chuyển CSVC</a>
+  <a href="10-07 Đặc tả IT 4 - Nhóm Vệ sinh Dọn dẹp.html">🧹 6. Vệ sinh / Dọn dẹp</a>
+  <a href="10-07 Đặc tả IT 7 - Bảng quản lý tổng hợp.html">📊 7. Bảng tổng hợp</a>
+  <a href="10-07 Đặc tả IT 8 - Luồng CSVC.html">🧭 8. Luồng CSVC</a>
+</div>
+
+<main class="wrap">
+  <div class="doc-head">
+    <div class="kicker"><span class="pathtag">SM</span> Đặc tả màn hình gửi IT</div>
+    <h1>📋 SM: Phiếu yêu cầu cơ sở vật chất & Nghiệm thu</h1>
+    <p class="lead">Toàn bộ giao diện phía <b>SM</b> gói gọn trong 1 sheet: mở đầu mọi thẻ (Bước 0 + Bước 1), 4 màn hình chi tiết theo từng loại yêu cầu (Bước 2 phía SM — 4B.3–4B.6), và kết thúc mọi thẻ (Bước 6 — Nghiệm thu, sau khi CSVC đã xử lý xong ở Bước 5 của nhánh tương ứng). 4 sheet nhánh (sheet 3–6) chỉ còn phần CSVC xử lý nội bộ (Bước 2 → Bước 5).</p>
+    <div class="meta">
+      <span><b>Nguồn:</b> 10-08 Phiếu CSVC 30Shine.html · 10-28 SM Bước 6 — Nghiệm thu.html</span>
+      <span><b>Cập nhật:</b> 29/10/2026</span>
+    </div>
+  </div>
+
+  <nav class="quicknav">
+    <a href="#overview">Tổng quan</a>
+    <a href="#sender">4B.1 — Bước 0: Xác nhận người gửi</a>
+    <a href="#type">4B.2 — Bước 1: Chọn loại yêu cầu</a>
+    <a href="#branchA">4B.3 — SM điền chi tiết sự cố</a>
+    <a href="#branchB">4B.4 — SM điền chi tiết yêu cầu</a>
+    <a href="#branchC">4B.5 — SM điền thông tin luân chuyển</a>
+    <a href="#branchD">4B.6 — SM điền chi tiết vệ sinh</a>
+    <a href="#step6">4B.12 — Bước 6: Nghiệm thu</a>
+  </nav>
+
+  <section class="block" id="overview">
+    <h2>Tổng quan</h2>
+    <p class="note"><b>Ai sử dụng:</b> SM hoặc nhân viên được SM nhờ báo thay. SM là người duy nhất thao tác ở cả đầu và cuối vòng đời 1 thẻ CSVC — mở thẻ (Phiếu yêu cầu) và đóng thẻ (Nghiệm thu).</p>
+    <div class="tbl-wrap"><table>
+      <tr><th>#</th><th>Màn hình</th><th>Khi nào SM gặp</th></tr>
+      <tr><td>4B.1</td><td>Bước 0 — Xác nhận người gửi</td><td>Mở đầu mọi thẻ</td></tr>
+      <tr><td>4B.2</td><td>Bước 1 — Chọn loại yêu cầu</td><td>Ngay sau Bước 0</td></tr>
+      <tr><td>4B.3</td><td>SM điền chi tiết sự cố</td><td>Ngay sau khi chọn "Nhóm Sự cố/Sửa chữa"</td></tr>
+      <tr><td>4B.4</td><td>SM điền chi tiết yêu cầu</td><td>Ngay sau khi chọn "Nhóm Lắp đặt/Nâng cấp/Thay thế"</td></tr>
+      <tr><td>4B.5</td><td>SM điền thông tin luân chuyển</td><td>Ngay sau khi chọn "Nhóm Luân chuyển CSVC"</td></tr>
+      <tr><td>4B.6</td><td>SM điền chi tiết vệ sinh</td><td>Ngay sau khi chọn "Nhóm Vệ sinh/Dọn dẹp"</td></tr>
+      <tr><td>4B.12</td><td>Bước 6 — Nghiệm thu</td><td>Khi nhận thông báo "Hoàn thành — chờ nghiệm thu" từ CSVC</td></tr>
+    </table></div>
+  </section>
+
+  <!-- ============ 4B.1 ============ -->
+  <section class="block" id="sender">
+    <h2><span class="tag">4B.1</span> Bước 0 — Xác nhận người gửi</h2>
+    <p class="note"><b>Mục đích:</b> CSVC cần biết liên lạc với ai khi có câu hỏi thêm.</p>
+
+    <div class="a3-grid">
+      <div class="a3-col-spec">
+        <div class="tbl-wrap"><table>
+          <tr><th>Trường</th><th>Kiểu</th><th>Bắt buộc</th><th>Ghi chú</th></tr>
+          <tr><td>Salon</td><td>Danh sách chọn</td><td class="req-y">✅</td><td>Tự điền nếu SM đăng nhập hệ thống</td></tr>
+          <tr><td>Có phải SM không?</td><td>Chọn một</td><td class="req-y">✅</td><td>Có / Không</td></tr>
+          <tr><td>Tên người báo</td><td>Nhập văn bản</td><td class="req-c">✅ nếu chọn "Không"</td><td>—</td></tr>
+          <tr><td>Số điện thoại người báo</td><td>Nhập văn bản</td><td class="req-c">✅ nếu chọn "Không"</td><td>—</td></tr>
+        </table></div>
+        <div class="callout warn"><b>Lưu ý IT:</b> Nếu người báo chọn "Không" → màn hình thẻ phía CSVC hiển thị khung màu vàng: <i>"⚠️ Báo bởi nhân viên thay SM: [Tên] — [SĐT]"</i> (xem ví dụ ở sheet 3 — Sự cố/Sửa chữa, mục 4B.8).</div>
+        <p class="note"><b>Điều kiện chuyển sang Bước 1:</b> bắt buộc chọn Salon + xác nhận người gửi (+ tên và SĐT nếu là nhân viên thay SM).</p>
+      </div>
+      <div>
+      <div class="mock-label">📱 Màn hình minh hoạ</div>
+      <div class="phone"><div class="phone-screen">
+        <div class="mock-card">
+          <h2>Xác nhận người gửi</h2>
+          <p class="mhint">CSVC cần biết liên lạc với ai khi có câu hỏi thêm.</p>
+          <div class="field"><label>Salon <span class="req">*</span></label><select disabled><option>109 TQH</option></select></div>
+          <div class="field"><label>Bạn có phải SM của salon này không? <span class="req">*</span></label>
+            <div class="two-col">
+              <label class="opt-row"><input type="radio" disabled><span class="opt-text"><b>Có, tôi là SM</b><small>Thông tin SM tự gắn theo salon</small></span></label>
+              <label class="opt-row checked"><input type="radio" checked disabled><span class="opt-text"><b>Không</b><small>Nhân viên được SM nhờ báo thay</small></span></label>
+            </div>
+          </div>
+          <div class="two-col">
+            <div class="field"><label>Tên người báo <span class="req">*</span></label><input disabled value="Nguyễn Thị Lan"></div>
+            <div class="field"><label>Số điện thoại <span class="req">*</span></label><input disabled value="0987 654 321"></div>
+          </div>
+        </div>
+      </div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 4B.2 ============ -->
+  <section class="block" id="type">
+    <h2><span class="tag">4B.2</span> Bước 1 — Chọn loại yêu cầu</h2>
+    <p class="note"><b>Mục đích:</b> xác định thẻ sẽ đi theo nhánh xử lý nào. Nội dung cần điền tiếp theo sẽ hiện/ẩn ngay theo lựa chọn.</p>
+
+    <div class="a3-grid">
+      <div class="a3-col-spec">
+        <div class="tbl-wrap"><table>
+          <tr><th>Trường</th><th>Kiểu</th><th>Bắt buộc</th><th>Ghi chú</th></tr>
+          <tr><td>Loại yêu cầu</td><td>Chọn một</td><td class="req-y">✅</td><td>4 giá trị cố định — xem 4 ô bên dưới</td></tr>
+        </table></div>
+        <div class="callout"><b>Lưu ý IT:</b> Form hiện/ẩn nội dung theo lựa chọn (hiện/ẩn câu hỏi theo điều kiện). Nếu Lark Base không hỗ trợ → dự phòng: tạo 4 form riêng, đặt link trong 1 tin nhắn ghim tại nhóm SM.</div>
+        <p class="note">Nội dung chi tiết từng loại (các trường cần xây, quy tắc tự động gắn màu, mockup) nằm ngay bên dưới trong cùng sheet này — bấm vào thẻ để nhảy tới:</p>
+        <div class="branch-links">
+          <a href="#branchA"><span class="ico">🔧</span><b>Sự cố/Sửa chữa</b><span class="d">4B.3</span></a>
+          <a href="#branchB"><span class="ico">🛠️</span><b>Lắp đặt/Nâng cấp/Thay thế</b><span class="d">4B.4</span></a>
+          <a href="#branchC"><span class="ico">🔄</span><b>Luân chuyển CSVC</b><span class="d">4B.5</span></a>
+          <a href="#branchD"><span class="ico">🧹</span><b>Vệ sinh/Dọn dẹp</b><span class="d">4B.6</span></a>
+        </div>
+      </div>
+      <div>
+      <div class="mock-label">📱 Màn hình minh hoạ</div>
+      <div class="phone"><div class="phone-screen">
+        <div class="mock-card">
+          <h2>Loại yêu cầu</h2>
+          <p class="mhint">Chọn đúng loại — các mục cần điền sẽ hiện ngay bên dưới.</p>
+          <div class="type-grid">
+            <label class="type-card checked"><input type="radio" checked disabled><span class="ico">🔧</span><span class="lbl">Nhóm Sự cố<br>Sửa chữa</span></label>
+            <label class="type-card"><input type="radio" disabled><span class="ico">🛠️</span><span class="lbl">Nhóm Lắp đặt bổ sung CSVC<br>Nâng cấp, Layout CSVC<br>Thay thế CSVC</span></label>
+            <label class="type-card"><input type="radio" disabled><span class="ico">🔄</span><span class="lbl">Nhóm Luân chuyển CSVC</span></label>
+            <label class="type-card"><input type="radio" disabled><span class="ico">🧹</span><span class="lbl">Nhóm Vệ sinh CSVC<br>Dọn dẹp salon</span></label>
+          </div>
+        </div>
+      </div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 4B.3 ============ -->
+  <section class="block" id="branchA">
+    <h2><span class="tag">4B.3</span> SM điền chi tiết sự cố</h2>
+    <p class="note"><b>Khi nào:</b> ngay sau khi chọn "Nhóm Sự cố/Sửa chữa" ở Bước 1 (4B.2). Đây là nhánh có khả năng ra thẻ 🔴 Đỏ cao nhất trong 4 nhánh — vì gắn trực tiếp với câu hỏi "Có nguy hiểm ngay không?". Sau khi SM gửi, phần CSVC xử lý tiếp (Bước 2→5) xem ở sheet 3 — Sự cố/Sửa chữa.</p>
+
+    <div class="a3-grid">
+      <div class="a3-col-spec">
+        <div class="callout"><b>Quy tắc tự động gắn màu thẻ:</b> hệ thống đọc 2 trường "Có nguy hiểm ngay?" + "Gấp không?" → tự gắn màu. CSVC xem màu đã gắn ở Bước 2 và điều chỉnh thủ công nếu đánh giá thực tế khác.</div>
+        <div class="tbl-wrap"><table>
+          <tr><th>Có nguy hiểm ngay? (SM chọn)</th><th>Gấp không? (SM chọn)</th><th>Màu thẻ tự động gắn</th></tr>
+          <tr><td>CÓ</td><td>Bất kỳ</td><td class="pri-r">🔴 Đỏ</td></tr>
+          <tr><td>Không chắc</td><td>Gấp</td><td class="pri-o">🟠 Cam</td></tr>
+          <tr><td>Không chắc</td><td>Không gấp</td><td class="pri-g">🟢 Xanh</td></tr>
+          <tr><td>Không</td><td>Gấp</td><td class="pri-o">🟠 Cam</td></tr>
+          <tr><td>Không</td><td>Không gấp</td><td class="pri-g">🟢 Xanh</td></tr>
+        </table></div>
+        <h4 class="sub2">Trường cần xây</h4>
+        <div class="tbl-wrap"><table>
+          <tr><th>Trường</th><th>Kiểu</th><th>Bắt buộc</th><th>Ghi chú</th></tr>
+          <tr><td>Tầng</td><td>Danh sách chọn</td><td class="req-y">✅</td><td>—</td></tr>
+          <tr><td>Khu vực</td><td>Danh sách chọn</td><td class="req-y">✅</td><td>—</td></tr>
+          <tr><td>Nhóm thiết bị / hạng mục</td><td>Danh sách chọn</td><td class="req-y">✅</td><td>19 nhóm chuẩn hoá</td></tr>
+          <tr><td>Tên thiết bị</td><td>Danh sách chọn, phụ thuộc Nhóm thiết bị</td><td class="req-y">✅</td><td>—</td></tr>
+          <tr><td>Số lượng</td><td>Nhập số</td><td class="req-y">✅</td><td>—</td></tr>
+          <tr><td>Mô tả chi tiết</td><td>Ô nhập</td><td>Không bắt buộc</td><td>—</td></tr>
+          <tr><td>Bạn nhận thấy điều gì bất thường?</td><td>Tích chọn nhiều, theo nhóm</td><td>Không bắt buộc</td><td>Nhìn thấy / Ngửi thấy / Nghe thấy…</td></tr>
+          <tr><td>Có nguy hiểm ngay không?</td><td>Chọn một</td><td class="req-y">✅</td><td>CÓ / Không chắc / Không</td></tr>
+          <tr><td>Gấp không?</td><td>Chọn một</td><td class="req-y">✅</td><td>Gấp / Không gấp</td></tr>
+          <tr><td>Ngày xa nhất bạn có thể chờ</td><td>Chọn ngày</td><td class="req-y">✅</td><td>—</td></tr>
+          <tr><td>Ảnh sự cố</td><td>Tải ảnh lên, chọn nhiều</td><td class="req-y">✅</td><td>—</td></tr>
+        </table></div>
+        <p class="note"><b>Điều kiện chuyển bước tiếp theo:</b> bắt buộc chọn đủ tầng + khu vực + nhóm thiết bị + tên thiết bị + số lượng + mức độ nguy hiểm + mức độ gấp + ngày chờ + ảnh sự cố.</p>
+      </div>
+
+      <div>
+      <div class="mock-label">📱 Màn hình minh hoạ</div>
+      <div class="phone"><div class="phone-screen">
+        <div class="mock-card">
+          <div class="mock-tag">🔧 Nhóm Sự cố/Sửa chữa</div>
+          <h2>Chi tiết sự cố</h2>
+          <div class="two-col">
+            <div class="field"><label>Tầng <span class="req">*</span></label><select disabled><option>Tầng Hầm</option></select></div>
+            <div class="field"><label>Khu vực <span class="req">*</span></label><select disabled><option>Phòng kho</option></select></div>
+          </div>
+          <div class="two-col">
+            <div class="field"><label>Nhóm thiết bị / hạng mục <span class="req">*</span></label><select disabled><option>Hệ thống điện</option></select></div>
+            <div class="field"><label>Tên thiết bị <span class="req">*</span></label><select disabled><option>CB tổng</option></select></div>
+          </div>
+          <div class="two-col-qty">
+            <div class="field"><label>Số lượng <span class="req">*</span></label><input disabled value="1"></div>
+            <div class="field"><label>Mô tả chi tiết <span class="opt">(không bắt buộc)</span></label><textarea disabled></textarea></div>
+          </div>
+          <div class="sense-title"><span class="emo">👁️</span><span>Nhìn thấy</span></div>
+          <span class="hint-pill">👉 Ấn tích chọn theo ý bạn</span>
+          <div class="sense-grid">
+            <label class="sense-chip checked"><input type="checkbox" checked disabled>Cháy / khói / lửa</label>
+            <label class="sense-chip"><input type="checkbox" disabled>Gãy / vỡ / nứt</label>
+          </div>
+          <div class="sense-title"><span class="emo">👃</span><span>Ngửi thấy</span></div>
+          <span class="hint-pill">👉 Ấn tích chọn theo ý bạn</span>
+          <div class="sense-grid">
+            <label class="sense-chip checked"><input type="checkbox" checked disabled>Mùi khét / cháy rõ ràng</label>
+            <label class="sense-chip"><input type="checkbox" disabled>Mùi lạ khác</label>
+          </div>
+          <div class="field"><label>Có nguy hiểm ngay không? <span class="req">*</span></label>
+            <div class="chip-row">
+              <div class="chip checked pri-red">⚠️ CÓ</div><div class="chip">Không chắc</div><div class="chip">Không</div>
+            </div>
+          </div>
+          <div class="field"><label>Gấp không? <span class="req">*</span></label>
+            <div class="two-col">
+              <label class="opt-row checked"><input type="radio" checked disabled><span class="opt-text"><b>Gấp</b><small>Ảnh hưởng vận hành ngay</small></span></label>
+              <label class="opt-row"><input type="radio" disabled><span class="opt-text"><b>Không gấp</b><small>Chịu được 1–2 ngày</small></span></label>
+            </div>
+          </div>
+          <div class="field"><label>Ngày xa nhất bạn có thể chờ <span class="req">*</span></label><input disabled value="08/10/2026"></div>
+          <div class="field"><label>Ảnh sự cố <span class="req">*</span></label>
+            <div class="upload-zone"><span class="u-ico">📷</span><span class="u-txt">2 ảnh đã tải lên</span></div>
+          </div>
+          <div class="live-pri"><span class="lbl">Màu ưu tiên tự động gắn</span><span class="badge red"><span class="dot"></span>🔴 Đỏ — Có nguy hiểm ngay</span></div>
+        </div>
+      </div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 4B.4 ============ -->
+  <section class="block" id="branchB">
+    <h2><span class="tag">4B.4</span> SM điền chi tiết yêu cầu</h2>
+    <p class="note"><b>Khi nào:</b> ngay sau khi chọn "Nhóm Lắp đặt bổ sung CSVC/Nâng cấp, Layout CSVC/Thay thế CSVC" ở Bước 1 (4B.2). Gộp 4 loại công việc gần nhau vào 1 nhánh: lắp mới, sắp xếp lại layout, nâng cấp (không phải do hỏng), và thay thế thiết bị. Sau khi SM gửi, phần CSVC xử lý tiếp (Bước 2→5) xem ở sheet 4 — Lắp đặt/Nâng cấp/Thay thế.</p>
+
+    <div class="a3-grid">
+      <div class="a3-col-spec">
+        <div class="tbl-wrap"><table>
+          <tr><th>Mức độ cần thiết (SM chọn)</th><th>Màu thẻ tự động gắn</th></tr>
+          <tr><td>Cấp thiết — ảnh hưởng vận hành ngay</td><td class="pri-o">🟠 Cam</td></tr>
+          <tr><td>Cần trong tuần này</td><td class="pri-o">🟠 Cam</td></tr>
+          <tr><td>Không gấp — có thể sắp xếp linh hoạt</td><td class="pri-g">🟢 Xanh</td></tr>
+        </table></div>
+        <h4 class="sub2">Trường cần xây</h4>
+        <div class="tbl-wrap"><table>
+          <tr><th>Trường</th><th>Kiểu</th><th>Bắt buộc</th><th>Ghi chú</th></tr>
+          <tr><td>Loại công việc</td><td>Chọn một</td><td class="req-y">✅</td><td>Lắp thiết bị mới / Sắp xếp lại layout, di chuyển vị trí / Nâng cấp thiết bị / Thay thế thiết bị / Khác</td></tr>
+          <tr><td>Mô tả loại công việc</td><td>Ô nhập</td><td class="req-c">✅ nếu chọn "Khác"</td><td>—</td></tr>
+          <tr><td>Tầng</td><td>Danh sách chọn</td><td class="req-y">✅</td><td>—</td></tr>
+          <tr><td>Khu vực</td><td>Danh sách chọn</td><td class="req-y">✅</td><td>—</td></tr>
+          <tr><td>Nhóm thiết bị / hạng mục</td><td>Danh sách chọn</td><td class="req-y">✅</td><td>19 nhóm chuẩn hoá</td></tr>
+          <tr><td>Tên thiết bị</td><td>Danh sách chọn, phụ thuộc Nhóm thiết bị</td><td class="req-y">✅</td><td>—</td></tr>
+          <tr><td>Mô tả chi tiết yêu cầu</td><td>Ô nhập</td><td class="req-y">✅</td><td>—</td></tr>
+          <tr><td>Ảnh / sơ đồ mô tả</td><td>Tải ảnh lên, chọn nhiều</td><td class="req-y">✅</td><td>—</td></tr>
+          <tr><td>Mức độ cần thiết</td><td>Chọn một</td><td class="req-y">✅</td><td>Cấp thiết / Cần trong tuần này / Không gấp</td></tr>
+          <tr><td>Ngày mong muốn hoàn thành</td><td>Chọn ngày</td><td class="req-y">✅</td><td>—</td></tr>
+        </table></div>
+        <p class="note"><b>Điều kiện chuyển bước tiếp theo:</b> bắt buộc điền loại công việc + tầng + khu vực + nhóm thiết bị + tên thiết bị + mô tả + ảnh + mức độ cần thiết + ngày mong muốn.</p>
+      </div>
+
+      <div>
+      <div class="mock-label">📱 Màn hình minh hoạ</div>
+      <div class="phone"><div class="phone-screen">
+        <div class="mock-card">
+          <div class="mock-tag">🛠️ Nhóm Lắp đặt/Nâng cấp/Layout/Thay thế CSVC</div>
+          <h2>Chi tiết yêu cầu</h2>
+          <div class="field"><label>Loại công việc <span class="req">*</span></label>
+            <div class="two-col">
+              <label class="opt-row"><input type="radio" disabled><span class="opt-text"><b>Lắp thiết bị mới</b></span></label>
+              <label class="opt-row"><input type="radio" disabled><span class="opt-text"><b>Sắp xếp lại layout / di chuyển vị trí</b></span></label>
+              <label class="opt-row"><input type="radio" disabled><span class="opt-text"><b>Nâng cấp thiết bị</b><small>Không phải sửa hỏng</small></span></label>
+              <label class="opt-row checked"><input type="radio" checked disabled><span class="opt-text"><b>Thay thế thiết bị</b></span></label>
+              <label class="opt-row"><input type="radio" disabled><span class="opt-text"><b>Khác</b></span></label>
+            </div>
+          </div>
+          <div class="two-col">
+            <div class="field"><label>Tầng <span class="req">*</span></label><select disabled><option>Tầng 1</option></select></div>
+            <div class="field"><label>Khu vực <span class="req">*</span></label><select disabled><option>Lễ tân, khu chờ khách</option></select></div>
+          </div>
+          <div class="two-col">
+            <div class="field"><label>Nhóm thiết bị / hạng mục <span class="req">*</span></label><select disabled><option>Vận hành (PV vận hành của salon)</option></select></div>
+            <div class="field"><label>Tên thiết bị <span class="req">*</span></label><select disabled><option>Máy Pos thanh toán</option></select></div>
+          </div>
+          <div class="field"><label>Mô tả chi tiết yêu cầu <span class="req">*</span></label><textarea disabled>Máy Pos treo liên tục, cần đổi máy mới</textarea></div>
+          <div class="field"><label>Ảnh / sơ đồ mô tả <span class="req">*</span></label>
+            <div class="upload-zone"><span class="u-ico">📷</span><span class="u-txt">1 ảnh đã tải lên</span></div>
+          </div>
+          <div class="field"><label>Mức độ cần thiết <span class="req">*</span></label>
+            <div class="chip-row">
+              <div class="chip checked pri-orange">Cấp thiết</div><div class="chip">Cần trong tuần này</div><div class="chip">Không gấp</div>
+            </div>
+          </div>
+          <div class="field"><label>Ngày mong muốn hoàn thành <span class="req">*</span></label><input disabled value="09/10/2026"></div>
+          <div class="live-pri"><span class="lbl">Màu ưu tiên tự động gắn</span><span class="badge orange"><span class="dot"></span>🟠 Cam — Ảnh hưởng vận hành</span></div>
+        </div>
+      </div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 4B.5 ============ -->
+  <section class="block" id="branchC">
+    <h2><span class="tag">4B.5</span> SM điền thông tin luân chuyển</h2>
+    <p class="note"><b>Khi nào:</b> ngay sau khi chọn "Nhóm Luân chuyển CSVC" ở Bước 1 (4B.2), do SM của salon gửi đi điền. Khác với 3 nhánh còn lại, nhánh này luôn liên quan 2 salon (gửi — nhận). Sau khi SM gửi, phần CSVC xử lý tiếp (Bước 2→5) xem ở sheet 5 — Luân chuyển CSVC.</p>
+
+    <div class="a3-grid">
+      <div class="a3-col-spec">
+        <div class="tbl-wrap"><table>
+          <tr><th>Gấp không? (SM chọn)</th><th>Màu thẻ tự động gắn</th></tr>
+          <tr><td>Gấp — salon nhận đang thiếu, ảnh hưởng vận hành</td><td class="pri-o">🟠 Cam</td></tr>
+          <tr><td>Không gấp — có thể sắp lịch linh hoạt</td><td class="pri-g">🟢 Xanh</td></tr>
+        </table></div>
+        <h4 class="sub2">Trường cần xây</h4>
+        <div class="tbl-wrap"><table>
+          <tr><th>Trường</th><th>Kiểu</th><th>Bắt buộc</th><th>Ghi chú</th></tr>
+          <tr><td>Salon gửi đi</td><td>Tự điền</td><td>—</td><td>Theo salon SM đang đăng nhập, không sửa được</td></tr>
+          <tr><td>Salon nhận</td><td>Danh sách chọn</td><td class="req-y">✅</td><td>Loại trừ salon gửi khỏi danh sách</td></tr>
+          <tr><td>Thiết bị cần chuyển</td><td>Danh sách động — nhiều dòng (Tên + Số lượng)</td><td class="req-y">✅</td><td>SM bấm "+ Thêm thiết bị" để thêm dòng, tối thiểu 1 dòng</td></tr>
+          <tr><td>Lý do bạn cần chuyển thiết bị</td><td>Ô nhập</td><td class="req-y">✅</td><td>—</td></tr>
+          <tr><td>Ảnh thiết bị</td><td>Tải ảnh lên, chọn nhiều</td><td class="req-y">✅</td><td>—</td></tr>
+          <tr><td>Ngày mong muốn chuyển</td><td>Chọn ngày</td><td class="req-y">✅</td><td>—</td></tr>
+          <tr><td>Gấp không?</td><td>Chọn một</td><td class="req-y">✅</td><td>Gấp / Không gấp</td></tr>
+        </table></div>
+        <p class="note"><b>Điều kiện chuyển bước tiếp theo:</b> bắt buộc điền đủ salon nhận + ít nhất 1 thiết bị (có tên + số lượng) + lý do + ảnh + ngày + mức độ gấp.</p>
+      </div>
+
+      <div>
+      <div class="mock-label">📱 Màn hình minh hoạ</div>
+      <div class="phone"><div class="phone-screen">
+        <div class="mock-card">
+          <div class="mock-tag">🔄 Nhóm Luân chuyển CSVC</div>
+          <h2>Thông tin luân chuyển</h2>
+          <div class="two-col">
+            <div class="field"><label>Salon gửi đi</label><input disabled value="346 KT"></div>
+            <div class="field"><label>Salon nhận <span class="req">*</span></label><select disabled><option>55A NVL</option></select></div>
+          </div>
+          <div class="field"><label>Thiết bị cần chuyển <span class="req">*</span></label>
+            <div class="item-row"><input disabled value="Giường gội paradise"><input disabled value="1"><span class="rm">✕</span></div>
+            <div class="add-row">+ Thêm thiết bị</div>
+          </div>
+          <div class="field"><label>Lý do bạn cần chuyển thiết bị <span class="req">*</span></label><textarea disabled>Salon 55A NVL đang thiếu giường gội, khách phải chờ đợi vào giờ cao điểm</textarea></div>
+          <div class="field"><label>Ảnh thiết bị <span class="req">*</span></label>
+            <div class="upload-zone"><span class="u-ico">📷</span><span class="u-txt">1 ảnh đã tải lên</span></div>
+          </div>
+          <div class="field"><label>Ngày mong muốn chuyển <span class="req">*</span></label><input disabled value="15/10/2026"></div>
+          <div class="field"><label>Gấp không? <span class="req">*</span></label>
+            <div class="two-col">
+              <label class="opt-row checked"><input type="radio" checked disabled><span class="opt-text"><b>Gấp</b><small>Salon nhận đang thiếu, ảnh hưởng vận hành</small></span></label>
+              <label class="opt-row"><input type="radio" disabled><span class="opt-text"><b>Không gấp</b><small>Có thể sắp lịch linh hoạt</small></span></label>
+            </div>
+          </div>
+          <div class="live-pri"><span class="lbl">Màu ưu tiên tự động gắn</span><span class="badge orange"><span class="dot"></span>🟠 Cam — Gấp</span></div>
+        </div>
+      </div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 4B.6 ============ -->
+  <section class="block" id="branchD">
+    <h2><span class="tag">4B.6</span> SM điền chi tiết vệ sinh</h2>
+    <p class="note"><b>Khi nào:</b> ngay sau khi chọn "Nhóm Vệ sinh CSVC/Dọn dẹp salon" ở Bước 1 (4B.2). Gồm 4 loại: vệ sinh định kỳ, dọn rác/thanh lý, vệ sinh sau sự cố, vệ sinh tổng. Sau khi SM gửi, phần CSVC xử lý tiếp (Bước 2→5) xem ở sheet 6 — Vệ sinh/Dọn dẹp.</p>
+
+    <div class="a3-grid">
+      <div class="a3-col-spec">
+        <div class="tbl-wrap"><table>
+          <tr><th>Loại vệ sinh (SM chọn)</th><th>Màu thẻ tự động gắn</th></tr>
+          <tr><td>Vệ sinh sau sự cố (tràn nước, cháy, sửa chữa xong)</td><td class="pri-o">🟠 Cam</td></tr>
+          <tr><td>Vệ sinh định kỳ · Dọn rác/Thanh lý · Vệ sinh tổng</td><td class="pri-g">🟢 Xanh</td></tr>
+        </table></div>
+        <h4 class="sub2">Trường cần xây</h4>
+        <div class="tbl-wrap"><table>
+          <tr><th>Trường</th><th>Kiểu</th><th>Bắt buộc</th><th>Ghi chú</th></tr>
+          <tr><td>Loại vệ sinh</td><td>Chọn một</td><td class="req-y">✅</td><td>Vệ sinh định kỳ / Dọn rác phế liệu, Thanh lý / Vệ sinh sau sự cố / Vệ sinh tổng / Khác</td></tr>
+          <tr><td>Mô tả loại vệ sinh</td><td>Ô nhập</td><td class="req-c">✅ nếu chọn "Khác"</td><td>—</td></tr>
+          <tr><td>Ảnh</td><td>Tải ảnh lên, chọn nhiều</td><td class="req-y">✅</td><td>—</td></tr>
+          <tr><td>Tầng</td><td>Danh sách chọn</td><td class="req-y">✅</td><td>—</td></tr>
+          <tr><td>Khu vực</td><td>Danh sách chọn</td><td class="req-y">✅</td><td>—</td></tr>
+          <tr><td>Mô tả thêm</td><td>Ô nhập</td><td>Không bắt buộc</td><td>—</td></tr>
+          <tr><td>Ngày mong muốn</td><td>Chọn ngày</td><td class="req-y">✅</td><td>—</td></tr>
+          <tr><td>Khung giờ phù hợp</td><td>Chọn một</td><td class="req-y">✅</td><td>Sáng / Chiều / Tối</td></tr>
+        </table></div>
+        <p class="note"><b>Điều kiện chuyển bước tiếp theo:</b> bắt buộc điền loại vệ sinh + ảnh + tầng + khu vực + ngày mong muốn + khung giờ.</p>
+      </div>
+
+      <div>
+      <div class="mock-label">📱 Màn hình minh hoạ</div>
+      <div class="phone"><div class="phone-screen">
+        <div class="mock-card">
+          <div class="mock-tag">🧹 Nhóm Vệ sinh CSVC/Dọn dẹp salon</div>
+          <h2>Chi tiết vệ sinh</h2>
+          <div class="field"><label>Loại vệ sinh <span class="req">*</span></label>
+            <div class="two-col">
+              <label class="opt-row checked"><input type="radio" checked disabled><span class="opt-text"><b>Vệ sinh định kỳ</b><small>Điều hòa, bình nóng lạnh, máy lọc nước...</small></span></label>
+              <label class="opt-row"><input type="radio" disabled><span class="opt-text"><b>Dọn rác phế liệu / Thanh lý</b></span></label>
+              <label class="opt-row"><input type="radio" disabled><span class="opt-text"><b>Vệ sinh sau sự cố</b><small>Tràn nước, cháy, sửa chữa xong</small></span></label>
+              <label class="opt-row"><input type="radio" disabled><span class="opt-text"><b>Vệ sinh tổng</b><small>Cuối tháng / trước sự kiện</small></span></label>
+              <label class="opt-row"><input type="radio" disabled><span class="opt-text"><b>Khác</b></span></label>
+            </div>
+          </div>
+          <div class="field"><label>Ảnh <span class="req">*</span></label>
+            <div class="upload-zone"><span class="u-ico">📷</span><span class="u-txt">1 ảnh đã tải lên</span></div>
+          </div>
+          <div class="two-col">
+            <div class="field"><label>Tầng <span class="req">*</span></label><select disabled><option>Tầng 3</option></select></div>
+            <div class="field"><label>Khu vực <span class="req">*</span></label><select disabled><option>WC</option></select></div>
+          </div>
+          <div class="field"><label>Mô tả thêm <span class="opt">(nếu cần)</span></label><textarea disabled></textarea></div>
+          <div class="field"><label>Ngày mong muốn <span class="req">*</span></label><input disabled value="12/10/2026"></div>
+          <div class="field"><label>Khung giờ phù hợp <span class="req">*</span></label>
+            <div class="chip-row"><div class="chip checked pri-green">Sáng</div><div class="chip">Chiều</div><div class="chip">Tối</div></div>
+          </div>
+          <div class="live-pri"><span class="lbl">Màu ưu tiên tự động gắn</span><span class="badge green"><span class="dot"></span>🟢 Xanh — Không gấp</span></div>
+        </div>
+      </div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 4B.12 ============ -->
+  <section class="block" id="step6">
+    <h2><span class="tag">4B.12</span> Bước 6 — Nghiệm thu</h2>
+    <p class="note"><b>Ai sử dụng:</b> SM (nhận thông báo "Hoàn thành — chờ nghiệm thu") · <b>Khi nào:</b> ngay sau khi CSVC hoàn tất Bước 5 của nhánh tương ứng (sheet 3–6).</p>
+
+    <div class="a3-grid">
+      <div class="a3-col-spec">
+        <h4 class="sub2">SM nhìn thấy gì khi mở thẻ để nghiệm thu — "lấy từ bước trước sang"</h4>
+        <div class="tbl-wrap"><table>
+          <tr><th>Trường hiển thị</th><th>Lấy dữ liệu từ</th></tr>
+          <tr><td>Nguyên nhân sự cố</td><td>Bước 4 — Nguyên nhân sự cố</td></tr>
+          <tr><td>Phương án xử lý</td><td>Bước 4 — Phương án xử lý</td></tr>
+          <tr><td>Giá tiền vật tư</td><td>Bước 5 — Giá tiền vật tư thực tế</td></tr>
+          <tr><td>Giá tiền nhân công</td><td>Bước 5 — Giá tiền nhân công thực tế</td></tr>
+          <tr><td>Tổng tiền</td><td>Bước 5 — Tổng tiền thực tế (tự tính)</td></tr>
+          <tr><td>Ngày hoàn thành</td><td>Bước 5 — ngày CSVC chuyển tiến độ "Đã xử lý xong"</td></tr>
+          <tr><td>Thời gian bảo hành</td><td>Bước 4 — Thời gian bảo hành</td></tr>
+          <tr><td>Thông tin thợ xử lý</td><td>Bước 4 — Phương án (Nội bộ/Thuê ngoài) + Tên người thực hiện + SĐT</td></tr>
+          <tr><td>Ảnh hóa đơn / Ảnh vật tư / Ảnh nghiệm thu</td><td>Bước 5 — 3 nhóm ảnh cùng tên</td></tr>
+        </table></div>
+        <h4 class="sub2">SM điền vào thẻ tại Bước 6</h4>
+        <div class="tbl-wrap"><table>
+          <tr><th>Trường</th><th>Kiểu</th><th>Bắt buộc</th><th>Ghi chú</th></tr>
+          <tr><td>Kết quả nghiệm thu</td><td>Chọn một</td><td class="req-y">✅</td><td>Đạt / Không đạt</td></tr>
+          <tr><td>Lý do không đạt</td><td>Ô nhập</td><td class="req-c">✅ nếu "Không đạt"</td><td>Ghi rõ để CSVC biết xử lý tiếp gì</td></tr>
+        </table></div>
+        <p class="note"><b>Điều kiện kết thúc:</b></p>
+        <ul class="plain">
+          <li><b>Đạt</b> → đóng thẻ <code>Hoàn thành</code> → kết thúc luồng</li>
+          <li><b>Không đạt</b> → mở lại thẻ, CSVC xử lý tiếp — không tạo thẻ mới</li>
+        </ul>
+        <div class="callout warn">⏰ Quá <b>1 ngày</b> SM chưa điền kết quả → hệ thống tự đóng thẻ thành <code>Hoàn thành</code> và gửi thông báo cho SM + CSVC.</div>
+        <p class="note"><b>Khung chát "Giao tiếp trong thẻ"</b> nằm ở cuối màn hình, sau phần xác nhận nghiệm thu.</p>
+      </div>
+
+      <div>
+      <div class="mock-label">📱 Màn hình minh hoạ</div>
+      <div class="phone"><div class="phone-screen">
+        <div class="ticket-head-mock red">
+          <div class="tnum">THẺ #2103</div><h3>109 TQH</h3>
+          <span class="typebadge">🔧 Nhóm Sự cố/Sửa chữa</span>
+        </div>
+        <div class="mock-card">
+          <span class="eyebrow">Thông tin xử lý</span>
+          <h2>CSVC đã xử lý thẻ này</h2>
+          <div class="kv"><span class="k">Nguyên nhân sự cố</span><span class="v long">CB tổng cũ quá tải lâu ngày, tiếp điểm bên trong bị cháy xém gây phát mùi khét.</span></div>
+          <div class="kv"><span class="k">Phương án xử lý</span><span class="v long">Thay CB tổng mới, kiểm tra toàn bộ đường dây nhánh liên quan trước khi đóng điện lại.</span></div>
+          <div class="kv"><span class="k">Giá tiền vật tư</span><span class="v">500.000 đ</span></div>
+          <div class="kv"><span class="k">Giá tiền nhân công</span><span class="v">350.000 đ</span></div>
+          <div class="kv"><span class="k">Tổng tiền</span><span class="v">850.000 đ</span></div>
+          <div class="kv"><span class="k">Ngày hoàn thành</span><span class="v">08/10/2026</span></div>
+          <div class="kv"><span class="k">Thời gian bảo hành</span><span class="v">30 ngày — tính từ 08/10/2026</span></div>
+          <div class="kv"><span class="k">Thông tin thợ xử lý</span><span class="v long">Nội bộ — Phúc (Cầu Giấy) · 0978 123 456</span></div>
+          <div class="three-col" style="margin-top:12px">
+            <div class="field" style="margin-bottom:0"><label style="margin-bottom:7px">Ảnh hóa đơn</label><div class="thumbs"><div class="ph">🧾</div></div></div>
+            <div class="field" style="margin-bottom:0"><label style="margin-bottom:7px">Ảnh vật tư</label><div class="thumbs"><div class="ph">📦</div></div></div>
+            <div class="field" style="margin-bottom:0"><label style="margin-bottom:7px">Ảnh nghiệm thu</label><div class="thumbs"><div class="ph">✅</div></div></div>
+          </div>
+        </div>
+        <div class="mock-card">
+          <span class="eyebrow">SM điền vào thẻ — Bước 6</span>
+          <h2>Xác nhận nghiệm thu</h2>
+          <div class="field"><label>Kết quả nghiệm thu <span class="req">*</span></label>
+            <div class="chip-row"><div class="chip checked">✓ Đạt</div><div class="chip">↩ Không đạt</div></div>
+          </div>
+        </div>
+        <div class="mock-card">
+          <span class="eyebrow">Giao tiếp trong thẻ</span>
+          <h2>Trao đổi với CSVC</h2>
+          <p class="hint">Kênh nhắn tin giữa SM và CSVC / người liên quan — hỗ trợ tag tên người dùng, người được tag nhận thông báo.</p>
+          <div class="thread">
+            <div class="msg in"><div class="who">SM salon</div>Anh ơi em kiểm tra lại rồi, CB mới chạy ổn, không còn mùi khét nữa ạ. Cảm ơn team!</div>
+            <div class="msg out"><div class="who">Tiến — CSVC</div>Dạ vâng ạ, em cảm ơn salon đã kiểm tra kỹ. Có gì phát sinh thêm cứ nhắn lại nhóm mình nhé</div>
+          </div>
+          <div class="composer">
+            <textarea disabled placeholder="Nhắn tin... gõ @ để tag CSVC phụ trách" rows="1"></textarea>
+            <button class="sendbtn" disabled>➤</button>
+          </div>
+          <p class="tag-hint">Gõ <b>@</b> để tag tên người dùng trong hệ thống — người được tag sẽ nhận thông báo.</p>
+          <div class="btn-fake">Xác nhận — Đóng thẻ Hoàn thành</div>
+        </div>
+      </div></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    Bộ đặc tả gồm 8 sheet — xem tiếp:
+    <a href="10-07 Đặc tả IT 6 - PYC CSVC.html">2. Tổng quan thẻ CSVC</a> ·
+    <a href="10-07 Đặc tả IT 1 - Nhóm Sự cố Sửa chữa.html">3. Sự cố/Sửa chữa</a> ·
+    <a href="10-07 Đặc tả IT 7 - Bảng quản lý tổng hợp.html">7. Bảng tổng hợp</a>
+  </footer>
+</main>
+</body>
+</html>

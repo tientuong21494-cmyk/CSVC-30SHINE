@@ -1,0 +1,285 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Đặc tả IT — Bảng quản lý tổng hợp</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FFFFFF; --surface:#FFFFFF; --surface-2:#F1F5FB;
+  --fg:#10151C; --fg-muted:#5B6672; --border:rgba(20,24,31,.16);
+  --accent:#143680; --accent-fg:#FFFFFF; --accent-soft:#E7EAF4;
+  --danger:#D6362B; --danger-soft:#FBE4E1;
+  --warning:#DD8A1F; --warning-soft:#FCEBD2;
+  --success:#1F9254; --success-soft:#DFF3E7;
+  --shadow:0 1px 2px rgba(16,20,24,.05),0 8px 24px -12px rgba(16,20,24,.14);
+  --mono:'SF Mono',Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0E1420; --surface:#141B29; --surface-2:#1B2434;
+    --fg:#EAF0FB; --fg-muted:#8E9BB0; --border:rgba(145,160,184,.25);
+    --accent:#7B9BE0; --accent-fg:#0E1420; --accent-soft:#223050;
+    --danger:#F08478; --danger-soft:#3A2220;
+    --warning:#F0B35E; --warning-soft:#3A2C16;
+    --success:#6FD19B; --success-soft:#17301F;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -12px rgba(0,0,0,.6);
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0E1420; --surface:#141B29; --surface-2:#1B2434;
+  --fg:#EAF0FB; --fg-muted:#8E9BB0; --border:rgba(145,160,184,.25);
+  --accent:#7B9BE0; --accent-fg:#0E1420; --accent-soft:#223050;
+  --danger:#F08478; --danger-soft:#3A2220;
+  --warning:#F0B35E; --warning-soft:#3A2C16;
+  --success:#6FD19B; --success-soft:#17301F;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px -12px rgba(0,0,0,.6);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{background:var(--bg)}
+body{margin:0;color:var(--fg);font-family:'Be Vietnam Pro',system-ui,-apple-system,sans-serif;font-size:15px;line-height:1.6}
+h1,h2,h3,h4{font-family:'Be Vietnam Pro',system-ui,sans-serif;text-wrap:balance;margin:0}
+p{margin:0}
+a{color:var(--accent)}
+[hidden]{display:none!important}
+.sheet-nav{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--border);display:flex;gap:6px;overflow-x:auto;padding:10px 16px;scrollbar-width:thin}
+.sheet-nav a{flex:none;font-size:12.5px;font-weight:700;color:var(--fg-muted);text-decoration:none;padding:7px 13px;border-radius:99px;border:1.5px solid var(--border);white-space:nowrap}
+.sheet-nav a.active{color:var(--accent-fg);background:var(--accent);border-color:var(--accent)}
+.sheet-nav a:hover:not(.active){color:var(--fg);background:var(--surface-2)}
+main.wrap{max-width:1180px;margin:0 auto;padding:36px 28px 120px}
+.doc-head{margin-bottom:30px;padding-bottom:26px;border-bottom:1px solid var(--border)}
+.doc-head .kicker{font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.doc-head .kicker .pathtag{background:var(--accent-soft);padding:2px 9px;border-radius:99px}
+.doc-head h1{font-size:28px;font-weight:800;margin-bottom:10px}
+.doc-head .meta{font-size:13px;color:var(--fg-muted);display:flex;flex-wrap:wrap;gap:4px 18px;margin-top:14px}
+.doc-head .meta b{color:var(--fg)}
+.doc-head .lead{font-size:14.5px;color:var(--fg);max-width:70ch;margin-top:14px;line-height:1.65}
+.quicknav{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:38px}
+.quicknav a{font-size:12px;font-weight:700;color:var(--accent);text-decoration:none;background:var(--accent-soft);padding:6px 12px;border-radius:99px}
+.quicknav a:hover{text-decoration:underline}
+section.block{margin-bottom:52px;scroll-margin-top:60px}
+section.block > h2{font-size:21px;font-weight:800;padding-bottom:12px;margin-bottom:18px;border-bottom:2px solid var(--fg);display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+section.block > h2 .tag{font-size:11px;font-weight:800;color:var(--accent-fg);background:var(--accent);padding:3px 9px;border-radius:99px;letter-spacing:.02em}
+h4.sub2{font-size:13.5px;font-weight:800;margin:18px 0 8px;color:var(--fg)}
+.note{font-size:13px;color:var(--fg-muted);line-height:1.6;margin-bottom:14px}
+.note b{color:var(--fg)}
+.callout{background:var(--accent-soft);border:1px solid var(--border);border-radius:12px;padding:13px 16px;font-size:13px;line-height:1.6;margin:14px 0 20px;color:var(--fg)}
+.callout b{color:var(--accent)}
+.callout.warn{background:var(--warning-soft)}
+.callout.warn b{color:var(--warning)}
+.tbl-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:12px;margin:12px 0 22px}
+table{border-collapse:collapse;width:100%;font-size:13px;min-width:560px}
+th,td{padding:9px 13px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+th{background:var(--surface-2);font-weight:800;font-size:11.5px;text-transform:uppercase;letter-spacing:.03em;color:var(--fg-muted);white-space:nowrap}
+tr:last-child td{border-bottom:none}
+td b{font-weight:700}
+td code,.callout code{background:var(--surface-2);padding:1px 6px;border-radius:5px;font-family:var(--mono);font-size:12px}
+.req-y{color:var(--success);font-weight:800}
+.req-c{color:var(--warning);font-weight:700}
+.colnum{font-family:var(--mono);font-weight:800;color:var(--fg-muted);font-size:12px}
+.mock-label{font-size:11px;font-weight:800;color:var(--fg-muted);letter-spacing:.04em;text-transform:uppercase;margin-bottom:8px}
+
+/* ---------- master table mockup ---------- */
+.master-tbl-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow);margin:14px 0}
+table.master-tbl{border-collapse:collapse;width:100%;min-width:2400px;font-size:12px}
+table.master-tbl th{position:sticky;top:0;background:var(--surface-2);font-weight:800;font-size:10.5px;text-transform:uppercase;letter-spacing:.02em;color:var(--fg-muted);padding:10px 12px;text-align:left;white-space:nowrap;border-bottom:1.5px solid var(--border)}
+table.master-tbl td{padding:10px 12px;border-bottom:1px solid var(--border);white-space:nowrap;color:var(--fg)}
+table.master-tbl tbody tr:hover{background:var(--surface-2)}
+table.master-tbl tbody tr:last-child td{border-bottom:none}
+table.master-tbl td.wrap{white-space:normal;min-width:180px;max-width:240px}
+.mtag{display:inline-flex;align-items:center;gap:5px;border-radius:99px;padding:4px 10px;font-size:10.5px;font-weight:800;white-space:nowrap}
+.mtag .dot{width:6px;height:6px;border-radius:50%}
+.mtag.red{background:var(--danger-soft);color:var(--danger)}.mtag.red .dot{background:var(--danger)}
+.mtag.orange{background:var(--warning-soft);color:var(--warning)}.mtag.orange .dot{background:var(--warning)}
+.mtag.green{background:var(--success-soft);color:var(--success)}.mtag.green .dot{background:var(--success)}
+.mtag.gray{background:var(--surface-2);color:var(--fg-muted)}.mtag.gray .dot{background:var(--fg-muted)}
+.mthumb{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:var(--accent)}
+.mfilters{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 16px}
+.mfilters .f{font-size:11.5px;font-weight:700;color:var(--fg);background:var(--surface);border:1.5px solid var(--border);border-radius:99px;padding:7px 13px;display:inline-flex;align-items:center;gap:6px}
+.mfilters .f .lbl{color:var(--fg-muted);font-weight:600}
+.mactions{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:4px}
+.mactions .a{font-size:12px;font-weight:800;border-radius:10px;padding:9px 14px;border:1.5px solid var(--border);background:var(--surface);color:var(--fg)}
+.mactions .a.primary{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
+footer{border-top:1px solid var(--border);margin-top:40px;padding-top:18px;font-size:12px;color:var(--fg-muted)}
+@media (max-width:860px){ main.wrap{padding:28px 16px 90px} }
+</style>
+</head>
+<body>
+
+<div class="sheet-nav">
+  <a href="10-07 Đặc tả IT 5 - SM Phiếu yêu cầu và Nghiệm thu.html">📋 1. SM — Phiếu & Nghiệm thu</a>
+  <a href="10-07 Đặc tả IT 6 - PYC CSVC.html">🗂️ 2. Tổng quan thẻ CSVC</a>
+  <a href="10-07 Đặc tả IT 1 - Nhóm Sự cố Sửa chữa.html">🔧 3. Sự cố / Sửa chữa</a>
+  <a href="10-07 Đặc tả IT 2 - Nhóm Lắp đặt Nâng cấp Thay thế.html">🛠️ 4. Lắp đặt / Nâng cấp / Thay thế</a>
+  <a href="10-07 Đặc tả IT 3 - Nhóm Luân chuyển CSVC.html">🔄 5. Luân chuyển CSVC</a>
+  <a href="10-07 Đặc tả IT 4 - Nhóm Vệ sinh Dọn dẹp.html">🧹 6. Vệ sinh / Dọn dẹp</a>
+  <a class="active" href="10-07 Đặc tả IT 7 - Bảng quản lý tổng hợp.html">📊 7. Bảng tổng hợp</a>
+  <a href="10-07 Đặc tả IT 8 - Luồng CSVC.html">🧭 8. Luồng CSVC</a>
+</div>
+
+<main class="wrap">
+  <div class="doc-head">
+    <div class="kicker"><span class="pathtag">4B.13</span> Đặc tả màn hình gửi IT</div>
+    <h1>📊 Bảng quản lý tổng hợp</h1>
+    <p class="lead">Màn hình <b>dạng bảng (spreadsheet)</b>, liệt kê <b>mọi thẻ của cả 4 nhánh</b> trên 1 bảng duy nhất, mỗi thẻ 1 dòng — mục đích để CSVC/Quản lý CSVC theo dõi, tra cứu, lọc và xuất báo cáo nhanh, biết mỗi thẻ hiện đang ở bước nào. Khác với sheet 2 (Tổng quan thẻ — dạng danh sách thẻ/khối, dùng để thao tác xử lý), sheet này là <b>bảng dữ liệu đầy đủ, chỉ đọc</b>, dùng để xem — lọc — xuất Excel, không dùng để xử lý thẻ.</p>
+    <div class="meta">
+      <span><b>Nguồn:</b> tổng hợp dữ liệu từ sheet 1, 3, 4, 5, 6 (4B.1 → 4B.12)</span>
+      <span><b>Cập nhật:</b> 29/10/2026</span>
+    </div>
+  </div>
+
+  <nav class="quicknav">
+    <a href="#overview">Mục đích & phân quyền</a>
+    <a href="#columns">Danh sách 24 cột</a>
+    <a href="#filters">Bộ lọc & thao tác</a>
+    <a href="#mock">Màn hình minh hoạ</a>
+  </nav>
+
+  <!-- ============ MỤC ĐÍCH & PHÂN QUYỀN ============ -->
+  <section class="block" id="overview">
+    <h2><span class="tag">4B.13</span> Mục đích & phân quyền xem</h2>
+    <p class="note"><b>Mục đích:</b> gom toàn bộ dữ liệu của 1 thẻ — từ lúc SM gửi yêu cầu đến lúc nghiệm thu xong — thành <b>1 dòng trong 1 bảng</b>, đủ 24 cột, để xem nhanh tình trạng + tra cứu lịch sử + xuất báo cáo, mà không cần mở từng thẻ.</p>
+    <div class="tbl-wrap"><table>
+      <tr><th>Vai trò</th><th>Phạm vi xem</th><th>Được sửa dữ liệu trong bảng?</th></tr>
+      <tr><td><b>Nhân viên CSVC</b></td><td>Tất cả thẻ — mọi salon</td><td>❌ Không — bảng chỉ đọc, sửa dữ liệu thì vào đúng màn hình bước tương ứng (sheet 1/3/4/5/6)</td></tr>
+      <tr><td><b>Quản lý CSVC</b></td><td>Tất cả thẻ — mọi salon</td><td class="req-c">✅ Riêng cột <b>Tình trạng thanh toán</b> (xem mục Bộ lọc & thao tác)</td></tr>
+      <tr><td><b>SM</b></td><td>Chỉ thẻ thuộc salon mình quản lý</td><td>❌ Không</td></tr>
+    </table></div>
+    <div class="callout"><b>Lưu ý IT:</b> toàn bộ 23/24 cột là dữ liệu <b>tự động lấy lại</b> từ các màn hình đã đặc tả ở sheet 1, 3, 4, 5, 6 — IT không cần xây thêm form nhập liệu mới cho các cột này, chỉ cần query/tổng hợp. Riêng cột 24 (Tình trạng thanh toán) là trường mới, xem ghi chú ở cột 24 trong bảng bên dưới.</div>
+  </section>
+
+  <!-- ============ DANH SÁCH 24 CỘT ============ -->
+  <section class="block" id="columns">
+    <h2>Danh sách 24 cột</h2>
+    <p class="note">Thứ tự cột từ trái sang phải, cố định — xem minh hoạ trực quan ở mục "Màn hình minh hoạ" bên dưới.</p>
+    <div class="tbl-wrap"><table>
+      <tr><th>#</th><th>Tên cột</th><th>Kiểu dữ liệu</th><th>Nguồn lấy dữ liệu</th><th>Ghi chú</th></tr>
+      <tr><td class="colnum">1</td><td>STT</td><td>Tự tăng</td><td>Tự sinh</td><td>Theo thứ tự ngày lên thẻ</td></tr>
+      <tr><td class="colnum">2</td><td>ID thẻ</td><td>Mã, dạng <code>#XXXX</code></td><td>Tự sinh khi tạo thẻ</td><td>Bấm vào mã thẻ → mở đúng thẻ ở sheet nhánh tương ứng</td></tr>
+      <tr><td class="colnum">3</td><td>Người đăng thẻ</td><td>Văn bản</td><td>4B.1 — Bước 0</td><td>Tên SM, hoặc Tên + SĐT nếu là nhân viên thay SM báo hộ</td></tr>
+      <tr><td class="colnum">4</td><td>GĐKV</td><td>Danh sách chọn</td><td>Suy ra theo Salon</td><td>—</td></tr>
+      <tr><td class="colnum">5</td><td>Salon</td><td>Danh sách chọn (A6.1)</td><td>4B.1 — Bước 0</td><td>—</td></tr>
+      <tr><td class="colnum">6</td><td>Vùng</td><td>Danh sách chọn</td><td>Suy ra theo Salon</td><td>—</td></tr>
+      <tr><td class="colnum">7</td><td>Tầng</td><td>Danh sách chọn (A6.1)</td><td>4B.3/4B.4/4B.5/4B.6</td><td>Nhánh Luân chuyển lấy theo salon gửi</td></tr>
+      <tr><td class="colnum">8</td><td>Khu vực</td><td>Danh sách chọn (A6.1)</td><td>4B.3/4B.4/4B.5/4B.6</td><td>Nhánh Luân chuyển lấy theo salon gửi</td></tr>
+      <tr><td class="colnum">9</td><td>Loại yêu cầu</td><td>1 trong 4 giá trị cố định</td><td>4B.2 — Bước 1</td><td>Sự cố/Sửa chữa · Lắp đặt/Nâng cấp/Thay thế · Luân chuyển CSVC · Vệ sinh/Dọn dẹp</td></tr>
+      <tr><td class="colnum">10</td><td>Hạng mục</td><td>Danh sách chọn (18 nhóm, theo Phiếu CSVC)</td><td>4B.3/4B.4/4B.5/4B.6</td><td>VD: Hệ thống điện, Vận hành, Điều hòa & quạt...</td></tr>
+      <tr><td class="colnum">11</td><td>Thiết bị</td><td>Danh sách chọn con theo Hạng mục</td><td>4B.3/4B.4/4B.5/4B.6</td><td>VD: CB tổng, Máy Pos thanh toán, Giường gội paradise...</td></tr>
+      <tr><td class="colnum">12</td><td>Mô tả hiện trạng</td><td>Văn bản dài</td><td>4B.3/4B.4/4B.5/4B.6</td><td>Nguyên văn mô tả SM báo lên</td></tr>
+      <tr><td class="colnum">13</td><td>Người xử lý</td><td>Văn bản</td><td>4B.10 — Bước 4</td><td>"Tên người thực hiện", kèm Nội bộ/Thuê ngoài</td></tr>
+      <tr><td class="colnum">14</td><td>Nguyên nhân</td><td>Văn bản dài</td><td>4B.10 — Bước 4</td><td>Có thể để trống với nhánh Luân chuyển/Vệ sinh</td></tr>
+      <tr><td class="colnum">15</td><td>Phương án xử lý</td><td>Văn bản dài</td><td>4B.10 — Bước 4, cập nhật lại theo 4B.11 nếu thực tế khác dự kiến</td><td>—</td></tr>
+      <tr><td class="colnum">16</td><td>Chi phí</td><td>Số (đồng), tự tính</td><td>4B.11 — Bước 5</td><td>= Giá tiền vật tư thực tế + Giá tiền nhân công thực tế</td></tr>
+      <tr><td class="colnum">17</td><td>Tình trạng</td><td>Chưa xử lý / Đang xử lý / Đã xử lý</td><td>4B.11 — Bước 5 (Tiến độ)</td><td>Dùng chung 1 bộ giá trị với "Tình trạng thẻ" ở sheet 2</td></tr>
+      <tr><td class="colnum">18</td><td>Ngày lên thẻ</td><td>Ngày giờ</td><td>4B.2 — Bước 1</td><td>Lúc SM bấm gửi yêu cầu</td></tr>
+      <tr><td class="colnum">19</td><td>Ngày hoàn thành</td><td>Ngày</td><td>4B.11 — Bước 5</td><td>Lúc Tiến độ chuyển "Đã xử lý xong"</td></tr>
+      <tr><td class="colnum">20</td><td>Bảo hành</td><td>Số (ngày)</td><td>4B.10 — Bước 4</td><td>—</td></tr>
+      <tr><td class="colnum">21</td><td>SM nghiệm thu</td><td>Đạt / Chưa đạt / Chưa nghiệm thu</td><td>4B.12 — Bước 6</td><td>"Chưa nghiệm thu" = thẻ chưa tới Bước 6</td></tr>
+      <tr><td class="colnum">22</td><td>Ảnh sự cố</td><td>Nhiều ảnh</td><td>4B.3/4B.4/4B.5/4B.6</td><td>Ảnh SM đính kèm lúc báo yêu cầu</td></tr>
+      <tr><td class="colnum">23</td><td>Ảnh nghiệm thu</td><td>Nhiều ảnh</td><td>4B.11 — Bước 5</td><td>Cũng là ảnh hiện lại ở màn SM nghiệm thu 4B.12</td></tr>
+      <tr><td class="colnum">24</td><td>Tình trạng thanh toán</td><td>Đã thanh toán / Chưa thanh toán</td><td class="req-c">Trường mới — chưa có ở bước nào</td><td>Xem callout bên dưới</td></tr>
+    </table></div>
+    <div class="callout warn"><b>Cần quyết định — cột 24 "Tình trạng thanh toán":</b> đây là trường <b>mới</b>, hiện chưa có màn hình nào trong luồng 4B.1 → 4B.12 cho phép đặt giá trị này. Cần chốt trước khi IT làm: (1) <b>Ai được đổi</b> — Quản lý CSVC hay Kế toán? (2) <b>Đổi ở đâu</b> — ngay trong dòng của bảng này (bấm 1 nút gạt), hay cần 1 màn hình riêng? (3) Có cần lưu <b>lịch sử ai đổi, lúc nào</b> không? Mặc định đề xuất trong mockup bên dưới: Quản lý CSVC bấm trực tiếp trên dòng để gạt trạng thái.</div>
+  </section>
+
+  <!-- ============ BỘ LỌC & THAO TÁC ============ -->
+  <section class="block" id="filters">
+    <h2>Bộ lọc & thao tác</h2>
+    <p class="note">Bảng cho phép lọc nhiều điều kiện cùng lúc (kết hợp AND), sắp xếp theo bất kỳ cột nào, tìm kiếm theo mã thẻ/salon, và xuất ra file.</p>
+    <div class="tbl-wrap"><table>
+      <tr><th>Bộ lọc</th><th>Kiểu</th><th>Ghi chú</th></tr>
+      <tr><td>Khoảng ngày lên thẻ</td><td>Chọn khoảng ngày</td><td>—</td></tr>
+      <tr><td>Vùng</td><td>Chọn một/nhiều</td><td>Ẩn với tài khoản SM (chỉ có 1 salon)</td></tr>
+      <tr><td>GĐKV</td><td>Chọn một/nhiều</td><td>Ẩn với tài khoản SM</td></tr>
+      <tr><td>Salon</td><td>Chọn một/nhiều</td><td>Khoá cố định = salon đăng nhập với tài khoản SM</td></tr>
+      <tr><td>Loại yêu cầu</td><td>Chọn một/nhiều trong 4 nhánh</td><td>—</td></tr>
+      <tr><td>Hạng mục</td><td>Chọn một/nhiều</td><td>—</td></tr>
+      <tr><td>Tình trạng</td><td>Chưa xử lý / Đang xử lý / Đã xử lý</td><td>—</td></tr>
+      <tr><td>SM nghiệm thu</td><td>Đạt / Chưa đạt / Chưa nghiệm thu</td><td>—</td></tr>
+      <tr><td>Tình trạng thanh toán</td><td>Đã thanh toán / Chưa thanh toán</td><td>Chỉ hiện khi quyết định xong cột 24</td></tr>
+      <tr><td>Tìm kiếm</td><td>Ô nhập tự do</td><td>Tìm theo mã thẻ, tên salon, tên người đăng/người xử lý</td></tr>
+    </table></div>
+    <div class="mactions">
+      <div class="a primary">⬇️ Xuất Excel</div>
+      <div class="a">🔄 Đặt lại bộ lọc</div>
+      <div class="a">↕️ Sắp xếp theo cột</div>
+    </div>
+    <p class="note" style="margin-top:14px"><b>Điều kiện lọc mặc định theo vai trò:</b> giống hệt nguyên tắc ở sheet 2 (Tổng quan thẻ) — SM luôn bị khoá <code>salon == tài khoản đang đăng nhập</code>, không tắt được.</p>
+  </section>
+
+  <!-- ============ MÀN HÌNH MINH HOẠ ============ -->
+  <section class="block" id="mock">
+    <h2>Màn hình minh hoạ</h2>
+    <div class="mock-label">💻 Màn hình minh hoạ</div>
+    <p class="note">Ví dụ 4 dòng — mỗi dòng 1 ticket đã dùng xuyên suốt bộ đặc tả này, đại diện đủ 4 nhánh, để IT đối chiếu dữ liệu khớp với các sheet 1/3/4/5/6.</p>
+    <div class="mfilters">
+      <span class="f"><span class="lbl">Vùng:</span> Tất cả</span>
+      <span class="f"><span class="lbl">GĐKV:</span> Tất cả</span>
+      <span class="f"><span class="lbl">Loại yêu cầu:</span> Tất cả</span>
+      <span class="f"><span class="lbl">Tình trạng:</span> Tất cả</span>
+      <span class="f"><span class="lbl">SM nghiệm thu:</span> Tất cả</span>
+    </div>
+    <div class="master-tbl-wrap">
+      <table class="master-tbl">
+        <thead>
+          <tr>
+            <th>STT</th><th>ID thẻ</th><th>Người đăng thẻ</th><th>GĐKV</th><th>Salon</th><th>Vùng</th><th>Tầng</th><th>Khu vực</th>
+            <th>Loại yêu cầu</th><th>Hạng mục</th><th>Thiết bị</th><th>Mô tả hiện trạng</th><th>Người xử lý</th><th>Nguyên nhân</th>
+            <th>Phương án xử lý</th><th>Chi phí</th><th>Tình trạng</th><th>Ngày lên thẻ</th><th>Ngày hoàn thành</th><th>Bảo hành</th>
+            <th>SM nghiệm thu</th><th>Ảnh sự cố</th><th>Ảnh nghiệm thu</th><th>Tình trạng thanh toán</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td><td><b>#2103</b></td><td>Nguyễn Thị Lan <small>(thay SM)</small></td><td>GĐKV Hà</td><td>109 TQH</td><td>Hà Nội</td><td>Tầng Hầm</td><td>Phòng kho</td>
+            <td><span class="mtag red"><span class="dot"></span>Sự cố/Sửa chữa</span></td><td>Hệ thống điện</td><td>CB tổng</td>
+            <td class="wrap">CB tổng cháy khét, có mùi khói nhẹ</td><td>Phúc (Cầu Giấy)</td><td class="wrap">CB tổng cũ quá tải lâu ngày…</td><td class="wrap">Thay CB tổng mới…</td>
+            <td>850.000 đ</td><td><span class="mtag green"><span class="dot"></span>Đã xử lý</span></td><td>06/10/2026</td><td>08/10/2026</td><td>30 ngày</td>
+            <td><span class="mtag green"><span class="dot"></span>Đạt</span></td><td class="mthumb">📷 2 ảnh</td><td class="mthumb">📷 3 ảnh</td>
+            <td><span class="mtag green"><span class="dot"></span>Đã thanh toán</span></td>
+          </tr>
+          <tr>
+            <td>2</td><td><b>#2110</b></td><td>SM salon</td><td>GĐKV Hà</td><td>76 PVH</td><td>Hà Nội</td><td>Tầng 1</td><td>Lễ tân, khu chờ khách</td>
+            <td><span class="mtag orange"><span class="dot"></span>Lắp đặt/Nâng cấp/Thay thế</span></td><td>Vận hành</td><td>Máy Pos thanh toán</td>
+            <td class="wrap">Máy Pos thanh toán treo liên tục, cần đổi máy mới</td><td>Anh Tùng <small>(thuê ngoài)</small></td><td class="wrap">Máy Pos đời cũ, main board xuống cấp</td><td class="wrap">Liên hệ nhà cung cấp đổi máy Pos mới…</td>
+            <td>3.500.000 đ</td><td><span class="mtag green"><span class="dot"></span>Đã xử lý</span></td><td>07/10/2026</td><td>09/10/2026</td><td>180 ngày</td>
+            <td><span class="mtag gray"><span class="dot"></span>Chưa nghiệm thu</span></td><td class="mthumb">📷 1 ảnh</td><td class="mthumb">📷 3 ảnh</td>
+            <td><span class="mtag orange"><span class="dot"></span>Chưa thanh toán</span></td>
+          </tr>
+          <tr>
+            <td>3</td><td><b>#2115</b></td><td>SM salon</td><td>GĐKV Thanh</td><td>346 KT → 55A NVL</td><td>Hà Nội</td><td>—</td><td>—</td>
+            <td><span class="mtag orange"><span class="dot"></span>Luân chuyển CSVC</span></td><td>—</td><td>Giường gội paradise</td>
+            <td class="wrap">Chuyển giường gội từ 346 KT sang 55A NVL</td><td>Bình <small>(Đội vận chuyển)</small></td><td class="wrap">—</td><td class="wrap">Tháo dỡ — vận chuyển — lắp lại…</td>
+            <td>550.000 đ</td><td><span class="mtag green"><span class="dot"></span>Đã xử lý</span></td><td>14/10/2026</td><td>15/10/2026</td><td>0 ngày</td>
+            <td><span class="mtag green"><span class="dot"></span>Đạt</span></td><td class="mthumb">📷 1 ảnh</td><td class="mthumb">📷 3 ảnh</td>
+            <td><span class="mtag green"><span class="dot"></span>Đã thanh toán</span></td>
+          </tr>
+          <tr>
+            <td>4</td><td><b>#2099</b></td><td>SM salon</td><td>GĐKV Long</td><td>730 TL10</td><td>TP.HCM</td><td>Tầng 3</td><td>WC</td>
+            <td><span class="mtag green"><span class="dot"></span>Vệ sinh/Dọn dẹp</span></td><td>Điều hòa & quạt</td><td>Điều hòa treo tường</td>
+            <td class="wrap">Vệ sinh định kỳ điều hòa + máy lọc nước khu WC tầng 3</td><td>Hoa <small>(Đội vệ sinh)</small></td><td class="wrap">—</td><td class="wrap">Vệ sinh định kỳ điều hòa…</td>
+            <td>230.000 đ</td><td><span class="mtag green"><span class="dot"></span>Đã xử lý</span></td><td>11/10/2026</td><td>12/10/2026</td><td>0 ngày</td>
+            <td><span class="mtag orange"><span class="dot"></span>Chưa đạt</span></td><td class="mthumb">📷 1 ảnh</td><td class="mthumb">📷 3 ảnh</td>
+            <td><span class="mtag orange"><span class="dot"></span>Chưa thanh toán</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note" style="margin-top:14px">Bấm vào ô <b>ID thẻ</b> trên 1 dòng bất kỳ → mở đúng thẻ đó ở màn hình chi tiết (sheet nhánh tương ứng, hoặc sheet 1 nếu thẻ chưa qua Bước 2).</p>
+  </section>
+
+  <footer>
+    Bộ đặc tả gồm 8 sheet — xem tiếp:
+    <a href="10-07 Đặc tả IT 5 - SM Phiếu yêu cầu và Nghiệm thu.html">1. SM — Phiếu yêu cầu & Nghiệm thu</a> ·
+    <a href="10-07 Đặc tả IT 6 - PYC CSVC.html">2. Tổng quan thẻ CSVC</a> ·
+    <a href="10-07 Đặc tả IT 1 - Nhóm Sự cố Sửa chữa.html">3. Sự cố/Sửa chữa</a>
+  </footer>
+</main>
+</body>
+</html>
